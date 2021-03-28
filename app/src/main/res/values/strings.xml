@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">HypoCoin</string>
+
+    <!-- Navigation Bar-->
+    <string name="nav_bar_home">Home</string>
+    <string name="nav_bar_settings">Settings</string>
+    <string name="nav_bar_account">Account</string>
+    <string name="nav_bar_timeline">Currencies</string>
 </resources>
