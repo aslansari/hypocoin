@@ -18,4 +18,5 @@
     <color name="amber_700">#FFA000</color>
     <color name="amber_800">#FF8F00</color>
     <color name="amber_900">#FF6F00</color>
+    <color name="amber_dark">#876B15</color>
 </resources>
