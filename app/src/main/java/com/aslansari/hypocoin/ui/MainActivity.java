@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.aslansari.hypocoin.HypoCoinApp;
 import com.aslansari.hypocoin.R;
 import com.aslansari.hypocoin.repository.model.Currency;
 import com.aslansari.hypocoin.ui.adapters.CurrencyAdapter;
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         disposables = new CompositeDisposable();
         recyclerView = findViewById(R.id.recyclerCoin);
-        coinViewModel = new CoinViewModel(1);
+        coinViewModel = ((HypoCoinApp) getApplication()).appContainer.coinViewModel;
         currencyAdapter = new CurrencyAdapter();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this,
                 RecyclerView.VERTICAL, false);

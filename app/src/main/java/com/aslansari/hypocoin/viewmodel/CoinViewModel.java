@@ -13,10 +13,10 @@ import io.reactivex.Flowable;
 public class CoinViewModel extends ViewModel {
 
     private String id;
-    private CoinRepository coinRepository;
+    private final CoinRepository coinRepository;
 
-    public CoinViewModel() {
-        this.coinRepository = new CoinRepository();
+    public CoinViewModel(CoinRepository coinRepository) {
+        this.coinRepository = coinRepository;
     }
 
     public Flowable<Currency> getCurrencyList() {

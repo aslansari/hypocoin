@@ -4,6 +4,8 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
+import com.aslansari.hypocoin.di.AppContainer;
+
 import java.io.IOException;
 import java.util.Properties;
 
@@ -12,23 +14,20 @@ import timber.log.Timber;
 public class HypoCoinApp extends Application {
 
     private static HypoCoinApp thisInstance = null;
-    private String serviceAPIKey;
+    public AppContainer appContainer;
 
     @Override
     public void onCreate() {
         super.onCreate();
         thisInstance = this;
 
+        appContainer = new AppContainer(this);
         initializeTimber();
 
     }
 
     public static HypoCoinApp getInstance() {
         return thisInstance;
-    }
-
-    public String getServiceAPIKey() {
-        return serviceAPIKey;
     }
 
     private void initializeTimber(){
