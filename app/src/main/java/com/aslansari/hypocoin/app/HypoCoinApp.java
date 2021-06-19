@@ -1,13 +1,10 @@
-package com.aslansari.hypocoin;
+package com.aslansari.hypocoin.app;
 
 import android.app.Application;
 
 import androidx.annotation.NonNull;
 
-import com.aslansari.hypocoin.di.AppContainer;
-
-import java.io.IOException;
-import java.util.Properties;
+import com.aslansari.hypocoin.BuildConfig;
 
 import timber.log.Timber;
 
