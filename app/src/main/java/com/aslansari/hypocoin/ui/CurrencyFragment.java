@@ -13,10 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.aslansari.hypocoin.HypoCoinApp;
+import com.aslansari.hypocoin.app.HypoCoinApp;
 import com.aslansari.hypocoin.R;
 import com.aslansari.hypocoin.repository.model.Currency;
-import com.aslansari.hypocoin.ui.adapters.CurrencyAdapter;
+import com.aslansari.hypocoin.ui.adapters.CurrencyRecyclerAdapter;
 import com.aslansari.hypocoin.viewmodel.CoinViewModel;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -32,7 +32,7 @@ public class CurrencyFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private CoinViewModel coinViewModel;
-    private CurrencyAdapter currencyAdapter;
+    private CurrencyRecyclerAdapter currencyRecyclerAdapter;
     private CompositeDisposable disposables;
 
     public CurrencyFragment() {
@@ -64,14 +64,14 @@ public class CurrencyFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_currency, container, false);
         recyclerView = view.findViewById(R.id.recyclerCoin);
-        currencyAdapter = new CurrencyAdapter();
+        currencyRecyclerAdapter = new CurrencyRecyclerAdapter();
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),
                 RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         DividerItemDecoration dividerItemDecoration =
                 new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
-        recyclerView.setAdapter(currencyAdapter);
+        recyclerView.setAdapter(currencyRecyclerAdapter);
         return view;
     }
 
@@ -88,7 +88,7 @@ public class CurrencyFragment extends Fragment {
 
                     @Override
                     public void onNext(Currency currency) {
-                        currencyAdapter.add(currency);
+                        currencyRecyclerAdapter.add(currency);
                     }
 
                     @Override

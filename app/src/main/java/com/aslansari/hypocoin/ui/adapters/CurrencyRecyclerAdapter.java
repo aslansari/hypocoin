@@ -14,7 +14,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
-public class CurrencyAdapter extends BaseAdapter<Currency> {
+public class CurrencyRecyclerAdapter extends BaseAdapter<Currency> {
 
     private static final DecimalFormat AMOUNT_FORMAT;
 
@@ -58,7 +58,7 @@ public class CurrencyAdapter extends BaseAdapter<Currency> {
 
     @Override
     protected void bindItemViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        final CurrencyAdapter.CurrencyViewHolder holder = (CurrencyAdapter.CurrencyViewHolder) viewHolder;
+        final CurrencyRecyclerAdapter.CurrencyViewHolder holder = (CurrencyRecyclerAdapter.CurrencyViewHolder) viewHolder;
 
         final Currency currency = getItem(position);
         if (currency != null) {
