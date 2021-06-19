@@ -3,7 +3,7 @@ package com.aslansari.hypocoin.repository.restapi;
 import androidx.annotation.Nullable;
 
 import com.aslansari.hypocoin.BuildConfig;
-import com.aslansari.hypocoin.HypoCoinApp;
+import com.aslansari.hypocoin.app.HypoCoinApp;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
