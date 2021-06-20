@@ -1,7 +1,6 @@
 package com.aslansari.hypocoin.ui;
 
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -9,12 +8,12 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.aslansari.hypocoin.R;
 import com.aslansari.hypocoin.app.HypoCoinApp;
+import com.aslansari.hypocoin.viewmodel.account.UserProfileAction;
 import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.jetbrains.annotations.NotNull;
 
-import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
@@ -56,14 +55,23 @@ public class MainActivity extends AppCompatActivity {
         });
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
 
-        disposables.add(userProfileViewModel.getPublishSubject()
+        disposables.add(userProfileViewModel.getActionPublishSubject()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<String>() {
+                .subscribeWith(new DisposableObserver<UserProfileAction>() {
                     @Override
-                    public void onNext(@NotNull String id) {
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.frameLayout, AccountFragment.newInstance()).commit();
+                    public void onNext(@NotNull UserProfileAction userProfileAction) {
+                        if (UserProfileAction.LOGIN == userProfileAction) {
+                            fragmentManager.beginTransaction()
+                                    .replace(R.id.frameLayout, AccountFragment.newInstance()).commit();
+
+                        } else if (UserProfileAction.REGISTER_REQUEST == userProfileAction) {
+                            fragmentManager.beginTransaction()
+                                    .replace(R.id.frameLayout, RegisterFragment.newInstance()).commit();
+
+                        } else if (UserProfileAction.REGISTER == userProfileAction) {
+                            // TODO: 6/20/2021 register
+                        }
                     }
 
                     @Override

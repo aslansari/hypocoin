@@ -7,5 +7,11 @@
     <string name="nav_bar_account">Account</string>
     <string name="nav_bar_timeline">Currencies</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- UserProfile -->
+    <string name="password">Password</string>
+    <string name="account_id">Username</string>
     <string name="login_title">LOGIN</string>
+    <string name="register">REGISTER</string>
+    <string name="no_account_register"><u>I don't have an account, register</u></string>
 </resources>

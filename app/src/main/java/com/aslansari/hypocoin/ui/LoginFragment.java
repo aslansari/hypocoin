@@ -14,16 +14,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.aslansari.hypocoin.app.HypoCoinApp;
 import com.aslansari.hypocoin.R;
+import com.aslansari.hypocoin.app.HypoCoinApp;
 import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel;
 import com.aslansari.hypocoin.viewmodel.login.LoginUIModel;
 import com.jakewharton.rxbinding4.view.RxView;
 
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.observers.DisposableObserver;
 import timber.log.Timber;
 
@@ -37,6 +34,7 @@ public class LoginFragment extends Fragment {
     private UserProfileViewModel userProfileViewModel;
     private CompositeDisposable disposables;
     private TextView tvId;
+    private TextView tvRegisterRequest;
     private EditText etAccountId;
     private Button buttonLogin;
     private ProgressBar progressLogin;
@@ -75,6 +73,7 @@ public class LoginFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         tvId = view.findViewById(R.id.tvId);
+        tvRegisterRequest = view.findViewById(R.id.tvRegisterRequest);
         buttonLogin = view.findViewById(R.id.buttonLogin);
         progressLogin = view.findViewById(R.id.progressLogin);
         etAccountId = view.findViewById(R.id.etAccountId);
@@ -85,10 +84,10 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RxView.clicks(buttonLogin)
+        disposables.add(RxView.clicks(buttonLogin)
                 // TODO: 6/19/2021 process login
                 .map(unit -> LoginUIModel.complete())
-                .subscribe(new DisposableObserver<LoginUIModel>() {
+                .subscribeWith(new DisposableObserver<LoginUIModel>() {
                     @Override
                     public void onNext(@io.reactivex.rxjava3.annotations.NonNull LoginUIModel uiModel) {
                         buttonLogin.setEnabled(!uiModel.isLoading);
@@ -112,7 +111,10 @@ public class LoginFragment extends Fragment {
                         // TODO trigger listener and change fragment
                         Toast.makeText(getContext(), "test", Toast.LENGTH_LONG).show();
                     }
-                });
+                })
+        );
+
+        tvRegisterRequest.setOnClickListener(v -> userProfileViewModel.registerRequest());
     }
 
     @Override

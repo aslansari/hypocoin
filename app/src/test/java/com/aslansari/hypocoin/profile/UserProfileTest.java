@@ -3,6 +3,7 @@ package com.aslansari.hypocoin.profile;
 import com.aslansari.hypocoin.account.AccountTest;
 import com.aslansari.hypocoin.repository.AccountRepository;
 import com.aslansari.hypocoin.repository.model.AccountDAO;
+import com.aslansari.hypocoin.viewmodel.account.UserProfileAction;
 import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,16 +23,16 @@ public class UserProfileTest {
 
     @Test
     public void userLoginTest() {
-        CompletableFuture<String> future = new CompletableFuture<>();
+        CompletableFuture<UserProfileAction> future = new CompletableFuture<>();
         AccountDAO accountDAO = new AccountTest.FakeAccountDAO();
         AccountRepository accountRepository = new AccountRepository(accountDAO);
         UserProfileViewModel userProfileViewModel = new UserProfileViewModel(accountRepository);
 
-        userProfileViewModel.getPublishSubject()
-                .subscribeWith(new DisposableObserver<String>() {
+        userProfileViewModel.getActionPublishSubject()
+                .subscribeWith(new DisposableObserver<UserProfileAction>() {
                     @Override
-                    public void onNext(@NotNull String s) {
-                        future.complete("logged in");
+                    public void onNext(@NotNull UserProfileAction action) {
+                        future.complete(action);
                     }
 
                     @Override
@@ -48,7 +49,7 @@ public class UserProfileTest {
         userProfileViewModel.login();
 
         try {
-            assertEquals("logged in",future.get(5_000, TimeUnit.SECONDS));
+            assertEquals(UserProfileAction.LOGIN, future.get(5_000, TimeUnit.SECONDS));
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
             e.printStackTrace();
             fail(e.getMessage());
