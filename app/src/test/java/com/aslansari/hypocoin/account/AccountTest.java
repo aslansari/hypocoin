@@ -4,52 +4,33 @@ import com.aslansari.hypocoin.repository.AccountRepository;
 import com.aslansari.hypocoin.repository.model.Account;
 import com.aslansari.hypocoin.repository.model.AccountDAO;
 
-import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import io.reactivex.Completable;
-import io.reactivex.Scheduler;
 import io.reactivex.Single;
-import io.reactivex.schedulers.Schedulers;
 
-import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 
+@RunWith(MockitoJUnitRunner.class)
 public class AccountTest {
 
+    @Mock
+    AccountDAO accountDAO;
+
     @Test
-    public void getAccountTest() {
-        // Given
-        AccountDAO accountDAO = new FakeAccountDAO();
+    public void account_repo_should_get_from_db() {
+        given(accountDAO.getAccount(anyString()))
+                .willReturn(Single.just(new Account("")));
         AccountRepository accountRepository = new AccountRepository(accountDAO);
 
-        // When
-        Account account = accountRepository.getAccount("test_id")
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .blockingGet();
+        accountRepository.getAccount(anyString());
 
-        // Then
-        assertEquals("test_id", account.id);
-        assertEquals(100, account.getBalance());
-    }
-
-    public static class FakeAccountDAO implements AccountDAO {
-
-        @Override
-        public Completable addAccount(Account account) {
-            return Completable.complete();
-        }
-
-        @Override
-        public Single<Account> getAccount(String id) {
-            Account account = new Account(id);
-            account.setBalance(100);
-            return Single.just(account);
-        }
-
-        @Override
-        public Completable updateBalance(String id, long balance) {
-            return null;
-        }
+        then(accountDAO)
+                .should()
+                .getAccount(anyString());
     }
 }

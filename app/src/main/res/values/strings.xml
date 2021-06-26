@@ -13,5 +13,5 @@
     <string name="account_id">Username</string>
     <string name="login_title">LOGIN</string>
     <string name="register">REGISTER</string>
-    <string name="no_account_register"><u>I don't have an account, register</u></string>
+    <string name="no_account_register"><u>I don\'t have an account, register</u></string>
 </resources>
