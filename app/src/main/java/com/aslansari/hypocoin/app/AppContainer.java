@@ -2,6 +2,8 @@ package com.aslansari.hypocoin.app;
 
 import android.content.Context;
 
+import com.aslansari.hypocoin.register.Register;
+import com.aslansari.hypocoin.register.RegisterViewModel;
 import com.aslansari.hypocoin.repository.AccountRepository;
 import com.aslansari.hypocoin.repository.CoinDatabase;
 import com.aslansari.hypocoin.repository.CoinRepository;
@@ -14,10 +16,11 @@ public final class AppContainer {
 
     public CoinViewModel coinViewModel;
     public UserProfileViewModel userProfileViewModel;
-    private CoinDatabase coinDatabase;
-    private CoinAPI coinAPI;
-    private CoinRepository coinRepository;
-    private AccountRepository accountRepository;
+    public RegisterViewModel registerViewModel;
+    private final CoinDatabase coinDatabase;
+    private final CoinAPI coinAPI;
+    private final CoinRepository coinRepository;
+    private final AccountRepository accountRepository;
 
     public AppContainer(Context context) {
         CoinDatabase.init(context);
@@ -28,5 +31,7 @@ public final class AppContainer {
 
         coinViewModel = new CoinViewModel(coinRepository);
         userProfileViewModel = new UserProfileViewModel(accountRepository);
+        Register register = new Register();
+        registerViewModel = new RegisterViewModel(register, accountRepository);
     }
 }

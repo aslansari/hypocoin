@@ -1,6 +1,5 @@
 package com.aslansari.hypocoin.viewmodel.account;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 
 import com.aslansari.hypocoin.repository.AccountRepository;
@@ -10,10 +9,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 
 public class UserProfileViewModel extends ViewModel {
@@ -61,13 +57,6 @@ public class UserProfileViewModel extends ViewModel {
 
     public Single<Account> getAccount() {
         return accountRepository.getAccount(id);
-    }
-
-    public Completable createAccount(@NonNull String id) {
-        Account account = new Account(id);
-        return accountRepository.createAccount(account)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public PublishSubject<UserProfileAction> getActionPublishSubject() {

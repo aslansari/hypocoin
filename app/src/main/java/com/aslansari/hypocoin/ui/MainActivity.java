@@ -70,7 +70,8 @@ public class MainActivity extends AppCompatActivity {
                                     .replace(R.id.frameLayout, RegisterFragment.newInstance()).commit();
 
                         } else if (UserProfileAction.REGISTER == userProfileAction) {
-                            // TODO: 6/20/2021 register
+                            fragmentManager.beginTransaction()
+                                    .replace(R.id.frameLayout, LoginFragment.newInstance()).commit();
                         }
                     }
 

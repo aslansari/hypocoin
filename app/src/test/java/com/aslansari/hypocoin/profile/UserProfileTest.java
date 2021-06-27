@@ -1,7 +1,6 @@
 package com.aslansari.hypocoin.profile;
 
 import com.aslansari.hypocoin.repository.AccountRepository;
-import com.aslansari.hypocoin.repository.model.Account;
 import com.aslansari.hypocoin.repository.model.AccountDAO;
 import com.aslansari.hypocoin.viewmodel.account.UserProfileAction;
 import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel;
@@ -17,13 +16,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import io.reactivex.Single;
-import io.reactivex.observers.DisposableObserver;
+import io.reactivex.rxjava3.observers.DisposableObserver;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserProfileTest {
@@ -33,7 +29,6 @@ public class UserProfileTest {
 
     @Test
     public void userLoginTest() {
-        when(accountDAO.getAccount(anyString())).thenReturn(Single.just(new Account("")));
         CompletableFuture<UserProfileAction> future = new CompletableFuture<>();
         AccountRepository accountRepository = new AccountRepository(accountDAO);
         UserProfileViewModel userProfileViewModel = new UserProfileViewModel(accountRepository);

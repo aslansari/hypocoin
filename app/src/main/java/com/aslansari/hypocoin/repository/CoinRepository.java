@@ -20,8 +20,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
  */
 public class CoinRepository {
 
-    private CoinDatabase coinDatabase;
-    private CoinAPI coinAPI;
+    private final CoinDatabase coinDatabase;
+    private final CoinAPI coinAPI;
     private List<Currency> currency;
 
     public CoinRepository(CoinDatabase coinDatabase, CoinAPI coinAPI) {
