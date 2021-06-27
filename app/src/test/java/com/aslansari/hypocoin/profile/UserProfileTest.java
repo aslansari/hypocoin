@@ -23,7 +23,6 @@ import io.reactivex.observers.DisposableObserver;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -31,6 +30,7 @@ public class UserProfileTest {
 
     @Mock
     AccountDAO accountDAO;
+
     @Test
     public void userLoginTest() {
         when(accountDAO.getAccount(anyString())).thenReturn(Single.just(new Account("")));

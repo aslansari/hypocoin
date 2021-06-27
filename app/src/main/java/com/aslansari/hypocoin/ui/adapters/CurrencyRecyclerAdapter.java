@@ -39,8 +39,8 @@ public class CurrencyRecyclerAdapter extends BaseAdapter<Currency> {
         final CurrencyViewHolder holder = new CurrencyViewHolder(v);
 
         holder.itemView.setOnClickListener(view -> {
-            int adapterPos = holder.getAdapterPosition();
-            if(adapterPos != RecyclerView.NO_POSITION){
+            int adapterPos = holder.getAbsoluteAdapterPosition();
+            if (adapterPos != RecyclerView.NO_POSITION) {
                 // TODO handle click
             }
         });
@@ -92,7 +92,7 @@ public class CurrencyRecyclerAdapter extends BaseAdapter<Currency> {
         TextView tvCurrencyName;
         TextView tvCurrencyRatio;
 
-        public CurrencyViewHolder(View view){
+        public CurrencyViewHolder(View view) {
             super(view);
             tvCurrencyName = view.findViewById(R.id.tvCurrencyName);
             tvCurrencyRatio = view.findViewById(R.id.tvCurrencyRatio);

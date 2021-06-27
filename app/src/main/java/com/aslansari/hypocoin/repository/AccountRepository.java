@@ -5,12 +5,9 @@ import androidx.annotation.NonNull;
 import com.aslansari.hypocoin.repository.model.Account;
 import com.aslansari.hypocoin.repository.model.AccountDAO;
 
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
-import io.reactivex.Scheduler;
-import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
+
 
 public class AccountRepository {
 

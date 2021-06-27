@@ -26,29 +26,10 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     protected boolean isFooterAdded = false;
     // endregion
 
-    // region Interfaces
-    public interface OnItemClickListener {
-        void onItemClick(int position, View view);
-    }
-
-    public interface OnReloadClickListener {
-        void onReloadClick();
-    }
-
-    public interface OnLongClickListener{
-        void onItemLongClick(int position, View view);
-    }
-
-    public interface ISortable{
-        void sort();
-    }
-    // endregion
-
     // region Constructors
     public BaseAdapter() {
         items = new ArrayList<>();
     }
-    // endregion
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -91,9 +72,11 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     public int getItemCount() {
         return items.size();
     }
+    // endregion
 
     // region Abstract Methods
     protected abstract RecyclerView.ViewHolder createHeaderViewHolder(ViewGroup parent);
+    // endregion
 
     protected abstract RecyclerView.ViewHolder createItemViewHolder(ViewGroup parent);
 
@@ -110,7 +93,6 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     protected abstract void displayErrorFooter();
 
     public abstract void addFooter();
-    // endregion
 
     // region Helper Methods
     public T getItem(int position) {
@@ -122,8 +104,8 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         notifyItemInserted(items.size() - 1);
     }
 
-    public void add(int position, T item){
-        items.add(position,item);
+    public void add(int position, T item) {
+        items.add(position, item);
         notifyItemInserted(position);
     }
 
@@ -132,10 +114,11 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
             add(item);
         }
     }
+    // endregion
 
-    public void addAll(int position,List<T> items){
+    public void addAll(int position, List<T> items) {
         for (T item : items) {
-            add(position,item);
+            add(position, item);
         }
     }
 
@@ -160,10 +143,10 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public boolean isLastPosition(int position) {
-        return (position == items.size()-1);
+        return (position == items.size() - 1);
     }
 
-    public boolean isFooterAdded(){
+    public boolean isFooterAdded() {
         return isFooterAdded;
     }
 
@@ -179,7 +162,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-    public void updateFooter(FooterType footerType){
+    public void updateFooter(FooterType footerType) {
         switch (footerType) {
             case LOAD_MORE:
                 displayLoadMoreFooter();
@@ -191,7 +174,8 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
                 break;
         }
     }
-    public void setOnLongClickListener(OnLongClickListener onLongClickListener){
+
+    public void setOnLongClickListener(OnLongClickListener onLongClickListener) {
         this.onLongClickListener = onLongClickListener;
     }
 
@@ -202,12 +186,29 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     public void setOnReloadClickListener(OnReloadClickListener onReloadClickListener) {
         this.onReloadClickListener = onReloadClickListener;
     }
-    // endregion
 
     // region Inner Classes
     public enum FooterType {
         LOAD_MORE,
         ERROR
+    }
+
+    // region Interfaces
+    public interface OnItemClickListener {
+        void onItemClick(int position, View view);
+    }
+
+    public interface OnReloadClickListener {
+        void onReloadClick();
+    }
+
+    public interface OnLongClickListener {
+        void onItemLongClick(int position, View view);
+    }
+    // endregion
+
+    public interface ISortable {
+        void sort();
     }
     // endregion
 }

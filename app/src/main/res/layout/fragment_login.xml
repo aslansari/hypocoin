@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.AccountFragment">
 
     <ProgressBar
@@ -12,63 +12,59 @@
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:indeterminateTint="@color/amber_800"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvAccountTitle"
-        android:textAppearance="@style/TextAppearance.Caption"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginStart="3dp"
+        android:text="Account ID"
+        android:textAppearance="@style/TextAppearance.Caption"
         app:layout_constraintBottom_toTopOf="@+id/etAccountId"
         app:layout_constraintStart_toStartOf="@id/etAccountId"
-        android:text="Account ID"
-        tools:text="Account ID"
-        />
+        tools:text="Account ID" />
 
     <EditText
         android:id="@+id/etAccountId"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:hint="@string/nav_bar_timeline"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:hint="@string/nav_bar_timeline"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonLogin"
         android:layout_width="120dp"
         android:layout_height="55dp"
         android:layout_margin="5dp"
-        app:layout_constraintTop_toBottomOf="@+id/etAccountId"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:cornerRadius="20dp"
+        android:text="@string/login_title"
         android:textAppearance="@style/TextAppearance.Button"
         android:textColor="@color/black"
-        android:text="@string/login_title"
-        />
+        app:cornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etAccountId" />
 
 
     <TextView
         android:id="@+id/tvRegisterRequest"
-        android:textAppearance="@style/TextAppearance.Caption"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_margin="40dp"
         android:text="@string/no_account_register"
+        android:textAppearance="@style/TextAppearance.Caption"
         android:textColor="@color/amber_900"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLogin"
-        app:layout_constraintStart_toStartOf="@id/etAccountId"
         app:layout_constraintEnd_toEndOf="@id/etAccountId"
-        />
+        app:layout_constraintStart_toStartOf="@id/etAccountId"
+        app:layout_constraintTop_toBottomOf="@+id/buttonLogin" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

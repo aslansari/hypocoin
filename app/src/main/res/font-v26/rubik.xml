@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <font-family xmlns:android="http://schemas.android.com/apk/res/android">
     <font
+        android:font="@font/rubik_light"
         android:fontStyle="normal"
-        android:fontWeight="200"
-        android:font="@font/rubik_light" />
+        android:fontWeight="200" />
     <font
+        android:font="@font/rubik_regular"
         android:fontStyle="normal"
-        android:fontWeight="400"
-        android:font="@font/rubik_regular" />
+        android:fontWeight="400" />
     <font
+        android:font="@font/rubik_semi_bold"
         android:fontStyle="normal"
-        android:fontWeight="700"
-        android:font="@font/rubik_semi_bold"/>
+        android:fontWeight="700" />
     <font
+        android:font="@font/rubik_italic"
         android:fontStyle="italic"
-        android:fontWeight="400"
-        android:font="@font/rubik_italic" />
+        android:fontWeight="400" />
 </font-family>

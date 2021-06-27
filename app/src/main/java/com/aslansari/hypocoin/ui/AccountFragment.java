@@ -12,22 +12,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.aslansari.hypocoin.app.HypoCoinApp;
 import com.aslansari.hypocoin.R;
+import com.aslansari.hypocoin.app.HypoCoinApp;
 import com.aslansari.hypocoin.repository.model.Account;
 import com.aslansari.hypocoin.viewmodel.account.AccountUIModel;
 import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel;
-import com.jakewharton.rxbinding4.view.RxView;
 
 import org.jetbrains.annotations.NotNull;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableTransformer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableTransformer;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.observers.DisposableObserver;
-import kotlin.Unit;
+import io.reactivex.rxjava3.observers.DisposableSingleObserver;
 import timber.log.Timber;
 
 /**
@@ -114,21 +112,21 @@ public class AccountFragment extends Fragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .scan(AccountUIModel.idle(), (state, result) -> {
                     return AccountUIModel.idle();
-                }).subscribe(new io.reactivex.observers.DisposableObserver<AccountUIModel>() {
-                    @Override
-                    public void onNext(@io.reactivex.annotations.NonNull AccountUIModel accountUIModel) {
+                }).subscribe(new DisposableObserver<AccountUIModel>() {
+            @Override
+            public void onNext(@NonNull AccountUIModel accountUIModel) {
 
-                    }
+            }
 
-                    @Override
-                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+            @Override
+            public void onError(@NonNull Throwable e) {
 
-                    }
+            }
 
-                    @Override
-                    public void onComplete() {
+            @Override
+            public void onComplete() {
 
-                    }
+            }
         });
 
 
@@ -137,7 +135,7 @@ public class AccountFragment extends Fragment {
     private ObservableTransformer<UserProfileViewModel, AccountUIModel> getTransformer() {
         return upstream -> upstream.flatMap(u -> {
             return Observable.just(new AccountUIModel())
-                    .startWith(AccountUIModel.idle());
+                    .startWithItem(AccountUIModel.idle());
         });
     }
 

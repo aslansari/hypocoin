@@ -12,12 +12,12 @@ import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel;
 
 public final class AppContainer {
 
+    public CoinViewModel coinViewModel;
+    public UserProfileViewModel userProfileViewModel;
     private CoinDatabase coinDatabase;
     private CoinAPI coinAPI;
     private CoinRepository coinRepository;
     private AccountRepository accountRepository;
-    public CoinViewModel coinViewModel;
-    public UserProfileViewModel userProfileViewModel;
 
     public AppContainer(Context context) {
         CoinDatabase.init(context);

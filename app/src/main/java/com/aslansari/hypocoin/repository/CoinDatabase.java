@@ -17,17 +17,18 @@ public abstract class CoinDatabase extends RoomDatabase {
     public static final String DB_NAME = "coin.db";
     private static CoinDatabase thisInstance;
 
-    public abstract CurrencyDAO currencyDAO();
-    public abstract AccountDAO accountDAO();
-
     public static void init(Context context) {
-         Builder<CoinDatabase> databaseBuilder = Room.databaseBuilder(context, CoinDatabase.class, DB_NAME)
+        Builder<CoinDatabase> databaseBuilder = Room.databaseBuilder(context, CoinDatabase.class, DB_NAME)
                 .setJournalMode(JournalMode.TRUNCATE);
-         thisInstance = databaseBuilder.build();
+        thisInstance = databaseBuilder.build();
     }
 
     public static CoinDatabase getInstance() {
         return thisInstance;
     }
+
+    public abstract CurrencyDAO currencyDAO();
+
+    public abstract AccountDAO accountDAO();
 
 }

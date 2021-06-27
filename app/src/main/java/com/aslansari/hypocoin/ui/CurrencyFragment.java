@@ -1,6 +1,10 @@
 package com.aslansari.hypocoin.ui;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,18 +13,14 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.aslansari.hypocoin.app.HypoCoinApp;
 import com.aslansari.hypocoin.R;
+import com.aslansari.hypocoin.app.HypoCoinApp;
 import com.aslansari.hypocoin.repository.model.Currency;
 import com.aslansari.hypocoin.ui.adapters.CurrencyRecyclerAdapter;
 import com.aslansari.hypocoin.viewmodel.CoinViewModel;
 
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.subscribers.DisposableSubscriber;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.subscribers.DisposableSubscriber;
 import timber.log.Timber;
 
 /**
@@ -31,6 +31,7 @@ import timber.log.Timber;
 public class CurrencyFragment extends Fragment {
 
     private RecyclerView recyclerView;
+    private ProgressBar progressBar;
     private CoinViewModel coinViewModel;
     private CurrencyRecyclerAdapter currencyRecyclerAdapter;
     private CompositeDisposable disposables;
@@ -64,6 +65,7 @@ public class CurrencyFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_currency, container, false);
         recyclerView = view.findViewById(R.id.recyclerCoin);
+        progressBar = view.findViewById(R.id.progressBar);
         currencyRecyclerAdapter = new CurrencyRecyclerAdapter();
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),
                 RecyclerView.VERTICAL, false);
@@ -83,16 +85,18 @@ public class CurrencyFragment extends Fragment {
                 .subscribeWith(new DisposableSubscriber<Currency>() {
                     @Override
                     protected void onStart() {
+                        progressBar.setVisibility(View.VISIBLE);
                         super.onStart();
                     }
 
                     @Override
                     public void onNext(Currency currency) {
+                        progressBar.setVisibility(View.GONE);
                         currencyRecyclerAdapter.add(currency);
                     }
 
                     @Override
-                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                    public void onError(@NonNull Throwable e) {
                         Timber.e(e);
                     }
 

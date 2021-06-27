@@ -4,20 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <item android:id="@+id/nav_home"
-        android:title="@string/nav_bar_home"
+    <item
+        android:id="@+id/nav_home"
         android:icon="@drawable/ic_home"
-        app:showAsAction="ifRoom"/>
-    <item android:id="@+id/nav_setting"
-        android:title="@string/nav_bar_settings"
+        android:title="@string/nav_bar_home"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/nav_setting"
         android:icon="@drawable/ic_setting"
+        android:title="@string/nav_bar_settings"
         app:showAsAction="ifRoom" />
-    <item android:id="@+id/nav_currency"
-        android:title="@string/nav_bar_timeline"
+    <item
+        android:id="@+id/nav_currency"
         android:icon="@drawable/ic_timeline"
+        android:title="@string/nav_bar_timeline"
         app:showAsAction="ifRoom" />
-    <item android:id="@+id/nav_account"
-        android:title="@string/nav_bar_account"
+    <item
+        android:id="@+id/nav_account"
         android:icon="@drawable/ic_outline_person"
+        android:title="@string/nav_bar_account"
         app:showAsAction="ifRoom" />
 </menu>

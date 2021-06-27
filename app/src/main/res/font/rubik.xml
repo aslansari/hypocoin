@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<font-family xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<font-family xmlns:app="http://schemas.android.com/apk/res-auto">
     <font
+        app:font="@font/rubik_light"
         app:fontStyle="normal"
-        app:fontWeight="200"
-        app:font="@font/rubik_light" />
+        app:fontWeight="200" />
     <font
+        app:font="@font/rubik_regular"
         app:fontStyle="normal"
-        app:fontWeight="400"
-        app:font="@font/rubik_regular" />
+        app:fontWeight="400" />
     <font
+        app:font="@font/rubik_semi_bold"
         app:fontStyle="normal"
-        app:fontWeight="700"
-        app:font="@font/rubik_semi_bold" />
+        app:fontWeight="700" />
     <font
+        app:font="@font/rubik_regular"
         app:fontStyle="italic"
-        app:fontWeight="400"
-        app:font="@font/rubik_regular" />
+        app:fontWeight="400" />
 </font-family>

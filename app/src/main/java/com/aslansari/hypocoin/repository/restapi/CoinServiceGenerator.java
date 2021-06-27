@@ -15,7 +15,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CoinServiceGenerator {
@@ -24,36 +24,36 @@ public class CoinServiceGenerator {
     private static final Gson gson = new GsonBuilder().create();
     private static final Retrofit.Builder retrofitBuilder
             = new Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create(gson));
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson));
     private static final OkHttpClient defaultOkHttpClient
             = new OkHttpClient.Builder()
-                .cache(getCache())
-                .build();
+            .cache(getCache())
+            .build();
 
     // No need to instantiate this class.
     private CoinServiceGenerator() {
     }
 
     public static <S> S createService(Class<S> serviceClass, String baseUrl) {
-        return createService(serviceClass, baseUrl, null,null);
+        return createService(serviceClass, baseUrl, null, null);
     }
 
     public static <S> S createService(Class<S> serviceClass, String baseUrl, Interceptor networkInterceptor, @Nullable Interceptor cacheInterceptor) {
         OkHttpClient.Builder okHttpClientBuilder = defaultOkHttpClient.newBuilder();
 
-        if(networkInterceptor != null){
+        if (networkInterceptor != null) {
             okHttpClientBuilder.addNetworkInterceptor(networkInterceptor);
         }
 
-        if (cacheInterceptor != null){
+        if (cacheInterceptor != null) {
             okHttpClientBuilder.addNetworkInterceptor(cacheInterceptor);
         }
 
         OkHttpClient modifiedOkHttpClient = okHttpClientBuilder
                 .addInterceptor(getHttpLoggingInterceptor())
                 .connectTimeout(20, TimeUnit.SECONDS)
-                .readTimeout(20,TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
                 .build();
 
         retrofitBuilder.client(modifiedOkHttpClient);

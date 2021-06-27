@@ -2,9 +2,8 @@ package com.aslansari.hypocoin.repository.restapi;
 
 import com.aslansari.hypocoin.repository.model.Currency;
 
-import io.reactivex.Observable;
+import io.reactivex.rxjava3.core.Observable;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface CoinAPI {

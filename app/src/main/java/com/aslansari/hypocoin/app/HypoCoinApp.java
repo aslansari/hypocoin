@@ -13,6 +13,10 @@ public class HypoCoinApp extends Application {
     private static HypoCoinApp thisInstance = null;
     public AppContainer appContainer;
 
+    public static HypoCoinApp getInstance() {
+        return thisInstance;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -23,11 +27,7 @@ public class HypoCoinApp extends Application {
 
     }
 
-    public static HypoCoinApp getInstance() {
-        return thisInstance;
-    }
-
-    private void initializeTimber(){
+    private void initializeTimber() {
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree() {
                 // Add the line number to the tag
