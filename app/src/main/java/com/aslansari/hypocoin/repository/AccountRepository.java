@@ -17,6 +17,12 @@ public class AccountRepository {
         this.accountDAO = accountDAO;
     }
 
+    public boolean isAccountExists(@NonNull String id) {
+        return !accountDAO.getAccount(id)
+                .onErrorReturnItem(new Account(""))
+                .blockingGet().id.isEmpty();
+    }
+
     public Single<Account> getAccount(@NonNull String id) {
         return accountDAO.getAccount(id);
     }

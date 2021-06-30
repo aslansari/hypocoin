@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 
 import com.aslansari.hypocoin.R;
@@ -18,12 +19,19 @@ import com.aslansari.hypocoin.app.HypoCoinApp;
 import com.aslansari.hypocoin.register.Register;
 import com.aslansari.hypocoin.register.RegisterViewModel;
 import com.aslansari.hypocoin.register.dto.RegisterInput;
+import com.aslansari.hypocoin.register.exception.PasswordMismatchException;
+import com.aslansari.hypocoin.register.exception.UserAlreadyExistsException;
 import com.aslansari.hypocoin.viewmodel.DataStatus;
 import com.aslansari.hypocoin.viewmodel.Resource;
 import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel;
+import com.google.android.material.snackbar.Snackbar;
 import com.jakewharton.rxbinding4.view.RxView;
+import com.jakewharton.rxbinding4.view.RxViewGroup;
+import com.jakewharton.rxbinding4.widget.RxTextView;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
@@ -47,6 +55,7 @@ public class RegisterFragment extends Fragment {
     private EditText etPasswordAgain;
     private Button buttonRegister;
     private ProgressBar progressRegister;
+    private CoordinatorLayout placeSnackbar;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -86,6 +95,7 @@ public class RegisterFragment extends Fragment {
         etAccountId = view.findViewById(R.id.etAccountId);
         etPassword = view.findViewById(R.id.etPassword);
         etPasswordAgain = view.findViewById(R.id.etPasswordAgain);
+        placeSnackbar = view.findViewById(R.id.coordinator);
         return view;
     }
 
@@ -103,8 +113,10 @@ public class RegisterFragment extends Fragment {
                 .flatMap(registerInputResource -> {
                     if (DataStatus.COMPLETE == registerInputResource.getStatus()) {
                         return registerViewModel.register(registerInputResource.getValue());
+                    } else if (registerInputResource.isLoading()) {
+                        return Observable.just(Resource.loading(((Register) null)));
                     } else {
-                        return Observable.just(Resource.loading(new Register()));
+                        return Observable.just(Resource.error(((Register) null), registerInputResource.getThrowable()));
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -119,7 +131,14 @@ public class RegisterFragment extends Fragment {
                                 userProfileViewModel.register();
                                 break;
                             case ERROR:
-                                Toast.makeText(getContext(), resource.getThrowable().getMessage(), Toast.LENGTH_LONG).show();
+                                if (resource.getThrowable().getCause() instanceof UserAlreadyExistsException) {
+                                    etAccountId.setError(getString(R.string.user_exists));
+                                } else if (resource.getThrowable().getCause() instanceof PasswordMismatchException) {
+                                    etPassword.setError(getString(R.string.password_mismatch));
+                                    etPasswordAgain.setError(getString(R.string.password_mismatch));
+                                } else {
+                                    Snackbar.make(placeSnackbar, Objects.requireNonNull(resource.getThrowable().getMessage()), Snackbar.LENGTH_SHORT).show();
+                                }
                                 break;
                         }
                     }
@@ -135,6 +154,22 @@ public class RegisterFragment extends Fragment {
                     public void onComplete() {
                     }
                 })
+        );
+
+        disposables.add(RxView.focusChanges(etPassword).skipInitialValue()
+                .mergeWith(RxView.focusChanges(etPasswordAgain).skipInitialValue())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(focused -> {
+                    if (focused) {
+                        if (etPassword.getError() != null) {
+                            etPassword.setText(null);
+                            etPassword.setError(null);
+                            etPasswordAgain.setText(null);
+                            etPasswordAgain.setError(null);
+                        }
+                    }
+                })
+                .subscribe()
         );
     }
 

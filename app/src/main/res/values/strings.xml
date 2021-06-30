@@ -14,4 +14,6 @@
     <string name="login_title">LOGIN</string>
     <string name="register">REGISTER</string>
     <string name="no_account_register"><u>I don\'t have an account, register</u></string>
+    <string name="password_mismatch">Passwords do not match</string>
+    <string name="user_exists">User already exists</string>
 </resources>

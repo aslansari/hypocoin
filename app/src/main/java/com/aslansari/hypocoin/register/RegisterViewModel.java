@@ -3,8 +3,10 @@ package com.aslansari.hypocoin.register;
 import com.aslansari.hypocoin.register.dto.RegisterInput;
 import com.aslansari.hypocoin.register.exception.PasswordMismatchException;
 import com.aslansari.hypocoin.register.exception.RegisterException;
+import com.aslansari.hypocoin.register.exception.UserAlreadyExistsException;
 import com.aslansari.hypocoin.repository.AccountRepository;
 import com.aslansari.hypocoin.repository.model.Account;
+import com.aslansari.hypocoin.viewmodel.DataStatus;
 import com.aslansari.hypocoin.viewmodel.Resource;
 
 import java.util.concurrent.TimeUnit;
@@ -36,7 +38,15 @@ public class RegisterViewModel {
                     }
                     return Observable.just(Resource.complete(registerInput));
                 })
-                .delay(3, TimeUnit.SECONDS)
+                .map(registerInputResource -> {
+                    if (DataStatus.COMPLETE == registerInputResource.getStatus()) {
+                        if (accountRepository.isAccountExists(registerInputResource.getValue().getUsername())) {
+                            registerInputResource = Resource.error(registerInputResource.getValue(),
+                                    new RegisterException("User already Exists", new UserAlreadyExistsException()));
+                        }
+                    }
+                    return registerInputResource;
+                })
                 ;
     }
 
