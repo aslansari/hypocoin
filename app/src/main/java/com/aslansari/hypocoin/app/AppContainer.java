@@ -14,17 +14,16 @@ import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel;
 
 public final class AppContainer {
 
-    public CoinViewModel coinViewModel;
-    public UserProfileViewModel userProfileViewModel;
-    public RegisterViewModel registerViewModel;
+    public final CoinViewModel coinViewModel;
+    public final UserProfileViewModel userProfileViewModel;
+    public final RegisterViewModel registerViewModel;
     private final CoinDatabase coinDatabase;
     private final CoinAPI coinAPI;
     private final CoinRepository coinRepository;
     private final AccountRepository accountRepository;
 
     public AppContainer(Context context) {
-        CoinDatabase.init(context);
-        coinDatabase = CoinDatabase.getInstance();
+        coinDatabase = CoinDatabase.build(context);
         coinAPI = CoinServiceGenerator.createService(CoinAPI.class, CoinAPI.BASE_URL);
         coinRepository = new CoinRepository(coinDatabase, coinAPI);
         accountRepository = new AccountRepository(coinDatabase.accountDAO());

@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aslansari.hypocoin.R;
@@ -12,6 +13,7 @@ import com.aslansari.hypocoin.repository.model.Currency;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.List;
 import java.util.Locale;
 
 public class CurrencyRecyclerAdapter extends BaseAdapter<Currency> {
@@ -102,5 +104,11 @@ public class CurrencyRecyclerAdapter extends BaseAdapter<Currency> {
             tvCurrencyName.setText(currency.symbol);
             tvCurrencyRatio.setText(AMOUNT_FORMAT.format(currency.metrics.marketData.priceUSD));
         }
+    }
+
+    public void updateList(List<Currency> currencyList) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CurrencyDiffCallback(currencyList, this.items));
+        items = currencyList;
+        diffResult.dispatchUpdatesTo(this);
     }
 }

@@ -29,6 +29,13 @@ public class CoinRepository {
         this.coinAPI = coinAPI;
     }
 
+    public Observable<List<Currency>> getCurrencyList() {
+        return coinAPI.getCurrencyAssets(30, "id,slug,symbol,name,metrics")
+                .subscribeOn(Schedulers.io())
+                .map(this::storeAssets)
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     public Flowable<Currency> getCurrency() {
         if (currency != null) {
             return Flowable.fromIterable(currency);
