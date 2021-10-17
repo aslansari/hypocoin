@@ -12,6 +12,14 @@ HypoCoin is a crypto coin tracking app.
 
 - More intuitive design
 
+## Configurations
+
+Hook scripts are version controlled for this project. Navigate to the project directory and config git hook path with the following command
+
+```bash
+  git config --local core.hooksPath .githooks/ 
+```
+
 ## Acknowledgements
 
 - [Currency API - Messari](https://data.messari.io/)
