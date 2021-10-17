@@ -5,14 +5,18 @@ import com.aslansari.hypocoin.register.RegisterViewModel;
 import com.aslansari.hypocoin.register.dto.RegisterInput;
 import com.aslansari.hypocoin.register.exception.PasswordMismatchException;
 import com.aslansari.hypocoin.register.exception.RegisterException;
+import com.aslansari.hypocoin.repository.AccountRepository;
 import com.aslansari.hypocoin.viewmodel.DataStatus;
 import com.aslansari.hypocoin.viewmodel.Resource;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 public class RegisterUnitTest {
 
@@ -54,8 +58,10 @@ public class RegisterUnitTest {
 
     @Test
     public void same_password_should_not_return_register_error() {
+        AccountRepository accountRepository = Mockito.mock(AccountRepository.class);
         Register register = new Register();
-        RegisterViewModel registerViewModel = new RegisterViewModel(register, null);
+        when(accountRepository.isAccountExists(anyString())).thenReturn(false);
+        RegisterViewModel registerViewModel = new RegisterViewModel(register, accountRepository);
 
         RegisterInput registerInput = new RegisterInput("username", "password", "password");
         Resource<RegisterInput> registerResource = registerViewModel.validate(registerInput).blockingLast();
