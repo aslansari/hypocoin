@@ -24,6 +24,7 @@ import com.aslansari.hypocoin.app.HypoCoinApp;
 import com.aslansari.hypocoin.repository.CoinService;
 import com.aslansari.hypocoin.repository.model.Currency;
 import com.aslansari.hypocoin.ui.adapters.CurrencyRecyclerAdapter;
+import com.aslansari.hypocoin.ui.adapters.MarginItemDecorator;
 import com.aslansari.hypocoin.viewmodel.CoinViewModel;
 
 import java.util.List;
@@ -81,9 +82,9 @@ public class CurrencyFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),
                 RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        DividerItemDecoration dividerItemDecoration =
-                new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
+        int verticalMargin = getResources().getDimensionPixelSize(R.dimen.currency_margin_vertical);
+        int horizontalMargin = getResources().getDimensionPixelSize(R.dimen.currency_margin_horizontal);
+        recyclerView.addItemDecoration(new MarginItemDecorator(verticalMargin, horizontalMargin));
         recyclerView.setAdapter(currencyRecyclerAdapter);
 
         serviceConnection = new ServiceConnection() {
