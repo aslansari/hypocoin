@@ -49,8 +49,6 @@
         android:layout_margin="5dp"
         android:text="@string/login_title"
         android:textAppearance="@style/TextAppearance.Button"
-        android:textColor="@color/black"
-        app:cornerRadius="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etAccountId" />

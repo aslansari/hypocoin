@@ -19,6 +19,7 @@
         android:id="@+id/bottomNavBarMain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?attr/colorSecondaryVariant"
         app:itemIconTint="@drawable/bottom_nav_colors"
         app:itemTextColor="@drawable/bottom_nav_colors"
         app:labelVisibilityMode="unlabeled"
