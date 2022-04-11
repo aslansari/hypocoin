@@ -67,7 +67,7 @@ public class CoinServiceGenerator {
         Cache cache = null;
         // Install an HTTP cache in the application cache directory.
         try {
-            File cacheDir = new File(HypoCoinApp.getInstance().getCacheDir(), "apiResponses");
+            File cacheDir = new File(HypoCoinApp.Companion.getInstance().getCacheDir(), "apiResponses");
             cache = new Cache(cacheDir, DISK_CACHE_SIZE);
         } catch (Exception e) {
             e.printStackTrace();
