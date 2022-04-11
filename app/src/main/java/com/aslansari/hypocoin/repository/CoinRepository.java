@@ -50,7 +50,7 @@ public class CoinRepository {
     }
 
     private List<Currency> storeAssets(Asset<Currency> currencyAsset) {
-        currency = currencyAsset.assets;
-        return currencyAsset.assets;
+        currency = currencyAsset.getAssets();
+        return currencyAsset.getAssets();
     }
 }

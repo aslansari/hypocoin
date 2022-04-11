@@ -95,7 +95,7 @@ public class AccountFragment extends Fragment {
 
                         @Override
                         public void onSuccess(@NonNull Account account) {
-                            tvId.setText(account.id);
+                            tvId.setText(account.getId());
                             double balance = ((double) account.getBalance()) / 100;
                             tvBalance.setText(UserProfileViewModel.AMOUNT_FORMAT.format(balance));
                         }

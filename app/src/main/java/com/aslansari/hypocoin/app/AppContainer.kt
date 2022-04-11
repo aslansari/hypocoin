@@ -11,7 +11,7 @@ import com.aslansari.hypocoin.repository.CoinRepository
 import com.aslansari.hypocoin.repository.AccountRepository
 import com.aslansari.hypocoin.repository.restapi.CoinServiceGenerator
 
-class AppContainer(context: Context?) {
+class AppContainer(context: Context) {
     @JvmField
     val coinViewModel: CoinViewModel
     @JvmField
@@ -24,7 +24,7 @@ class AppContainer(context: Context?) {
     private val accountRepository: AccountRepository
 
     init {
-        coinDatabase = CoinDatabase.build(context)
+        coinDatabase = CoinDatabase.getDatabase(context)
         coinAPI = CoinServiceGenerator.createService(CoinAPI::class.java, CoinAPI.BASE_URL)
         coinRepository = CoinRepository(coinDatabase, coinAPI)
         accountRepository = AccountRepository(coinDatabase.accountDAO())
