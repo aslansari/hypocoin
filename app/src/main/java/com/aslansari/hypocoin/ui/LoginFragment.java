@@ -90,13 +90,13 @@ public class LoginFragment extends Fragment {
                 .subscribeWith(new DisposableObserver<LoginUIModel>() {
                     @Override
                     public void onNext(@io.reactivex.rxjava3.annotations.NonNull LoginUIModel uiModel) {
-                        buttonLogin.setEnabled(!uiModel.isLoading);
-                        progressLogin.setVisibility(uiModel.isLoading ? View.VISIBLE : View.GONE);
-                        if (uiModel.isFailed) {
+                        buttonLogin.setEnabled(!uiModel.isLoading());
+                        progressLogin.setVisibility(uiModel.isLoading() ? View.VISIBLE : View.GONE);
+                        if (uiModel.isFailed()) {
                             // TODO set a proper error message
                             etAccountId.setError("NOT FOUND");
                         }
-                        if (uiModel.isComplete) {
+                        if (uiModel.isComplete()) {
                             userProfileViewModel.login();
                         }
                     }
