@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Asset<T>(
     @SerializedName(value = "status")
-    var status: Status? = null,
+    var status: Status,
     @SerializedName(value = "data")
-    var assets: List<T>? = null
+    var assets: List<T>
 )

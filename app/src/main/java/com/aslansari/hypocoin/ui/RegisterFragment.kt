@@ -85,12 +85,12 @@ class RegisterFragment : Fragment() {
             }
             .observeOn(Schedulers.io())
             .flatMap { registerInput: RegisterInput? ->
-                registerViewModel!!.validate(registerInput)
+                registerViewModel!!.validate(registerInput!!)
                     .startWithItem(loading(null))
             }
             .flatMap { registerInputResource: Resource<RegisterInput> ->
                 if (DataStatus.COMPLETE === registerInputResource.status) {
-                    return@flatMap registerViewModel!!.register(registerInputResource.value)
+                    return@flatMap registerViewModel!!.register(registerInputResource.value!!)
                 } else if (registerInputResource.isLoading) {
                     return@flatMap Observable.just(loading(
                         null as Register?))
@@ -100,8 +100,8 @@ class RegisterFragment : Fragment() {
                 }
             }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribeWith(object : DisposableObserver<Resource<Register?>?>() {
-                override fun onNext(resource: Resource<Register?>?) {
+            .subscribeWith(object : DisposableObserver<Resource<out Register?>?>() {
+                override fun onNext(resource: Resource<out Register?>?) {
                     buttonRegister!!.isEnabled = DataStatus.LOADING !== resource!!.status
                     progressRegister!!.visibility =
                         if (resource!!.isLoading) View.VISIBLE else View.GONE

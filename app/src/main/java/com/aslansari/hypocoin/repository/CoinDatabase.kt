@@ -11,8 +11,8 @@ import com.aslansari.hypocoin.repository.model.CurrencyDAO
 
 @Database(entities = [Currency::class, Account::class], version = 1)
 abstract class CoinDatabase : RoomDatabase() {
-    abstract fun currencyDAO(): CurrencyDAO?
-    abstract fun accountDAO(): AccountDAO?
+    abstract fun currencyDAO(): CurrencyDAO
+    abstract fun accountDAO(): AccountDAO
 
     companion object {
         @Volatile

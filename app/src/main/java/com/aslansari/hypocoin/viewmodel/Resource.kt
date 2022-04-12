@@ -2,7 +2,7 @@ package com.aslansari.hypocoin.viewmodel
 
 class Resource<T> private constructor(
     val status: DataStatus,
-    val value: T,
+    val value: T?,
     val throwable: Throwable?
 ) {
     val isLoading: Boolean
@@ -15,7 +15,7 @@ class Resource<T> private constructor(
         }
 
         @JvmStatic
-        fun <T> loading(t: T): Resource<T> {
+        fun <T> loading(t: T?): Resource<T> {
             return Resource(DataStatus.LOADING, t, null)
         }
 

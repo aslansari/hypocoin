@@ -13,7 +13,7 @@ import io.reactivex.rxjava3.core.Observable
 class CoinViewModel(private val coinRepository: CoinRepository) : ViewModel() {
     private val id: String? = null
     val currencyList: Flowable<Currency>
-        get() = coinRepository.currency
+        get() = coinRepository.getCurrency()
     val asyncCurrencyList: Observable<List<Currency>>
         get() = coinRepository.currencyList
 }
