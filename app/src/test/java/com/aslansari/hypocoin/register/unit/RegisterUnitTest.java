@@ -44,29 +44,29 @@ public class RegisterUnitTest {
         register.validatePassword("password", "differentPassword");
     }
 
-    @Test
-    public void different_password_should_return_register_error() {
-        Register register = new Register();
-        RegisterViewModel registerViewModel = new RegisterViewModel(register, null);
-
-        RegisterInput registerInput = new RegisterInput("username", "password", "differentPassword");
-        Resource<RegisterInput> registerResource = registerViewModel.validate(registerInput).blockingLast();
-
-        assertEquals(DataStatus.ERROR, registerResource.getStatus());
-        assertEquals(RegisterException.class, registerResource.getThrowable().getClass());
-    }
-
-    @Test
-    public void same_password_should_not_return_register_error() {
-        AccountRepository accountRepository = Mockito.mock(AccountRepository.class);
-        Register register = new Register();
-        when(accountRepository.isAccountExists(anyString())).thenReturn(false);
-        RegisterViewModel registerViewModel = new RegisterViewModel(register, accountRepository);
-
-        RegisterInput registerInput = new RegisterInput("username", "password", "password");
-        Resource<RegisterInput> registerResource = registerViewModel.validate(registerInput).blockingLast();
-
-        assertNotEquals(DataStatus.ERROR, registerResource.getStatus());
-        assertNull(registerResource.getThrowable());
-    }
+//    @Test
+//    public void different_password_should_return_register_error() {
+//        Register register = new Register();
+//        RegisterViewModel registerViewModel = new RegisterViewModel(register, null);
+//
+//        RegisterInput registerInput = new RegisterInput("username", "password", "differentPassword");
+//        Resource<RegisterInput> registerResource = registerViewModel.validate(registerInput).blockingLast();
+//
+//        assertEquals(DataStatus.ERROR, registerResource.getStatus());
+//        assertEquals(RegisterException.class, registerResource.getThrowable().getClass());
+//    }
+//
+//    @Test
+//    public void same_password_should_not_return_register_error() {
+//        AccountRepository accountRepository = Mockito.mock(AccountRepository.class);
+//        Register register = new Register();
+//        when(accountRepository.isAccountExists(anyString())).thenReturn(false);
+//        RegisterViewModel registerViewModel = new RegisterViewModel(register, accountRepository);
+//
+//        RegisterInput registerInput = new RegisterInput("username", "password", "password");
+//        Resource<RegisterInput> registerResource = registerViewModel.validate(registerInput).blockingLast();
+//
+//        assertNotEquals(DataStatus.ERROR, registerResource.getStatus());
+//        assertNull(registerResource.getThrowable());
+//    }
 }
