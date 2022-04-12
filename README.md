@@ -1,4 +1,6 @@
 
+![Tests and Lint](https://github.com/aslansari/hypocoin/actions/workflows/testandlint.yml/badge.svg) 
+
 # HypoCoin
 
 HypoCoin is a crypto coin tracking app.
