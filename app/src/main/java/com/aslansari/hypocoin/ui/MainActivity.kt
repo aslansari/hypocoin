@@ -2,17 +2,20 @@ package com.aslansari.hypocoin.ui
 
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.viewModels
 import com.aslansari.hypocoin.R
-import com.aslansari.hypocoin.app.HypoCoinApp
 import com.aslansari.hypocoin.viewmodel.account.UserProfileAction
+import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.observers.DisposableObserver
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
+    private val userProfileViewModel: UserProfileViewModel by viewModels(factoryProducer = {
+        viewModelCompositionRoot.viewModelFactory
+    })
     private var bottomNavigationView: BottomNavigationView? = null
     private var disposables: CompositeDisposable? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,7 +23,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         disposables = CompositeDisposable()
         bottomNavigationView = findViewById(R.id.bottomNavBarMain)
-        val userProfileViewModel = (application as HypoCoinApp).appContainer!!.userProfileViewModel
         val fragmentManager = supportFragmentManager
         bottomNavigationView!!.setOnNavigationItemSelectedListener { item: MenuItem ->
             val fragmentTransaction = fragmentManager.beginTransaction()

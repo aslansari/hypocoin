@@ -8,12 +8,12 @@ import timber.log.Timber
 import timber.log.Timber.DebugTree
 
 class HypoCoinApp : Application() {
-    @JvmField
-    var appContainer: AppContainer? = null
+
+    val appContainer: AppContainer by lazy { AppContainer(this) }
+
     override fun onCreate() {
         super.onCreate()
         instance = this
-        appContainer = AppContainer(this)
         initializeTimber()
     }
 

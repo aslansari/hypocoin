@@ -11,10 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.aslansari.hypocoin.R
-import com.aslansari.hypocoin.app.HypoCoinApp
 import com.aslansari.hypocoin.repository.CoinService
 import com.aslansari.hypocoin.repository.CoinService.LocalBinder
 import com.aslansari.hypocoin.repository.model.Currency
@@ -30,9 +30,11 @@ import timber.log.Timber
  * Use the [CurrencyFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CurrencyFragment : Fragment() {
+class CurrencyFragment : BaseFragment() {
+    private val coinViewModel: CoinViewModel by viewModels(factoryProducer = {
+        viewModelCompositionRoot.viewModelFactory
+    })
     private var progressBar: ProgressBar? = null
-    private var coinViewModel: CoinViewModel? = null
     private var currencyRecyclerAdapter: CurrencyRecyclerAdapter? = null
     private var disposables: CompositeDisposable? = null
     private var coinService: CoinService? = null
@@ -43,7 +45,6 @@ class CurrencyFragment : Fragment() {
         if (arguments != null) {
             // get params if exists
         }
-        coinViewModel = (requireActivity().application as HypoCoinApp).appContainer!!.coinViewModel
         disposables = CompositeDisposable()
     }
 
@@ -94,7 +95,7 @@ class CurrencyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        disposables!!.add(coinViewModel!!.currencyList
+        disposables!!.add(coinViewModel.currencyList
             .subscribeWith(object : DisposableSubscriber<Currency?>() {
                 override fun onStart() {
                     progressBar!!.visibility = View.VISIBLE

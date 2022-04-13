@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.aslansari.hypocoin.R
-import com.aslansari.hypocoin.app.HypoCoinApp
 import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel
 import com.aslansari.hypocoin.viewmodel.login.LoginUIModel
 import com.aslansari.hypocoin.viewmodel.login.LoginUIModel.Companion.complete
@@ -21,8 +21,10 @@ import timber.log.Timber
  * Use the [LoginFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class LoginFragment : Fragment() {
-    private var userProfileViewModel: UserProfileViewModel? = null
+class LoginFragment : BaseFragment() {
+    private val userProfileViewModel: UserProfileViewModel by viewModels(factoryProducer = {
+        viewModelCompositionRoot.viewModelFactory
+    })
     private var disposables: CompositeDisposable? = null
     private var tvId: TextView? = null
     private var tvRegisterRequest: TextView? = null
@@ -35,8 +37,6 @@ class LoginFragment : Fragment() {
             // get arguments if exists
         }
         disposables = CompositeDisposable()
-        userProfileViewModel =
-            (requireActivity().application as HypoCoinApp).appContainer!!.userProfileViewModel
     }
 
     override fun onCreateView(
@@ -56,7 +56,7 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         disposables!!.add(buttonLogin!!.clicks() // TODO: 6/19/2021 process login
-            .map { unit: Unit -> complete() }
+            .map { complete() }
             .subscribeWith(object : DisposableObserver<LoginUIModel?>() {
                 override fun onNext(uiModel: LoginUIModel?) {
                     buttonLogin!!.isEnabled = !uiModel!!.isLoading
@@ -66,7 +66,7 @@ class LoginFragment : Fragment() {
                         etAccountId!!.error = "NOT FOUND"
                     }
                     if (uiModel.isComplete) {
-                        userProfileViewModel!!.login()
+                        userProfileViewModel.login()
                     }
                 }
 
@@ -80,7 +80,7 @@ class LoginFragment : Fragment() {
                 }
             })
         )
-        tvRegisterRequest!!.setOnClickListener { v: View? -> userProfileViewModel!!.registerRequest() }
+        tvRegisterRequest!!.setOnClickListener { userProfileViewModel.registerRequest() }
     }
 
     override fun onDestroy() {

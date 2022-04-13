@@ -10,6 +10,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.app.HypoCoinApp
 import com.aslansari.hypocoin.register.Register
@@ -38,9 +39,14 @@ import java.util.*
  * Use the [RegisterFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class RegisterFragment : Fragment() {
-    private var userProfileViewModel: UserProfileViewModel? = null
-    private var registerViewModel: RegisterViewModel? = null
+class RegisterFragment : BaseFragment() {
+
+    private val userProfileViewModel: UserProfileViewModel by viewModels(factoryProducer = {
+        viewModelCompositionRoot.viewModelFactory
+    })
+    private val registerViewModel: RegisterViewModel by viewModels(factoryProducer = {
+        viewModelCompositionRoot.viewModelFactory
+    })
     private var disposables: CompositeDisposable? = null
     private var etAccountId: EditText? = null
     private var etPassword: EditText? = null
@@ -53,10 +59,6 @@ class RegisterFragment : Fragment() {
         if (arguments != null) {
         }
         disposables = CompositeDisposable()
-        userProfileViewModel =
-            (requireContext().applicationContext as HypoCoinApp).appContainer!!.userProfileViewModel
-        registerViewModel =
-            (requireContext().applicationContext as HypoCoinApp).appContainer!!.registerViewModel
     }
 
     override fun onCreateView(
@@ -77,7 +79,7 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         disposables!!.add(buttonRegister!!.clicks()
-            .map { unit: Unit ->
+            .map {
                 RegisterInput(
                     etAccountId!!.text.toString(),
                     etPassword!!.text.toString(),
@@ -85,12 +87,12 @@ class RegisterFragment : Fragment() {
             }
             .observeOn(Schedulers.io())
             .flatMap { registerInput: RegisterInput? ->
-                registerViewModel!!.validate(registerInput!!)
+                registerViewModel.validate(registerInput!!)
                     .startWithItem(loading(null))
             }
             .flatMap { registerInputResource: Resource<RegisterInput> ->
                 if (DataStatus.COMPLETE === registerInputResource.status) {
-                    return@flatMap registerViewModel!!.register(registerInputResource.value!!)
+                    return@flatMap registerViewModel.register(registerInputResource.value!!)
                 } else if (registerInputResource.isLoading) {
                     return@flatMap Observable.just(loading(
                         null as Register?))
@@ -110,7 +112,7 @@ class RegisterFragment : Fragment() {
                             Toast.makeText(context,
                                 "Account registered successfully",
                                 Toast.LENGTH_LONG).show()
-                            userProfileViewModel!!.register()
+                            userProfileViewModel.register()
                         }
                         DataStatus.ERROR -> if (resource.throwable!!.cause is UserAlreadyExistsException) {
                             etAccountId!!.error = getString(R.string.user_exists)
@@ -123,6 +125,7 @@ class RegisterFragment : Fragment() {
                                     it, Snackbar.LENGTH_SHORT).show()
                             }
                         }
+                        else -> {}
                     }
                 }
 

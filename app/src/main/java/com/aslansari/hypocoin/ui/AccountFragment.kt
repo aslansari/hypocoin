@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.app.HypoCoinApp
 import com.aslansari.hypocoin.repository.model.Account
@@ -27,8 +28,11 @@ import timber.log.Timber
  * Use the [AccountFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AccountFragment : Fragment() {
-    private var userProfileViewModel: UserProfileViewModel? = null
+class AccountFragment : BaseFragment() {
+    private val userProfileViewModel: UserProfileViewModel by viewModels(factoryProducer = {
+        viewModelCompositionRoot.viewModelFactory
+    })
+
     private var disposables: CompositeDisposable? = null
     private var tvId: TextView? = null
     private var tvBalance: TextView? = null
@@ -39,8 +43,6 @@ class AccountFragment : Fragment() {
             // get arguments if exists
         }
         disposables = CompositeDisposable()
-        userProfileViewModel =
-            (requireActivity().application as HypoCoinApp).appContainer!!.userProfileViewModel
         // TODO set id
         // TODO record to shard preference when an id is added
 //        if (account != null) {
@@ -62,8 +64,8 @@ class AccountFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (userProfileViewModel!!.id != null && !userProfileViewModel!!.id!!.isEmpty()) {
-            disposables!!.add(userProfileViewModel!!.account
+        if (userProfileViewModel.id != null && !userProfileViewModel.id!!.isEmpty()) {
+            disposables!!.add(userProfileViewModel.account
                 .subscribeWith(object : DisposableSingleObserver<Account?>() {
                     override fun onSuccess(account: Account?) {
                         tvId!!.text = account!!.id

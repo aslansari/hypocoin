@@ -1,10 +1,8 @@
 package com.aslansari.hypocoin.repository
 
-import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
-import com.aslansari.hypocoin.app.HypoCoinApp
 import com.aslansari.hypocoin.repository.model.Currency
 import com.aslansari.hypocoin.viewmodel.CoinViewModel
 import io.reactivex.rxjava3.core.BackpressureStrategy
@@ -14,9 +12,11 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject
 import timber.log.Timber
 import java.util.*
 
-class CoinService : Service() {
+class CoinService : BaseService() {
     private var localBinder: LocalBinder? = null
-    private var coinViewModel: CoinViewModel? = null
+    private val coinViewModel: CoinViewModel by lazy {
+        viewModelCompositionRoot.viewModelFactory.create(CoinViewModel::class.java)
+    }
     private var behaviorSubject: BehaviorSubject<List<Currency>>? = null
     private var timer: Timer? = null
     private var disposables: CompositeDisposable? = null
@@ -29,7 +29,6 @@ class CoinService : Service() {
     override fun onCreate() {
         super.onCreate()
         localBinder = LocalBinder()
-        coinViewModel = (application as HypoCoinApp).appContainer!!.coinViewModel
         behaviorSubject = BehaviorSubject.createDefault(ArrayList())
         disposables = CompositeDisposable()
     }
@@ -42,7 +41,7 @@ class CoinService : Service() {
         timer = Timer()
         timer!!.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
-                disposables!!.add(coinViewModel!!.asyncCurrencyList
+                disposables!!.add(coinViewModel.asyncCurrencyList
                     .doOnNext { t: List<Currency> -> behaviorSubject!!.onNext(t) }
                     .doOnError { t: Throwable? -> Timber.e(t) }
                     .subscribe())

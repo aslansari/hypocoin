@@ -1,5 +1,6 @@
 package com.aslansari.hypocoin.register
 
+import androidx.lifecycle.ViewModel
 import com.aslansari.hypocoin.register.dto.RegisterInput
 import com.aslansari.hypocoin.register.exception.PasswordMismatchException
 import com.aslansari.hypocoin.register.exception.RegisterException
@@ -18,7 +19,9 @@ import io.reactivex.rxjava3.core.Observable
 class RegisterViewModel(
     private val register: Register,
     private val accountRepository: AccountRepository
-) {
+): ViewModel() {
+
+
     fun validate(registerInput: RegisterInput): Observable<Resource<RegisterInput>> {
         return Observable.just(registerInput)
             .flatMap { (username, password, passwordRepeat) ->
