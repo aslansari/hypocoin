@@ -9,12 +9,12 @@ import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.aslansari.hypocoin.R
+import com.aslansari.hypocoin.databinding.FragmentCurrencyBinding
 import com.aslansari.hypocoin.repository.CoinService
 import com.aslansari.hypocoin.repository.CoinService.LocalBinder
 import com.aslansari.hypocoin.repository.model.Currency
@@ -23,7 +23,6 @@ import com.aslansari.hypocoin.ui.adapters.MarginItemDecorator
 import com.aslansari.hypocoin.viewmodel.CoinViewModel
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.subscribers.DisposableSubscriber
-import timber.log.Timber
 
 /**
  * A simple [Fragment] subclass.
@@ -34,12 +33,12 @@ class CurrencyFragment : BaseFragment() {
     private val coinViewModel: CoinViewModel by viewModels(factoryProducer = {
         viewModelCompositionRoot.viewModelFactory
     })
-    private var progressBar: ProgressBar? = null
     private var currencyRecyclerAdapter: CurrencyRecyclerAdapter? = null
     private var disposables: CompositeDisposable? = null
     private var coinService: CoinService? = null
     private var isBoundCoinService = false
     private var serviceConnection: ServiceConnection? = null
+    private var binding: FragmentCurrencyBinding? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
@@ -52,25 +51,35 @@ class CurrencyFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_currency, container, false)
-        val recyclerView: RecyclerView = view.findViewById(R.id.recyclerCoin)
-        progressBar = view.findViewById(R.id.progressBar)
+        binding = FragmentCurrencyBinding.inflate(inflater, container, false)
         currencyRecyclerAdapter = CurrencyRecyclerAdapter()
-        val layoutManager = LinearLayoutManager(activity,
-            RecyclerView.VERTICAL, false)
-        recyclerView.layoutManager = layoutManager
-        val verticalMargin = resources.getDimensionPixelSize(R.dimen.currency_margin_vertical)
-        val horizontalMargin = resources.getDimensionPixelSize(R.dimen.currency_margin_horizontal)
-        recyclerView.addItemDecoration(MarginItemDecorator(verticalMargin, horizontalMargin))
-        recyclerView.adapter = currencyRecyclerAdapter
+        return binding?.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding?.apply {
+            recyclerCoin.layoutManager =
+                LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
+            val verticalMargin = resources.getDimensionPixelSize(R.dimen.currency_margin_vertical)
+            val horizontalMargin = resources.getDimensionPixelSize(R.dimen.currency_margin_horizontal)
+            recyclerCoin.addItemDecoration(MarginItemDecorator(verticalMargin, horizontalMargin))
+            recyclerCoin.adapter = currencyRecyclerAdapter
+            vm = coinViewModel
+            lifecycleOwner = viewLifecycleOwner
+        }
+        coinViewModel.currencyList.observe(viewLifecycleOwner) { currencyList ->
+            currencyRecyclerAdapter?.updateList(currencyList)
+        }
+        coinViewModel.getCurrencyList()
+        // TODO: update ui with flowable instead of service 
         serviceConnection = object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName, service: IBinder) {
                 coinService = (service as LocalBinder).service
                 disposables!!.add(coinService!!.asyncCurrencies
                     .subscribeWith(object : DisposableSubscriber<List<Currency?>?>() {
                         override fun onNext(currencyList: List<Currency?>?) {
-                            currencyRecyclerAdapter!!.updateList(currencyList as List<Currency>)
+                            // currencyRecyclerAdapter?.updateList(currencyList as List<Currency>)
                         }
 
                         override fun onError(t: Throwable) {}
@@ -84,37 +93,9 @@ class CurrencyFragment : BaseFragment() {
                 coinService = null
             }
         }
-        val context: Context? = activity
-        if (context != null) {
-            isBoundCoinService = context.bindService(Intent(activity, CoinService::class.java),
-                serviceConnection as ServiceConnection,
-                Context.BIND_AUTO_CREATE)
-        }
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        disposables!!.add(coinViewModel.currencyList
-            .subscribeWith(object : DisposableSubscriber<Currency?>() {
-                override fun onStart() {
-                    progressBar!!.visibility = View.VISIBLE
-                    super.onStart()
-                }
-
-                override fun onNext(currency: Currency?) {
-                    progressBar!!.visibility = View.GONE
-                    currencyRecyclerAdapter!!.add(currency)
-                }
-
-                override fun onError(e: Throwable) {
-                    Timber.e(e)
-                }
-
-                override fun onComplete() {
-                    Timber.d("onComplete")
-                }
-            }))
+        isBoundCoinService = requireActivity().bindService(Intent(activity, CoinService::class.java),
+            serviceConnection as ServiceConnection,
+            Context.BIND_AUTO_CREATE)
     }
 
     override fun onStart() {
@@ -133,9 +114,8 @@ class CurrencyFragment : BaseFragment() {
         super.onDestroy()
         disposables!!.dispose()
         currencyRecyclerAdapter = null
-        val context: Context? = activity
-        if (context != null && isBoundCoinService) {
-            context.unbindService(serviceConnection!!)
+        if (activity != null && isBoundCoinService) {
+            requireActivity().unbindService(serviceConnection!!)
         }
     }
 
@@ -145,6 +125,7 @@ class CurrencyFragment : BaseFragment() {
             val fragment = CurrencyFragment()
             val args = Bundle()
             // add params if necessary
+            // TODO: use navigation safe args
             fragment.arguments = args
             return fragment
         }
