@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/currency_fragment">
+
+    <fragment
+        android:id="@+id/currency_fragment"
+        android:name="com.aslansari.hypocoin.ui.CurrencyFragment"
+        android:label="Currencies"
+        tools:layout="@layout/fragment_currency">
+    </fragment>
+    <fragment
+        android:id="@+id/account_fragment"
+        android:name="com.aslansari.hypocoin.ui.AccountFragment"
+        android:label="Currencies"
+        tools:layout="@layout/fragment_account">
+    </fragment>
+    <fragment
+        android:id="@+id/register_fragment"
+        android:name="com.aslansari.hypocoin.ui.RegisterFragment"
+        android:label="Currencies"
+        tools:layout="@layout/fragment_register">
+    </fragment>
+    <fragment
+        android:id="@+id/login_fragment"
+        android:name="com.aslansari.hypocoin.ui.LoginFragment"
+        android:label="Currencies"
+        tools:layout="@layout/fragment_login">
+    </fragment>
+</navigation>

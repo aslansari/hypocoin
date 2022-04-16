@@ -3,7 +3,11 @@ package com.aslansari.hypocoin.ui
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.aslansari.hypocoin.R
+import com.aslansari.hypocoin.databinding.ActivityMainBinding
 import com.aslansari.hypocoin.viewmodel.account.UserProfileAction
 import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -13,62 +17,12 @@ import io.reactivex.rxjava3.observers.DisposableObserver
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class MainActivity : BaseActivity() {
-    private val userProfileViewModel: UserProfileViewModel by viewModels(factoryProducer = {
-        viewModelCompositionRoot.viewModelFactory
-    })
-    private var bottomNavigationView: BottomNavigationView? = null
-    private var disposables: CompositeDisposable? = null
+    private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        disposables = CompositeDisposable()
-        bottomNavigationView = findViewById(R.id.bottomNavBarMain)
-        val fragmentManager = supportFragmentManager
-        bottomNavigationView!!.setOnNavigationItemSelectedListener { item: MenuItem ->
-            val fragmentTransaction = fragmentManager.beginTransaction()
-            when (item.itemId) {
-                R.id.nav_home -> {}
-                R.id.nav_currency -> fragmentTransaction.replace(R.id.frameLayout,
-                    CurrencyFragment.newInstance()).commit()
-                R.id.nav_account -> if (userProfileViewModel.isLoggedIn) {
-                    fragmentTransaction.replace(R.id.frameLayout, AccountFragment.newInstance())
-                        .commit()
-                } else {
-                    fragmentTransaction.replace(R.id.frameLayout, LoginFragment.newInstance())
-                        .commit()
-                }
-            }
-            true
-        }
-        bottomNavigationView!!.selectedItemId = R.id.nav_home
-        disposables!!.add(userProfileViewModel.actionPublishSubject
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeWith(object : DisposableObserver<UserProfileAction?>() {
-                override fun onNext(userProfileAction: UserProfileAction?) {
-                    if (UserProfileAction.LOGIN === userProfileAction) {
-                        fragmentManager.beginTransaction()
-                            .replace(R.id.frameLayout, AccountFragment.newInstance()).commit()
-                    } else if (UserProfileAction.REGISTER_REQUEST === userProfileAction) {
-                        fragmentManager.beginTransaction()
-                            .replace(R.id.frameLayout, RegisterFragment.newInstance()).commit()
-                    } else if (UserProfileAction.REGISTER === userProfileAction) {
-                        fragmentManager.beginTransaction()
-                            .replace(R.id.frameLayout, LoginFragment.newInstance()).commit()
-                    }
-                }
-
-                override fun onError(e: Throwable) {
-                    // TODO: 6/19/2021 snackbar something went wrong
-                }
-
-                override fun onComplete() {}
-            })
-        )
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        disposables!!.dispose()
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        val navController = findNavController(R.id.nav_host_fragment)
+        NavigationUI.setupWithNavController(binding.bottomNavBarMain, navController)
     }
 }

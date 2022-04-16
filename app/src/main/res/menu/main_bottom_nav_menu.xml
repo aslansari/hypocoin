@@ -15,12 +15,12 @@
         android:title="@string/nav_bar_settings"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/nav_currency"
+        android:id="@+id/currency_fragment"
         android:icon="@drawable/ic_timeline"
         android:title="@string/nav_bar_timeline"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/nav_account"
+        android:id="@+id/login_fragment"
         android:icon="@drawable/ic_outline_person"
         android:title="@string/nav_bar_account"
         app:showAsAction="ifRoom" />
