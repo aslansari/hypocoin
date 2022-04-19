@@ -4,13 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.aslansari.hypocoin.R
-import com.aslansari.hypocoin.app.HypoCoinApp
+import com.aslansari.hypocoin.databinding.FragmentAccountBinding
 import com.aslansari.hypocoin.repository.model.Account
 import com.aslansari.hypocoin.viewmodel.account.AccountUIModel
 import com.aslansari.hypocoin.viewmodel.account.AccountUIModel.Companion.idle
@@ -32,11 +29,8 @@ class AccountFragment : BaseFragment() {
     private val userProfileViewModel: UserProfileViewModel by viewModels(factoryProducer = {
         viewModelCompositionRoot.viewModelFactory
     })
-
+    private lateinit var binding: FragmentAccountBinding
     private var disposables: CompositeDisposable? = null
-    private var tvId: TextView? = null
-    private var tvBalance: TextView? = null
-    private val buttonLogin: Button? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
@@ -54,23 +48,21 @@ class AccountFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_account, container, false)
-        tvId = view.findViewById(R.id.tvId)
-        tvBalance = view.findViewById(R.id.tvBalance)
-        return view
+        binding = FragmentAccountBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (userProfileViewModel.id != null && !userProfileViewModel.id!!.isEmpty()) {
+        if (userProfileViewModel.id?.isNotEmpty() == true) {
             disposables!!.add(userProfileViewModel.account
                 .subscribeWith(object : DisposableSingleObserver<Account?>() {
                     override fun onSuccess(account: Account?) {
-                        tvId!!.text = account!!.id
+                        binding.tvId.text = account!!.id
                         val balance = account.balance.toDouble() / 100
-                        tvBalance!!.text = UserProfileViewModel.AMOUNT_FORMAT.format(balance)
+                        binding.tvBalance.text = UserProfileViewModel.AMOUNT_FORMAT.format(balance)
                     }
 
                     override fun onError(t: Throwable) {
