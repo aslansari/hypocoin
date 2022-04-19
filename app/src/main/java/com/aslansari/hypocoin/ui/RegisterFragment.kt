@@ -12,7 +12,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.aslansari.hypocoin.R
-import com.aslansari.hypocoin.app.HypoCoinApp
+import com.aslansari.hypocoin.databinding.FragmentRegisterBinding
 import com.aslansari.hypocoin.register.Register
 import com.aslansari.hypocoin.register.RegisterViewModel
 import com.aslansari.hypocoin.register.dto.RegisterInput
@@ -32,7 +32,6 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.observers.DisposableObserver
 import io.reactivex.rxjava3.schedulers.Schedulers
 import timber.log.Timber
-import java.util.*
 
 /**
  * A simple [Fragment] subclass.
@@ -47,13 +46,8 @@ class RegisterFragment : BaseFragment() {
     private val registerViewModel: RegisterViewModel by viewModels(factoryProducer = {
         viewModelCompositionRoot.viewModelFactory
     })
+    private lateinit var binding: FragmentRegisterBinding
     private var disposables: CompositeDisposable? = null
-    private var etAccountId: EditText? = null
-    private var etPassword: EditText? = null
-    private var etPasswordAgain: EditText? = null
-    private var buttonRegister: Button? = null
-    private var progressRegister: ProgressBar? = null
-    private var placeSnackbar: CoordinatorLayout? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
@@ -64,26 +58,20 @@ class RegisterFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_register, container, false)
-        buttonRegister = view.findViewById(R.id.buttonRegister)
-        progressRegister = view.findViewById(R.id.progressLogin)
-        etAccountId = view.findViewById(R.id.etAccountId)
-        etPassword = view.findViewById(R.id.etPassword)
-        etPasswordAgain = view.findViewById(R.id.etPasswordAgain)
-        placeSnackbar = view.findViewById(R.id.coordinator)
-        return view
+        binding = FragmentRegisterBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        disposables!!.add(buttonRegister!!.clicks()
+        disposables!!.add(binding.buttonRegister.clicks()
             .map {
                 RegisterInput(
-                    etAccountId!!.text.toString(),
-                    etPassword!!.text.toString(),
-                    etPasswordAgain!!.text.toString())
+                    binding.etAccountId.text.toString(),
+                    binding.etPassword.text.toString(),
+                    binding.etPasswordAgain.text.toString())
             }
             .observeOn(Schedulers.io())
             .flatMap { registerInput: RegisterInput? ->
@@ -104,8 +92,8 @@ class RegisterFragment : BaseFragment() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeWith(object : DisposableObserver<Resource<out Register?>?>() {
                 override fun onNext(resource: Resource<out Register?>?) {
-                    buttonRegister!!.isEnabled = DataStatus.LOADING !== resource!!.status
-                    progressRegister!!.visibility =
+                    binding.buttonRegister.isEnabled = DataStatus.LOADING !== resource!!.status
+                    binding.progressRegister.visibility =
                         if (resource!!.isLoading) View.VISIBLE else View.GONE
                     when (resource.status) {
                         DataStatus.COMPLETE -> {
@@ -115,14 +103,13 @@ class RegisterFragment : BaseFragment() {
                             userProfileViewModel.register()
                         }
                         DataStatus.ERROR -> if (resource.throwable!!.cause is UserAlreadyExistsException) {
-                            etAccountId!!.error = getString(R.string.user_exists)
+                            binding.etAccountId.error = getString(R.string.user_exists)
                         } else if (resource.throwable.cause is PasswordMismatchException) {
-                            etPassword!!.error = getString(R.string.password_mismatch)
-                            etPasswordAgain!!.error = getString(R.string.password_mismatch)
+                            binding.etPassword.error = getString(R.string.password_mismatch)
+                            binding.etPasswordAgain.error = getString(R.string.password_mismatch)
                         } else {
                             resource.throwable.message?.let {
-                                Snackbar.make(placeSnackbar!!,
-                                    it, Snackbar.LENGTH_SHORT).show()
+                                Snackbar.make(binding.coordinator, it, Snackbar.LENGTH_SHORT).show()
                             }
                         }
                         else -> {}
@@ -131,23 +118,23 @@ class RegisterFragment : BaseFragment() {
 
                 override fun onError(throwable: Throwable) {
                     Timber.e(throwable)
-                    progressRegister!!.visibility = View.GONE
+                    binding.progressRegister.visibility = View.GONE
                     Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
                 }
 
                 override fun onComplete() {}
             })
         )
-        disposables!!.add(etPassword!!.focusChanges().skipInitialValue()
-            .mergeWith(etPasswordAgain!!.focusChanges().skipInitialValue())
+        disposables!!.add(binding.etPassword.focusChanges().skipInitialValue()
+            .mergeWith(binding.etPasswordAgain.focusChanges().skipInitialValue())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { focused: Boolean ->
                 if (focused) {
-                    if (etPassword!!.error != null) {
-                        etPassword!!.text = null
-                        etPassword!!.error = null
-                        etPasswordAgain!!.text = null
-                        etPasswordAgain!!.error = null
+                    if (binding.etPassword.error != null) {
+                        binding.etPassword.text = null
+                        binding.etPassword.error = null
+                        binding.etPasswordAgain.text = null
+                        binding.etPasswordAgain.error = null
                     }
                 }
             }
