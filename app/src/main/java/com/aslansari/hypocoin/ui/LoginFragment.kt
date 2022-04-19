@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.aslansari.hypocoin.R
+import com.aslansari.hypocoin.databinding.FragmentLoginBinding
 import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel
 import com.aslansari.hypocoin.viewmodel.login.LoginUIModel
 import com.aslansari.hypocoin.viewmodel.login.LoginUIModel.Companion.complete
@@ -25,12 +25,8 @@ class LoginFragment : BaseFragment() {
     private val userProfileViewModel: UserProfileViewModel by viewModels(factoryProducer = {
         viewModelCompositionRoot.viewModelFactory
     })
+    private lateinit var binding: FragmentLoginBinding
     private var disposables: CompositeDisposable? = null
-    private var tvId: TextView? = null
-    private var tvRegisterRequest: TextView? = null
-    private var etAccountId: EditText? = null
-    private var buttonLogin: Button? = null
-    private var progressLogin: ProgressBar? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
@@ -42,28 +38,23 @@ class LoginFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_login, container, false)
-        tvId = view.findViewById(R.id.tvId)
-        tvRegisterRequest = view.findViewById(R.id.tvRegisterRequest)
-        buttonLogin = view.findViewById(R.id.buttonLogin)
-        progressLogin = view.findViewById(R.id.progressLogin)
-        etAccountId = view.findViewById(R.id.etAccountId)
-        return view
+        binding = FragmentLoginBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        disposables!!.add(buttonLogin!!.clicks() // TODO: 6/19/2021 process login
+        disposables!!.add(binding.buttonLogin.clicks() // TODO: 6/19/2021 process login
             .map { complete() }
             .subscribeWith(object : DisposableObserver<LoginUIModel?>() {
                 override fun onNext(uiModel: LoginUIModel?) {
-                    buttonLogin!!.isEnabled = !uiModel!!.isLoading
-                    progressLogin!!.visibility = if (uiModel.isLoading) View.VISIBLE else View.GONE
+                    binding.buttonLogin.isEnabled = !uiModel!!.isLoading
+                    binding.progressLogin.visibility = if (uiModel.isLoading) View.VISIBLE else View.GONE
                     if (uiModel.isFailed) {
                         // TODO set a proper error message
-                        etAccountId!!.error = "NOT FOUND"
+                        binding.etAccountId.error = "NOT FOUND"
                     }
                     if (uiModel.isComplete) {
                         userProfileViewModel.login()
@@ -80,7 +71,7 @@ class LoginFragment : BaseFragment() {
                 }
             })
         )
-        tvRegisterRequest!!.setOnClickListener { userProfileViewModel.registerRequest() }
+        binding.tvRegisterRequest.setOnClickListener { userProfileViewModel.registerRequest() }
     }
 
     override fun onDestroy() {
