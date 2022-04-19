@@ -13,20 +13,26 @@
     </fragment>
     <fragment
         android:id="@+id/account_fragment"
-        android:name="com.aslansari.hypocoin.ui.AccountFragment"
+        android:name="com.aslansari.hypocoin.account.AccountFragment"
         android:label="Currencies"
         tools:layout="@layout/fragment_account">
     </fragment>
     <fragment
         android:id="@+id/register_fragment"
-        android:name="com.aslansari.hypocoin.ui.RegisterFragment"
+        android:name="com.aslansari.hypocoin.account.RegisterFragment"
         android:label="Currencies"
         tools:layout="@layout/fragment_register">
     </fragment>
     <fragment
         android:id="@+id/login_fragment"
-        android:name="com.aslansari.hypocoin.ui.LoginFragment"
+        android:name="com.aslansari.hypocoin.account.login.ui.LoginFragment"
         android:label="Currencies"
         tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_login_to_register"
+            app:destination="@id/register_fragment" />
+        <action
+            android:id="@+id/action_login_to_account"
+            app:destination="@id/account_fragment" />
     </fragment>
 </navigation>

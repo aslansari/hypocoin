@@ -30,6 +30,9 @@ class LoginFragment : BaseFragment() {
     private val userProfileViewModel: UserProfileViewModel by viewModels(factoryProducer = {
         viewModelCompositionRoot.viewModelFactory
     })
+    private val loginViewModel: LoginViewModel by viewModels {
+        viewModelCompositionRoot.viewModelFactory
+    }
     private lateinit var binding: FragmentLoginBinding
     private var disposables: CompositeDisposable? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,11 +49,15 @@ class LoginFragment : BaseFragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentLoginBinding.inflate(inflater, container, false)
+        binding.setVariable(BR.vm, loginViewModel)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loginViewModel.onRegisterClicked {
+            findNavController().navigate(R.id.action_login_to_register)
+        }
         disposables!!.add(binding.buttonLogin.clicks() // TODO: 6/19/2021 process login
             .map { complete() }
             .subscribeWith(object : DisposableObserver<LoginUIModel?>() {

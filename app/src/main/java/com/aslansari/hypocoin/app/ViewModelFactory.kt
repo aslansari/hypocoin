@@ -2,6 +2,7 @@ package com.aslansari.hypocoin.app
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.aslansari.hypocoin.account.login.LoginViewModel
 import com.aslansari.hypocoin.register.Register
 import com.aslansari.hypocoin.register.RegisterViewModel
 import com.aslansari.hypocoin.repository.AccountRepository
@@ -21,6 +22,7 @@ class ViewModelFactory(
             UserProfileViewModel::class.java -> UserProfileViewModel(accountRepository) as T
             // fixme register dependency
             RegisterViewModel::class.java -> RegisterViewModel(Register(), accountRepository) as T
+            LoginViewModel::class.java -> LoginViewModel() as T
             else -> throw IllegalArgumentException("Wrong class type $modelClass")
         }
     }
