@@ -1,4 +1,4 @@
-package com.aslansari.hypocoin.ui
+package com.aslansari.hypocoin.account
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.aslansari.hypocoin.databinding.FragmentAccountBinding
 import com.aslansari.hypocoin.repository.model.Account
+import com.aslansari.hypocoin.ui.BaseFragment
 import com.aslansari.hypocoin.viewmodel.account.AccountUIModel
 import com.aslansari.hypocoin.viewmodel.account.AccountUIModel.Companion.idle
 import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel

@@ -1,14 +1,10 @@
-package com.aslansari.hypocoin.ui
+package com.aslansari.hypocoin.account
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.aslansari.hypocoin.R
@@ -18,6 +14,7 @@ import com.aslansari.hypocoin.register.RegisterViewModel
 import com.aslansari.hypocoin.register.dto.RegisterInput
 import com.aslansari.hypocoin.register.exception.PasswordMismatchException
 import com.aslansari.hypocoin.register.exception.UserAlreadyExistsException
+import com.aslansari.hypocoin.ui.BaseFragment
 import com.aslansari.hypocoin.viewmodel.DataStatus
 import com.aslansari.hypocoin.viewmodel.Resource
 import com.aslansari.hypocoin.viewmodel.Resource.Companion.error

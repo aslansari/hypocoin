@@ -1,4 +1,4 @@
-package com.aslansari.hypocoin.ui
+package com.aslansari.hypocoin.account.login.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.aslansari.hypocoin.BR
+import com.aslansari.hypocoin.R
+import com.aslansari.hypocoin.account.login.LoginViewModel
 import com.aslansari.hypocoin.databinding.FragmentLoginBinding
+import com.aslansari.hypocoin.ui.BaseFragment
 import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel
 import com.aslansari.hypocoin.viewmodel.login.LoginUIModel
 import com.aslansari.hypocoin.viewmodel.login.LoginUIModel.Companion.complete
@@ -71,7 +76,6 @@ class LoginFragment : BaseFragment() {
                 }
             })
         )
-        binding.tvRegisterRequest.setOnClickListener { userProfileViewModel.registerRequest() }
     }
 
     override fun onDestroy() {
