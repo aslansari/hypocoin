@@ -4,22 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.aslansari.hypocoin.BR
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.account.login.LoginViewModel
 import com.aslansari.hypocoin.databinding.FragmentLoginBinding
 import com.aslansari.hypocoin.ui.BaseFragment
 import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel
 import com.aslansari.hypocoin.viewmodel.login.LoginUIModel
-import com.aslansari.hypocoin.viewmodel.login.LoginUIModel.Companion.complete
-import com.jakewharton.rxbinding4.view.clicks
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.observers.DisposableObserver
-import timber.log.Timber
 
 /**
  * A simple [Fragment] subclass.
@@ -49,40 +43,31 @@ class LoginFragment : BaseFragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentLoginBinding.inflate(inflater, container, false)
-        binding.setVariable(BR.vm, loginViewModel)
+        binding.apply {
+            vm = loginViewModel
+        }
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.apply {
+            lifecycleOwner = viewLifecycleOwner
+        }
         loginViewModel.onRegisterClicked {
             findNavController().navigate(R.id.action_login_to_register)
         }
-        disposables!!.add(binding.buttonLogin.clicks() // TODO: 6/19/2021 process login
-            .map { complete() }
-            .subscribeWith(object : DisposableObserver<LoginUIModel?>() {
-                override fun onNext(uiModel: LoginUIModel?) {
-                    binding.buttonLogin.isEnabled = !uiModel!!.isLoading
-                    binding.progressLogin.visibility = if (uiModel.isLoading) View.VISIBLE else View.GONE
-                    if (uiModel.isFailed) {
-                        // TODO set a proper error message
-                        binding.etAccountId.error = "NOT FOUND"
-                    }
-                    if (uiModel.isComplete) {
-                        userProfileViewModel.login()
-                    }
+        loginViewModel.loginUIState.observe(viewLifecycleOwner) { model ->
+            when (model) {
+                is LoginUIModel.Fail -> {
+                    // todo print or handle error
                 }
-
-                override fun onError(e: Throwable) {
-                    Timber.e(e)
+                is LoginUIModel.Complete -> {
+                    // todo make complete action, navigate to account fragment
                 }
-
-                override fun onComplete() {
-                    // TODO trigger listener and change fragment
-                    Toast.makeText(context, "test", Toast.LENGTH_LONG).show()
-                }
-            })
-        )
+                else -> {}
+            }
+        }
     }
 
     override fun onDestroy() {
