@@ -6,5 +6,5 @@ import com.aslansari.hypocoin.repository.CoinRepository
 class ActivityCompositionRoot(private val appContainer: AppContainer) {
 
     val coinRepository: CoinRepository = CoinRepository(appContainer.coinDatabase, appContainer.coinAPI)
-    val accountRepository: AccountRepository = AccountRepository(appContainer.coinDatabase.accountDAO())
+    val accountRepository: AccountRepository = AccountRepository(accountDAO = appContainer.coinDatabase.accountDAO())
 }

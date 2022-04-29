@@ -2,14 +2,8 @@ package com.aslansari.hypocoin.app
 
 import android.content.Context
 import com.aslansari.hypocoin.BuildConfig
-import com.aslansari.hypocoin.register.Register
-import com.aslansari.hypocoin.viewmodel.CoinViewModel
-import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel
-import com.aslansari.hypocoin.register.RegisterViewModel
 import com.aslansari.hypocoin.repository.CoinDatabase
 import com.aslansari.hypocoin.repository.restapi.CoinAPI
-import com.aslansari.hypocoin.repository.CoinRepository
-import com.aslansari.hypocoin.repository.AccountRepository
 import com.google.gson.GsonBuilder
 import okhttp3.Cache
 import okhttp3.OkHttpClient

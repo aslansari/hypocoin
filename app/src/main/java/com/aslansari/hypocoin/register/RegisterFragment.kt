@@ -1,16 +1,19 @@
-package com.aslansari.hypocoin.account
+package com.aslansari.hypocoin.register
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.distinctUntilChanged
+import androidx.lifecycle.lifecycleScope
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.databinding.FragmentRegisterBinding
-import com.aslansari.hypocoin.register.Register
-import com.aslansari.hypocoin.register.RegisterViewModel
 import com.aslansari.hypocoin.register.dto.RegisterInput
 import com.aslansari.hypocoin.register.exception.PasswordMismatchException
 import com.aslansari.hypocoin.register.exception.UserAlreadyExistsException
@@ -28,7 +31,12 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.observers.DisposableObserver
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
+import kotlin.coroutines.coroutineContext
 
 /**
  * A simple [Fragment] subclass.
@@ -58,70 +66,38 @@ class RegisterFragment : BaseFragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
+        binding.apply {
+            lifecycleOwner = viewLifecycleOwner
+            vm = registerViewModel
+        }
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        disposables!!.add(binding.buttonRegister.clicks()
-            .map {
-                RegisterInput(
-                    binding.etAccountId.text.toString(),
-                    binding.etPassword.text.toString(),
-                    binding.etPasswordAgain.text.toString())
-            }
-            .observeOn(Schedulers.io())
-            .flatMap { registerInput: RegisterInput? ->
-                registerViewModel.validate(registerInput!!)
-                    .startWithItem(loading(null))
-            }
-            .flatMap { registerInputResource: Resource<RegisterInput> ->
-                if (DataStatus.COMPLETE === registerInputResource.status) {
-                    return@flatMap registerViewModel.register(registerInputResource.value!!)
-                } else if (registerInputResource.isLoading) {
-                    return@flatMap Observable.just(loading(
-                        null as Register?))
-                } else {
-                    return@flatMap Observable.just(error(
-                        null as Register?, registerInputResource.throwable))
+        var validateJob: Job? = null
+        registerViewModel.passwordSecond.observe(viewLifecycleOwner) {
+            binding.etPasswordAgain.error = null
+            validateJob?.cancel()
+            validateJob = lifecycleScope.launch {
+                delay(2000)
+                with(registerViewModel) {
+                    validateInput(accountId.value ?: "", passwordFirst.value?:"", passwordSecond.value?:"")
                 }
             }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeWith(object : DisposableObserver<Resource<out Register?>?>() {
-                override fun onNext(resource: Resource<out Register?>?) {
-                    binding.buttonRegister.isEnabled = DataStatus.LOADING !== resource!!.status
-                    binding.progressRegister.visibility =
-                        if (resource!!.isLoading) View.VISIBLE else View.GONE
-                    when (resource.status) {
-                        DataStatus.COMPLETE -> {
-                            Toast.makeText(context,
-                                "Account registered successfully",
-                                Toast.LENGTH_LONG).show()
-                            userProfileViewModel.register()
-                        }
-                        DataStatus.ERROR -> if (resource.throwable!!.cause is UserAlreadyExistsException) {
-                            binding.etAccountId.error = getString(R.string.user_exists)
-                        } else if (resource.throwable.cause is PasswordMismatchException) {
-                            binding.etPassword.error = getString(R.string.password_mismatch)
-                            binding.etPasswordAgain.error = getString(R.string.password_mismatch)
-                        } else {
-                            resource.throwable.message?.let {
-                                Snackbar.make(binding.coordinator, it, Snackbar.LENGTH_SHORT).show()
-                            }
-                        }
-                        else -> {}
-                    }
-                }
+        }
 
-                override fun onError(throwable: Throwable) {
-                    Timber.e(throwable)
-                    binding.progressRegister.visibility = View.GONE
-                    Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
+        registerViewModel.registerUIState.distinctUntilChanged().observe(viewLifecycleOwner) { state ->
+            state.userMessages.forEach {
+                when(it.id) {
+                    MessageId.PWD_ONE_ERROR -> { binding.etPassword.error = getString(it.messageId) }
+                    MessageId.PWD_TWO_ERROR -> { binding.etPasswordAgain.error = getString(it.messageId) }
+                    MessageId.USERNAME_ERROR -> { binding.etAccountId.error = getString(it.messageId) }
+                    MessageId.REGISTER_ERROR -> { binding.etAccountId.error = getString(it.messageId) }
                 }
+            }
+        }
 
-                override fun onComplete() {}
-            })
-        )
         disposables!!.add(binding.etPassword.focusChanges().skipInitialValue()
             .mergeWith(binding.etPasswordAgain.focusChanges().skipInitialValue())
             .observeOn(AndroidSchedulers.mainThread())

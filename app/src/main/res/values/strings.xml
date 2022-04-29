@@ -14,6 +14,9 @@
     <string name="login_title">LOGIN</string>
     <string name="register">REGISTER</string>
     <string name="no_account_register"><u>I don\'t have an account, register</u></string>
-    <string name="password_mismatch">Passwords do not match</string>
-    <string name="user_exists">User already exists</string>
+    <string name="error_username_required">Username Required</string>
+    <string name="error_password_cannot_be_empty">Password cannot be empty</string>
+    <string name="error_passwords_does_not_match">Passwords does not match</string>
+    <string name="error_cannot_register">Register Error</string>
+    <string name="error_username_already_exists">Username already exists</string>
 </resources>

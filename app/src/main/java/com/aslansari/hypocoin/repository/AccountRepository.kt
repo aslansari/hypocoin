@@ -4,8 +4,15 @@ import com.aslansari.hypocoin.repository.model.Account
 import com.aslansari.hypocoin.repository.model.AccountDAO
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-class AccountRepository(private val accountDAO: AccountDAO) {
+class AccountRepository(
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val accountDAO: AccountDAO
+) {
+
     fun isAccountExists(id: String): Boolean {
         return accountDAO.getAccount(id)
             .onErrorReturnItem(Account(""))
@@ -16,8 +23,8 @@ class AccountRepository(private val accountDAO: AccountDAO) {
         return accountDAO.getAccount(id)
     }
 
-    fun createAccount(account: Account): Completable {
-        return accountDAO.addAccount(account)
+    suspend fun createAccount(account: Account) = withContext(ioDispatcher) {
+        accountDAO.addAccount(account)
     }
 
     fun updateAccountBalance(id: String?, balance: Long): Completable {

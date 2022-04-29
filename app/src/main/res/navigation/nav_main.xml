@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/register_fragment"
-        android:name="com.aslansari.hypocoin.account.RegisterFragment"
+        android:name="com.aslansari.hypocoin.register.RegisterFragment"
         android:label="Currencies"
         tools:layout="@layout/fragment_register">
     </fragment>

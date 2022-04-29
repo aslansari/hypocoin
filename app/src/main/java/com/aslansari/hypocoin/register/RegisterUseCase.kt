@@ -1,10 +1,8 @@
 package com.aslansari.hypocoin.register
 
-import kotlin.Throws
 import com.aslansari.hypocoin.register.exception.PasswordMismatchException
-import java.lang.IllegalArgumentException
 
-class Register {
+class RegisterUseCase {
 
     @Throws(IllegalArgumentException::class)
     fun validateUsername(userName: String?): Boolean {
