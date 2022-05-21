@@ -1,30 +1,38 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.HypoCoin" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/amber_400</item>
-        <item name="colorPrimaryVariant">@color/amber_800</item>
-        <item name="colorOnPrimary">@color/black</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/amber_100</item>
-        <item name="colorSecondaryVariant">@color/amber_50</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+    <style name="HypoCoinTheme" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/md_theme_light_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_light_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_light_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_light_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_light_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_light_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_light_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_light_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_light_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_light_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_light_error</item>
+        <item name="colorErrorContainer">@color/md_theme_light_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_light_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_light_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_light_background</item>
+        <item name="colorOnBackground">@color/md_theme_light_onBackground</item>
+        <item name="colorSurface">@color/md_theme_light_surface</item>
+        <item name="colorOnSurface">@color/md_theme_light_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_light_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_light_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_light_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_light_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_light_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_light_primaryInverse</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="o_mr1">true</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?android:attr/colorBackground</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
-        <item name="android:navigationBarColor" tools:targetApi="o_mr1">?attr/colorSecondary</item>
-        <!-- Customize your theme here. -->
-        <item name="android:colorBackground">@color/background_light</item>
-        <item name="colorOnBackground">@color/black</item>
-        <item name="colorSurface">@color/surface</item>
-        <item name="colorOnSurface">@color/black</item>
-        <item name="colorError">@color/amber_900</item>
-        <item name="colorOnError">@color/black</item>
+        <item name="android:navigationBarColor" tools:targetApi="o_mr1">?attr/colorSecondaryContainer</item>
 
+        <!-- Typography -->
         <item name="fontFamily">@font/rubik</item>
-        <item name="materialButtonStyle">@style/ButtonStyle</item>
-        <item name="elevation">20dp</item>
-
         <item name="textAppearanceHeadline1">@style/TextAppearance.Headline1</item>
         <item name="textAppearanceHeadline2">@style/TextAppearance.Headline2</item>
         <item name="textAppearanceHeadline3">@style/TextAppearance.Headline3</item>
@@ -38,19 +46,5 @@
         <item name="textAppearanceButton">@style/TextAppearance.Button</item>
         <item name="textAppearanceCaption">@style/TextAppearance.Caption</item>
         <item name="textAppearanceOverline">@style/TextAppearance.Overline</item>
-    </style>
-
-    <!-- Button styles -->
-    <style name="BaseButtonStyle" parent="Widget.AppCompat.Button">
-        <item name="cornerRadius">20dp</item>
-        <item name="android:layout_width">100dp</item>
-        <item name="android:layout_height">20dp</item>
-    </style>
-
-    <style name="ButtonStyle" parent="BaseButtonStyle">
-        <item name="android:background">@drawable/button_bg</item>
-        <item name="android:layout_gravity">bottom|end</item>
-        <item name="android:gravity">center</item>
-        <item name="textAppearanceButton">@style/TextAppearance.Button</item>
     </style>
 </resources>
