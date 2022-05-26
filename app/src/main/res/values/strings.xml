@@ -10,6 +10,7 @@
 
     <!-- UserProfile -->
     <string name="password">Password</string>
+    <string name="email">Email</string>
     <string name="account_id">Username</string>
     <string name="login_title">LOGIN</string>
     <string name="register">REGISTER</string>
@@ -19,4 +20,6 @@
     <string name="error_passwords_does_not_match">Passwords does not match</string>
     <string name="error_cannot_register">Register Error</string>
     <string name="error_username_already_exists">Username already exists</string>
+    <string name="hyperlink">By continuing you are confirming that you accept our <a href="https://aslansari.com">Terms &amp; Conditions</a> and have read and understand our <a href="https://aslansari.com">Privacy Policy</a></string>
+    <string name="or">or</string>
 </resources>

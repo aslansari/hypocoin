@@ -1,49 +1,25 @@
 package com.aslansari.hypocoin.register
 
+import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.coroutineScope
-import androidx.lifecycle.distinctUntilChanged
-import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.databinding.FragmentRegisterBinding
-import com.aslansari.hypocoin.register.dto.RegisterInput
-import com.aslansari.hypocoin.register.exception.PasswordMismatchException
-import com.aslansari.hypocoin.register.exception.UserAlreadyExistsException
-import com.aslansari.hypocoin.ui.BaseFragment
-import com.aslansari.hypocoin.viewmodel.DataStatus
-import com.aslansari.hypocoin.viewmodel.Resource
-import com.aslansari.hypocoin.viewmodel.Resource.Companion.error
-import com.aslansari.hypocoin.viewmodel.Resource.Companion.loading
+import com.aslansari.hypocoin.ui.BaseDialogFragment
 import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel
-import com.google.android.material.snackbar.Snackbar
-import com.jakewharton.rxbinding4.view.clicks
-import com.jakewharton.rxbinding4.view.focusChanges
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.observers.DisposableObserver
-import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
-import timber.log.Timber
-import java.util.concurrent.TimeUnit
-import kotlin.coroutines.coroutineContext
 
 /**
  * A simple [Fragment] subclass.
  * Use the [RegisterFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class RegisterFragment : BaseFragment() {
+class RegisterFragment : BaseDialogFragment() {
 
     private val userProfileViewModel: UserProfileViewModel by viewModels(factoryProducer = {
         viewModelCompositionRoot.viewModelFactory
@@ -51,10 +27,13 @@ class RegisterFragment : BaseFragment() {
     private val registerViewModel: RegisterViewModel by viewModels(factoryProducer = {
         viewModelCompositionRoot.viewModelFactory
     })
+
     private lateinit var binding: FragmentRegisterBinding
     private var disposables: CompositeDisposable? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setStyle(STYLE_NORMAL, R.style.HypoCoinTheme)
         if (arguments != null) {
         }
         disposables = CompositeDisposable()
@@ -62,7 +41,7 @@ class RegisterFragment : BaseFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
@@ -75,44 +54,22 @@ class RegisterFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var validateJob: Job? = null
-        registerViewModel.passwordSecond.observe(viewLifecycleOwner) {
-            binding.etPasswordAgain.error = null
-            validateJob?.cancel()
-            validateJob = lifecycleScope.launch {
-                delay(2000)
-                with(registerViewModel) {
-                    validateInput(accountId.value ?: "", passwordFirst.value?:"", passwordSecond.value?:"")
-                }
+        when (requireContext().resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                binding.isDark = true
+            }
+            else -> {
+                binding.isDark = false
             }
         }
 
-        registerViewModel.registerUIState.distinctUntilChanged().observe(viewLifecycleOwner) { state ->
-            state.userMessages.forEach {
-                when(it.id) {
-                    MessageId.PWD_ONE_ERROR -> { binding.etPassword.error = getString(it.messageId) }
-                    MessageId.PWD_TWO_ERROR -> { binding.etPasswordAgain.error = getString(it.messageId) }
-                    MessageId.USERNAME_ERROR -> { binding.etAccountId.error = getString(it.messageId) }
-                    MessageId.REGISTER_ERROR -> { binding.etAccountId.error = getString(it.messageId) }
-                }
-            }
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
         }
 
-        disposables!!.add(binding.etPassword.focusChanges().skipInitialValue()
-            .mergeWith(binding.etPasswordAgain.focusChanges().skipInitialValue())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext { focused: Boolean ->
-                if (focused) {
-                    if (binding.etPassword.error != null) {
-                        binding.etPassword.text = null
-                        binding.etPassword.error = null
-                        binding.etPasswordAgain.text = null
-                        binding.etPasswordAgain.error = null
-                    }
-                }
-            }
-            .subscribe()
-        )
+        binding.buttonRegister.setOnClickListener {
+            findNavController().navigate(R.id.action_register_fragment_to_register_fragment_result)
+        }
     }
 
     override fun onDestroyView() {

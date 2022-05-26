@@ -17,12 +17,21 @@
         android:label="Currencies"
         tools:layout="@layout/fragment_account">
     </fragment>
-    <fragment
+    <dialog
         android:id="@+id/register_fragment"
         android:name="com.aslansari.hypocoin.register.RegisterFragment"
         android:label="Currencies"
         tools:layout="@layout/fragment_register">
-    </fragment>
+        <action
+            android:id="@+id/action_register_fragment_to_register_fragment_result"
+            app:destination="@id/register_fragment_result" />
+    </dialog>
+    <dialog
+        android:id="@+id/register_fragment_result"
+        android:name="com.aslansari.hypocoin.register.RegisterResultFragment"
+        android:label="Register Result"
+        tools:layout="@layout/fragment_register_result">
+    </dialog>
     <fragment
         android:id="@+id/login_fragment"
         android:name="com.aslansari.hypocoin.account.login.ui.LoginFragment"
