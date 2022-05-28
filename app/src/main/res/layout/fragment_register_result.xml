@@ -40,7 +40,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textFieldEmailTitle"
-            style="@style/TextAppearance.MaterialComponents.Overline"
+            android:textAppearance="?attr/textAppearanceOverline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
@@ -51,7 +51,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textFieldEmail"
-            style="@style/TextAppearance.AppCompat.Title"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@id/textFieldEmailTitle"
