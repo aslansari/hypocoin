@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 
 class AccountRepository(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val accountDAO: AccountDAO
+    private val accountDAO: AccountDAO,
 ) {
 
     fun isAccountExists(id: String): Boolean {
@@ -29,5 +29,10 @@ class AccountRepository(
 
     fun updateAccountBalance(id: String?, balance: Long): Completable {
         return accountDAO.updateBalance(id, balance)
+    }
+
+    suspend fun isAccountExistsByEmail(email: String): Boolean {
+        // todo check email address is recorded in DB
+        return true
     }
 }

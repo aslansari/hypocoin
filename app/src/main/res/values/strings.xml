@@ -22,4 +22,7 @@
     <string name="error_username_already_exists">Username already exists</string>
     <string name="hyperlink">By continuing you are confirming that you accept our <a href="https://aslansari.com">Terms &amp; Conditions</a> and have read and understand our <a href="https://aslansari.com">Privacy Policy</a></string>
     <string name="or">or</string>
+    <string name="continue_str">Continue</string>
+    <string name="continue_with_google">Continue With Google</string>
+    <string name="content_desc_hypocoin_icon">Hypocoin application icon</string>
 </resources>

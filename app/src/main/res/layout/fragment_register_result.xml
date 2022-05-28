@@ -100,7 +100,6 @@
             android:layout_width="140dp"
             android:layout_height="55dp"
             android:layout_margin="30dp"
-            android:onClick="@{() -> vm.register(vm.accountId, vm.passwordFirst, vm.passwordSecond)}"
             android:text="Register"
             android:textAppearance="@style/TextAppearance.Button"
             app:layout_constraintEnd_toEndOf="parent"

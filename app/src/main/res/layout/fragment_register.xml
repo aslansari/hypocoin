@@ -12,6 +12,10 @@
         <variable
             name="isDark"
             type="boolean" />
+
+        <variable
+            name="email"
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -38,19 +42,20 @@
             android:src="@drawable/ic_hypo_coin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            android:contentDescription="@string/content_desc_hypocoin_icon" />
 
         <ProgressBar
             android:id="@+id/progressRegister"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="@{vm.registerUIState.loading}"
+            android:visibility="@{vm.registerUIState.loading ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buttonGoogle"
-            app:layout_constraintVertical_bias="0.2" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.4" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textField"
@@ -66,7 +71,9 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:onTextChanged="@{() -> vm.onTextChange()}"
+                android:text="@={email}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
@@ -74,7 +81,9 @@
             android:layout_width="140dp"
             android:layout_height="55dp"
             android:layout_margin="20dp"
-            android:text="Continue"
+            android:enabled="@{vm.registerUIState.buttonEnabled}"
+            android:onClick="@{() -> vm.onSubmitEmail(email)}"
+            android:text="@string/continue_str"
             android:textAppearance="@style/TextAppearance.Button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -97,8 +106,8 @@
             android:layout_width="wrap_content"
             android:layout_height="55dp"
             android:layout_margin="20dp"
-            android:onClick="@{() -> vm.register(vm.accountId, vm.passwordFirst, vm.passwordSecond)}"
-            android:text="Continue With Google"
+            android:text="@string/continue_with_google"
+            android:onClick="@{() -> vm.registerWithGoogle()}"
             app:icon="@drawable/ic_google"
             app:iconPadding="15dp"
             app:iconTint="@null"

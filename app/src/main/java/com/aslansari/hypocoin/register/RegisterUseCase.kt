@@ -1,8 +1,15 @@
 package com.aslansari.hypocoin.register
 
+import androidx.core.util.PatternsCompat.EMAIL_ADDRESS
 import com.aslansari.hypocoin.register.exception.PasswordMismatchException
+import com.aslansari.hypocoin.repository.AccountRepository
+import com.aslansari.hypocoin.repository.model.Account
 
-class RegisterUseCase {
+class RegisterUseCase(private val accountRepository: AccountRepository) {
+
+    suspend fun register(account: Account) {
+        accountRepository.createAccount(account)
+    }
 
     @Throws(IllegalArgumentException::class)
     fun validateUsername(userName: String?): Boolean {
@@ -17,5 +24,13 @@ class RegisterUseCase {
         if (password != passwordRepeat) {
             throw PasswordMismatchException("password fields does not match")
         }
+    }
+
+    suspend fun checkEmail(email: String): Boolean {
+        return accountRepository.isAccountExistsByEmail(email)
+    }
+
+    fun validateEmail(email: String): Boolean {
+        return EMAIL_ADDRESS.matcher(email).matches()
     }
 }

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.databinding.FragmentRegisterBinding
@@ -70,6 +71,18 @@ class RegisterFragment : BaseDialogFragment() {
         binding.buttonRegister.setOnClickListener {
             findNavController().navigate(R.id.action_register_fragment_to_register_fragment_result)
         }
+
+        registerViewModel.registerUIState.observe(viewLifecycleOwner) { state ->
+            when(state.error) {
+                RegisterStatus.NO_ERROR -> binding.textField.error = null
+                RegisterStatus.USER_ALREADY_EXISTS -> binding.textField.error = "User already exists"
+                RegisterStatus.INPUT_FORMAT_WRONG -> binding.textField.error = "Please enter a valid email address"
+                RegisterStatus.INPUT_EMPTY -> binding.textField.error = "Input required"
+                else -> {
+                    binding.textField.error = "error"
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -77,19 +90,4 @@ class RegisterFragment : BaseDialogFragment() {
         disposables!!.dispose()
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @return A new instance of fragment RegisterFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        fun newInstance(): RegisterFragment {
-            val fragment = RegisterFragment()
-            val args = Bundle()
-            fragment.arguments = args
-            return fragment
-        }
-    }
 }
