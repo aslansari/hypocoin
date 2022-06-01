@@ -1,10 +1,12 @@
 package com.aslansari.hypocoin.register
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.aslansari.hypocoin.repository.model.Account
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import java.util.*
 
 /**
  *
@@ -15,6 +17,16 @@ class RegisterViewModel(
 
     private val _registerUIState = MutableLiveData(RegisterUIState())
     val registerUIState: LiveData<RegisterUIState> = _registerUIState
+
+    private val _passwordInput = MutableLiveData("")
+    private val _passwordConfirmInput = MutableLiveData("")
+
+    private val flowPasswordInput = _passwordInput.asFlow().debounce(500)
+    private val flowPasswordConfirmInput = _passwordConfirmInput.asFlow().debounce(500)
+    private var isPasswordEntered = false
+    private var isPasswordConfirmEntered = false
+    private var registerResultUIState = RegisterResultUIState()
+    private var registrationData = RegistrationData()
 
     fun onTextChange() {
         viewModelScope.launch {
@@ -35,7 +47,9 @@ class RegisterViewModel(
                         RegisterUIState(error = RegisterStatus.USER_ALREADY_EXISTS,
                             buttonEnabled = false)
                     } else {
-                        defaultRegisterUIState()
+                        RegisterUIState(
+                            onSubmit = RegistrationData(email, null)
+                        )
                     }
                 } else {
                     _registerUIState.value =
@@ -48,12 +62,93 @@ class RegisterViewModel(
     fun registerWithGoogle() {
 
     }
+
+    fun validateInput() =
+        combine(flowPasswordInput, flowPasswordConfirmInput) { password, passwordConfirm ->
+            if (!isPasswordEntered && password.isNotEmpty()) {
+                isPasswordEntered = true
+            }
+            if (!isPasswordConfirmEntered && passwordConfirm.isNotEmpty()) {
+                isPasswordConfirmEntered = true
+            }
+
+            if (password.isNullOrBlank().not()) {
+                if (isPasswordConfirmEntered) {
+                    if (passwordConfirm.isNullOrBlank().not()) {
+                        if (password == passwordConfirm) {
+                            registrationData.passwordUnencrypted = password
+                            registerResultUIState = RegisterResultUIState()
+                            registerResultUIState
+                        } else {
+                            // password does not match
+                            registerResultUIState =
+                                RegisterResultUIState(error = RegisterResultStatus.DOES_NOT_MATCH)
+                            registerResultUIState
+                        }
+                    } else {
+                        // "Please confirm your password"
+                        registerResultUIState =
+                            RegisterResultUIState(error = RegisterResultStatus.CONFIRM_YOUR_PASSWORD)
+                        registerResultUIState
+                    }
+                } else {
+                    // password is entered but confirm not yet entered
+                    registerResultUIState = RegisterResultUIState()
+                    registerResultUIState
+                }
+            } else {
+                // "Password should not be empty"
+                registerResultUIState =
+                    RegisterResultUIState(error = RegisterResultStatus.SHOULD_NOT_BE_EMPTY)
+                registerResultUIState
+            }
+        }.filter { isPasswordEntered }
+
+    fun onPasswordInputChange(input: CharSequence) {
+        _passwordInput.value = input.toString()
+    }
+
+    fun onPasswordConfirmInputChange(input: CharSequence) {
+        _passwordConfirmInput.value = input.toString()
+    }
+
+    fun registerWithEmail() {
+        viewModelScope.launch {
+            val id = UUID.randomUUID().toString()
+            val account = Account(id, registrationData.email ?: "")
+            account.passwordPlaintext = registrationData.passwordUnencrypted.toString()
+            registerUseCase.register(account)
+        }
+    }
+
+    fun setEmail(email: String?) {
+        registrationData.email = email
+    }
+
+    fun setPassword(password: String?) {
+        registrationData.passwordUnencrypted = password
+    }
+}
+
+data class RegisterResultUIState(
+    val loading: Boolean = false,
+    val error: RegisterResultStatus = RegisterResultStatus.NO_ERROR,
+    val buttonEnabled: Boolean = true,
+)
+
+enum class RegisterResultStatus {
+    NO_ERROR,
+    NOT_VALID,
+    DOES_NOT_MATCH,
+    SHOULD_NOT_BE_EMPTY,
+    CONFIRM_YOUR_PASSWORD,
 }
 
 data class RegisterUIState(
     val loading: Boolean = false,
     val error: RegisterStatus = RegisterStatus.NO_ERROR,
     val buttonEnabled: Boolean = true,
+    val onSubmit: RegistrationData? = null,
 )
 
 fun defaultRegisterUIState() = RegisterUIState()

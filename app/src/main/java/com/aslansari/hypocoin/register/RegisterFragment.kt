@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.databinding.FragmentRegisterBinding
@@ -25,7 +25,7 @@ class RegisterFragment : BaseDialogFragment() {
     private val userProfileViewModel: UserProfileViewModel by viewModels(factoryProducer = {
         viewModelCompositionRoot.viewModelFactory
     })
-    private val registerViewModel: RegisterViewModel by viewModels(factoryProducer = {
+    private val registerViewModel: RegisterViewModel by activityViewModels(factoryProducer = {
         viewModelCompositionRoot.viewModelFactory
     })
 
@@ -49,6 +49,9 @@ class RegisterFragment : BaseDialogFragment() {
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
             vm = registerViewModel
+            toolbar.setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
         }
         return binding.root
     }
@@ -64,23 +67,24 @@ class RegisterFragment : BaseDialogFragment() {
             }
         }
 
-        binding.toolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
-
-        binding.buttonRegister.setOnClickListener {
-            findNavController().navigate(R.id.action_register_fragment_to_register_fragment_result)
-        }
-
         registerViewModel.registerUIState.observe(viewLifecycleOwner) { state ->
-            when(state.error) {
+            when (state.error) {
                 RegisterStatus.NO_ERROR -> binding.textField.error = null
-                RegisterStatus.USER_ALREADY_EXISTS -> binding.textField.error = "User already exists"
-                RegisterStatus.INPUT_FORMAT_WRONG -> binding.textField.error = "Please enter a valid email address"
+                RegisterStatus.USER_ALREADY_EXISTS -> binding.textField.error =
+                    "User already exists"
+                RegisterStatus.INPUT_FORMAT_WRONG -> binding.textField.error =
+                    "Please enter a valid email address"
                 RegisterStatus.INPUT_EMPTY -> binding.textField.error = "Input required"
                 else -> {
                     binding.textField.error = "error"
                 }
+            }
+            state.onSubmit?.let {
+                registerViewModel.setEmail(state.onSubmit.email)
+                val data = Bundle()
+                data.putString("email", state.onSubmit.email)
+                findNavController().navigate(R.id.action_register_fragment_to_register_fragment_result,
+                    data)
             }
         }
     }

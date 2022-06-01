@@ -15,7 +15,7 @@ class AccountRepository(
 
     fun isAccountExists(id: String): Boolean {
         return accountDAO.getAccount(id)
-            .onErrorReturnItem(Account(""))
+            .onErrorReturnItem(Account("", ""))
             .blockingGet().id.isNotEmpty()
     }
 
@@ -33,6 +33,6 @@ class AccountRepository(
 
     suspend fun isAccountExistsByEmail(email: String): Boolean {
         // todo check email address is recorded in DB
-        return true
+        return false
     }
 }

@@ -6,27 +6,31 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.databinding.FragmentRegisterResultBinding
 import com.aslansari.hypocoin.ui.BaseDialogFragment
+import kotlinx.coroutines.launch
 
 /**
- * todo add dialog transition animation
+ *
  */
 class RegisterResultFragment : BaseDialogFragment() {
 
-    private val registerViewModel: RegisterViewModel by viewModels(factoryProducer = {
+    private val registerViewModel: RegisterViewModel by activityViewModels(factoryProducer = {
         viewModelCompositionRoot.viewModelFactory
     })
 
     private lateinit var binding: FragmentRegisterResultBinding
+    private lateinit var email: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.HypoCoinTheme)
         arguments?.let {
+            email = it.getString("email", "--")
         }
     }
 
@@ -38,9 +42,9 @@ class RegisterResultFragment : BaseDialogFragment() {
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
             vm = registerViewModel
-        }
-        binding.toolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
+            toolbar.setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
         }
         return binding.root
     }
@@ -56,5 +60,29 @@ class RegisterResultFragment : BaseDialogFragment() {
             }
         }
         binding.textFieldTos.movementMethod = LinkMovementMethod.getInstance()
+        binding.textFieldEmail.text = email
+
+        registerViewModel.viewModelScope.launch {
+            registerViewModel.validateInput().collect {
+                when (it.error) {
+                    RegisterResultStatus.NO_ERROR -> {
+                        binding.textFieldPassword.error = null
+                        binding.textFieldPasswordConfirm.error = null
+                    }
+                    RegisterResultStatus.DOES_NOT_MATCH -> {
+                        binding.textFieldPassword.error = "Passwords does not match"
+                    }
+                    RegisterResultStatus.CONFIRM_YOUR_PASSWORD -> {
+                        binding.textFieldPasswordConfirm.error = "Please confirm your password"
+                    }
+                    RegisterResultStatus.SHOULD_NOT_BE_EMPTY -> {
+                        binding.textFieldPassword.error = "Password should not be empty"
+                    }
+                    RegisterResultStatus.NOT_VALID -> {
+                        binding.textFieldPassword.error = "password is not valid"
+                    }
+                }
+            }
+        }
     }
 }
