@@ -9,10 +9,12 @@ import com.aslansari.hypocoin.repository.AccountRepository
 import com.aslansari.hypocoin.repository.CoinRepository
 import com.aslansari.hypocoin.viewmodel.CoinViewModel
 import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 class ViewModelFactory(
     private val coinRepository: CoinRepository,
     private val accountRepository: AccountRepository,
+    val auth: FirebaseAuth?,
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -20,7 +22,7 @@ class ViewModelFactory(
             CoinViewModel::class.java -> CoinViewModel(coinRepository) as T
             UserProfileViewModel::class.java -> UserProfileViewModel(accountRepository) as T
             // fixme register dependency
-            RegisterViewModel::class.java -> RegisterViewModel(RegisterUseCase(accountRepository)) as T
+            RegisterViewModel::class.java -> RegisterViewModel(RegisterUseCase(accountRepository, auth)) as T
             LoginViewModel::class.java -> LoginViewModel() as T
             else -> throw IllegalArgumentException("Wrong class type $modelClass")
         }

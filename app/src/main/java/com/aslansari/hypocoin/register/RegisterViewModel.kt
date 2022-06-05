@@ -2,6 +2,9 @@ package com.aslansari.hypocoin.register
 
 import androidx.lifecycle.*
 import com.aslansari.hypocoin.repository.model.Account
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
@@ -17,6 +20,9 @@ class RegisterViewModel(
 
     private val _registerUIState = MutableLiveData(RegisterUIState())
     val registerUIState: LiveData<RegisterUIState> = _registerUIState
+
+    private val _registerResultUIState = MutableLiveData(RegisterResultUIState())
+    val registerResultUIStateLiveData: LiveData<RegisterResultUIState> = _registerResultUIState
 
     private val _passwordInput = MutableLiveData("")
     private val _passwordConfirmInput = MutableLiveData("")
@@ -60,7 +66,7 @@ class RegisterViewModel(
     }
 
     fun registerWithGoogle() {
-
+        _registerUIState.value = RegisterUIState(error = RegisterStatus.SIGN_IN_WITH_GOOGLE)
     }
 
     fun validateInput() =
@@ -117,7 +123,9 @@ class RegisterViewModel(
             val id = UUID.randomUUID().toString()
             val account = Account(id, registrationData.email ?: "")
             account.passwordPlaintext = registrationData.passwordUnencrypted.toString()
-            registerUseCase.register(account)
+            registerUseCase.register(account) {
+                _registerResultUIState.value = RegisterResultUIState(error = it.status)
+            }
         }
     }
 
@@ -137,11 +145,16 @@ data class RegisterResultUIState(
 )
 
 enum class RegisterResultStatus {
+    SUCCESS,
     NO_ERROR,
     NOT_VALID,
     DOES_NOT_MATCH,
     SHOULD_NOT_BE_EMPTY,
     CONFIRM_YOUR_PASSWORD,
+    WEAK_PASSWORD,
+    INVALID_CREDENTIALS,
+    USER_ALREADY_EXISTS,
+    REGISTER_ERROR,
 }
 
 data class RegisterUIState(
@@ -157,5 +170,6 @@ enum class RegisterStatus {
     NO_ERROR,
     USER_ALREADY_EXISTS,
     INPUT_FORMAT_WRONG,
-    INPUT_EMPTY
+    INPUT_EMPTY,
+    SIGN_IN_WITH_GOOGLE,
 }

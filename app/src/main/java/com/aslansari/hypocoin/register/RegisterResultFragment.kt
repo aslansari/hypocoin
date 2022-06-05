@@ -6,6 +6,7 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
@@ -81,6 +82,17 @@ class RegisterResultFragment : BaseDialogFragment() {
                     RegisterResultStatus.NOT_VALID -> {
                         binding.textFieldPassword.error = "password is not valid"
                     }
+                }
+            }
+        }
+
+        registerViewModel.registerResultUIStateLiveData.observe(viewLifecycleOwner) {
+            when (it.error) {
+                RegisterResultStatus.SUCCESS -> {
+                    Toast.makeText(requireContext(), "register success", Toast.LENGTH_LONG).show()
+                }
+                else -> {
+                    Toast.makeText(requireContext(), it.error.name, Toast.LENGTH_LONG).show()
                 }
             }
         }

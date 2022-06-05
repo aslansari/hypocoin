@@ -4,6 +4,10 @@ import android.app.Application
 import com.aslansari.hypocoin.app.AppContainer
 import com.aslansari.hypocoin.app.HypoCoinApp
 import com.aslansari.hypocoin.BuildConfig
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.initialize
 import timber.log.Timber
 import timber.log.Timber.DebugTree
 
@@ -15,6 +19,7 @@ class HypoCoinApp : Application() {
         super.onCreate()
         instance = this
         initializeTimber()
+        FirebaseApp.initializeApp(this)
     }
 
     private fun initializeTimber() {
