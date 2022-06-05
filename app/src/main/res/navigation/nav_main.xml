@@ -16,6 +16,9 @@
         android:name="com.aslansari.hypocoin.account.AccountFragment"
         android:label="Currencies"
         tools:layout="@layout/fragment_account">
+        <action
+            android:id="@+id/action_account_fragment_to_login_fragment"
+            app:destination="@id/login_fragment" />
     </fragment>
     <dialog
         android:id="@+id/register_fragment"

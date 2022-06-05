@@ -35,4 +35,8 @@ class AccountRepository(
         // todo check email address is recorded in DB
         return false
     }
+
+    fun isLoggedIn(): Boolean {
+        return false
+    }
 }

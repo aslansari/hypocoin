@@ -107,7 +107,7 @@
             android:layout_height="55dp"
             android:layout_margin="20dp"
             android:text="@string/continue_with_google"
-            android:onClick="@{() -> vm.registerWithGoogle()}"
+            android:onClick="@{() -> vm.registerWithGoogleButtonClick()}"
             app:icon="@drawable/ic_google"
             app:iconPadding="15dp"
             app:iconTint="@null"

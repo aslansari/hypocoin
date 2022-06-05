@@ -1,18 +1,30 @@
 package com.aslansari.hypocoin.register
 
+import android.content.Intent
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
+import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.repository.model.Account
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.Status
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
 
 /**
- *
+ * Todo error handling
  */
 class RegisterViewModel(
     private val registerUseCase: RegisterUseCase,
@@ -65,8 +77,31 @@ class RegisterViewModel(
         }
     }
 
-    fun registerWithGoogle() {
+    fun registerWithGoogleButtonClick() {
         _registerUIState.value = RegisterUIState(error = RegisterStatus.SIGN_IN_WITH_GOOGLE)
+    }
+
+    fun registerWithGoogle(activity: FragmentActivity, resultLauncher: ActivityResultLauncher<Intent>) {
+        val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(activity.getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        val signInClient = GoogleSignIn.getClient(activity, options)
+
+        resultLauncher.launch(signInClient.signInIntent)
+    }
+
+    private fun firebaseAuthWithGoogle(account: GoogleSignInAccount) {
+        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+        Firebase.auth.signInWithCredential(credential)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    // todo publish success data
+                } else {
+                    // todo publish error
+                }
+            }
     }
 
     fun validateInput() =
@@ -133,8 +168,18 @@ class RegisterViewModel(
         registrationData.email = email
     }
 
-    fun setPassword(password: String?) {
-        registrationData.passwordUnencrypted = password
+    fun onGoogleSignInResult(activityResult: ActivityResult) {
+        val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(activityResult.data)
+        try {
+            val account: GoogleSignInAccount = task.getResult(ApiException::class.java)
+            firebaseAuthWithGoogle(account)
+        } catch (e: ApiException) {
+            Timber.e(e, "Google sign in failed")
+            when (e.status) {
+                Status.RESULT_CANCELED -> {}
+                else -> {}
+            }
+        }
     }
 }
 

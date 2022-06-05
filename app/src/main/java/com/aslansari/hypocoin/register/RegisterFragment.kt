@@ -6,7 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -15,17 +16,7 @@ import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.databinding.FragmentRegisterBinding
 import com.aslansari.hypocoin.ui.BaseDialogFragment
 import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import timber.log.Timber
 
 
 /**
@@ -45,12 +36,17 @@ class RegisterFragment : BaseDialogFragment() {
     private lateinit var binding: FragmentRegisterBinding
     private var disposables: CompositeDisposable? = null
 
+    private var getSignInResult: ActivityResultLauncher<Intent>? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.DefaultDialog)
         if (arguments != null) {
         }
         disposables = CompositeDisposable()
+        getSignInResult =  registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            registerViewModel.onGoogleSignInResult(it)
+        }
     }
 
     override fun onCreateView(
@@ -89,23 +85,9 @@ class RegisterFragment : BaseDialogFragment() {
                     "Please enter a valid email address"
                 RegisterStatus.INPUT_EMPTY -> binding.textField.error = "Input required"
                 RegisterStatus.SIGN_IN_WITH_GOOGLE -> {
-                    val signInRequest = BeginSignInRequest.builder()
-                        .setGoogleIdTokenRequestOptions(
-                            BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                                .setSupported(true)
-                                // Your server's client ID, not your Android client ID.
-                                // Only show accounts previously used to sign in.
-                                .setFilterByAuthorizedAccounts(true)
-                                .build())
-                        .build()
-
-                    val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestEmail()
-                        .build();
-
-                    val signInClient = GoogleSignIn.getClient(requireActivity(), options)
-
-                    startActivityForResult(signInClient.signInIntent, 0)
+                    getSignInResult?.let {
+                        registerViewModel.registerWithGoogle(requireActivity(), it)
+                    }
                 }
                 else -> {
                     binding.textField.error = "error"
@@ -121,30 +103,6 @@ class RegisterFragment : BaseDialogFragment() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 0) {
-            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                val account: GoogleSignInAccount = task.getResult(ApiException::class.java)
-                firebaseAuthWithGoogle(account)
-            } catch (e: ApiException) {
-                Timber.e(e, "Google sign in failed")
-            }
-        }
-    }
-
-    private fun firebaseAuthWithGoogle(account: GoogleSignInAccount) {
-        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-        Firebase.auth.signInWithCredential(credential)
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Toast.makeText(requireActivity(), "google signin success", Toast.LENGTH_LONG).show()
-                } else {
-                    Toast.makeText(requireActivity(), "google signin fail", Toast.LENGTH_LONG).show()
-                }
-            }
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
