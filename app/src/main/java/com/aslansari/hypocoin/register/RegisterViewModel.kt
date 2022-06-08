@@ -57,14 +57,15 @@ class RegisterViewModel(
             } else {
                 val isValid = registerUseCase.validateEmail(email)
                 if (isValid) {
-                    val isExists = registerUseCase.checkEmail(email)
-                    _registerUIState.value = if (isExists) {
-                        RegisterUIState(error = RegisterStatus.USER_ALREADY_EXISTS,
-                            buttonEnabled = false)
-                    } else {
-                        RegisterUIState(
-                            onSubmit = RegistrationData(email, null)
-                        )
+                    registerUseCase.checkEmail(email).collect { isExists ->
+                        _registerUIState.value = if (isExists) {
+                            RegisterUIState(error = RegisterStatus.USER_ALREADY_EXISTS,
+                                buttonEnabled = false)
+                        } else {
+                            RegisterUIState(
+                                onSubmit = RegistrationData(email, null)
+                            )
+                        }
                     }
                 } else {
                     _registerUIState.value =

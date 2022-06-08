@@ -36,7 +36,7 @@ class RegisterUseCase(
         }
     }
 
-    suspend fun checkEmail(email: String): Boolean {
+    suspend fun checkEmail(email: String): Flow<Boolean> {
         return accountRepository.isAccountExistsByEmail(email)
     }
 

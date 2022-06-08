@@ -5,12 +5,11 @@ import com.aslansari.hypocoin.register.RegisterResultStatus
 import com.aslansari.hypocoin.repository.model.Account
 import com.aslansari.hypocoin.repository.model.AccountDAO
 import com.google.firebase.auth.*
-import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class AccountRepository(
@@ -19,27 +18,18 @@ class AccountRepository(
     private val auth: FirebaseAuth,
 ) {
 
-    fun isAccountExists(id: String): Boolean {
-        return accountDAO.getAccount(id)
-            .onErrorReturnItem(Account("", ""))
-            .blockingGet().id.isNotEmpty()
-    }
-
     fun getAccount(id: String): Single<Account> {
         return accountDAO.getAccount(id)
     }
 
-    suspend fun createAccount(account: Account) = withContext(ioDispatcher) {
-        accountDAO.addAccount(account)
-    }
-
-    fun updateAccountBalance(id: String?, balance: Long): Completable {
-        return accountDAO.updateBalance(id, balance)
-    }
-
-    suspend fun isAccountExistsByEmail(email: String): Boolean {
-        // todo check email address is recorded in DB
-        return false
+    fun isAccountExistsByEmail(email: String) = callbackFlow {
+        auth.fetchSignInMethodsForEmail(email)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    trySend(it.result.signInMethods?.isNotEmpty() == true)
+                }
+            }
+        awaitClose {  }
     }
 
     fun isLoggedIn(): Boolean {
@@ -47,8 +37,8 @@ class AccountRepository(
     }
 
     fun register(account: Account) = callbackFlow {
-        auth.createUserWithEmailAndPassword(account.email, account.passwordPlaintext)
-            .addOnCompleteListener {
+        val task = auth.createUserWithEmailAndPassword(account.email, account.passwordPlaintext)
+        task.addOnCompleteListener {
                 if (it.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Timber.d("createUserWithEmail:success")
@@ -99,6 +89,7 @@ class AccountRepository(
                     }
                 }
             }
+        awaitClose {  }
     }
 
     fun signInWithGoogleCredential(credential: AuthCredential) {
