@@ -13,9 +13,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
@@ -92,18 +89,6 @@ class RegisterViewModel(
         resultLauncher.launch(signInClient.signInIntent)
     }
 
-    private fun firebaseAuthWithGoogle(account: GoogleSignInAccount) {
-        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-        Firebase.auth.signInWithCredential(credential)
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    // todo publish success data
-                } else {
-                    // todo publish error
-                }
-            }
-    }
-
     fun validateInput() =
         combine(flowPasswordInput, flowPasswordConfirmInput) { password, passwordConfirm ->
             if (!isPasswordEntered && password.isNotEmpty()) {
@@ -158,9 +143,10 @@ class RegisterViewModel(
             val id = UUID.randomUUID().toString()
             val account = Account(id, registrationData.email ?: "")
             account.passwordPlaintext = registrationData.passwordUnencrypted.toString()
-            registerUseCase.register(account) {
-                _registerResultUIState.value = RegisterResultUIState(error = it.status)
-            }
+            registerUseCase.register(account)
+                .collect {
+                    _registerResultUIState.value = RegisterResultUIState(error = it.status)
+                }
         }
     }
 
@@ -172,7 +158,7 @@ class RegisterViewModel(
         val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(activityResult.data)
         try {
             val account: GoogleSignInAccount = task.getResult(ApiException::class.java)
-            firebaseAuthWithGoogle(account)
+            registerUseCase.authRegisterWithGoogle(account)
         } catch (e: ApiException) {
             Timber.e(e, "Google sign in failed")
             when (e.status) {

@@ -10,12 +10,10 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.databinding.FragmentRegisterBinding
 import com.aslansari.hypocoin.ui.BaseDialogFragment
-import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 
@@ -26,9 +24,6 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
  */
 class RegisterFragment : BaseDialogFragment() {
 
-    private val userProfileViewModel: UserProfileViewModel by viewModels(factoryProducer = {
-        viewModelCompositionRoot.viewModelFactory
-    })
     private val registerViewModel: RegisterViewModel by activityViewModels(factoryProducer = {
         viewModelCompositionRoot.viewModelFactory
     })
@@ -102,7 +97,6 @@ class RegisterFragment : BaseDialogFragment() {
             }
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

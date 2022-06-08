@@ -4,53 +4,21 @@ import androidx.core.util.PatternsCompat.EMAIL_ADDRESS
 import com.aslansari.hypocoin.register.exception.PasswordMismatchException
 import com.aslansari.hypocoin.repository.AccountRepository
 import com.aslansari.hypocoin.repository.model.Account
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
-import timber.log.Timber
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.coroutines.flow.Flow
 
 class RegisterUseCase(
     private val accountRepository: AccountRepository,
-    private val auth: FirebaseAuth?,
 ) {
 
+    fun register(account: Account): Flow<RegisterResult> {
+        return accountRepository.register(account)
+    }
 
-    suspend fun register(account: Account, listener: (RegisterResult) -> Unit) {
-        auth?.createUserWithEmailAndPassword(account.email, account.passwordPlaintext)
-            ?.addOnCompleteListener {
-                if (it.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Timber.d("createUserWithEmail:success")
-                    val user = auth.currentUser
-                    listener.invoke(RegisterResult(0, "register success", RegisterResultStatus.SUCCESS))
-                    // update UI with user
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Timber.w("createUserWithEmail:failure - %s", it.exception?.message)
-                    // updateUI(null)
-                    when (it.exception) {
-                        is FirebaseAuthWeakPasswordException -> {
-                            // weak password
-                            listener.invoke(RegisterResult(1, "weak password", RegisterResultStatus.WEAK_PASSWORD))
-                        }
-                        is FirebaseAuthInvalidCredentialsException -> {
-                            // invalid email
-                            listener.invoke(RegisterResult(1, "weak password", RegisterResultStatus.INVALID_CREDENTIALS))
-                        }
-                        is FirebaseAuthUserCollisionException -> {
-                            // user already exists
-                            listener.invoke(RegisterResult(1, "weak password", RegisterResultStatus.USER_ALREADY_EXISTS))
-                        }
-                        else -> {
-                            // general error
-                            listener.invoke(RegisterResult(1, "weak password", RegisterResultStatus.REGISTER_ERROR))
-                        }
-                    }
-                }
-            }
-        // todo maybe listen for cancel
-        // accountRepository.createAccount(account)
+    fun authRegisterWithGoogle(account: GoogleSignInAccount) {
+        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+        accountRepository.signInWithGoogleCredential(credential)
     }
 
     @Throws(IllegalArgumentException::class)
@@ -76,6 +44,7 @@ class RegisterUseCase(
         return EMAIL_ADDRESS.matcher(email).matches()
     }
 }
+
 data class RegisterResult(
     val errorCode: Int,
     val errorMessage: String,
