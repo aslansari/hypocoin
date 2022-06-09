@@ -6,19 +6,18 @@ import com.aslansari.hypocoin.repository.AccountRepository
 import com.aslansari.hypocoin.repository.model.Account
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.firebase.auth.GoogleAuthProvider
-import kotlinx.coroutines.flow.Flow
 
 class RegisterUseCase(
     private val accountRepository: AccountRepository,
 ) {
 
-    fun register(account: Account): Flow<RegisterResult> {
-        return accountRepository.register(account)
+    fun register(account: Account, listener: (RegisterResult) -> Unit) {
+        accountRepository.register(account, listener)
     }
 
     fun authRegisterWithGoogle(account: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-        accountRepository.signInWithGoogleCredential(credential)
+        accountRepository.signInWithGoogleCredential(credential) { isSuccess -> }
     }
 
     @Throws(IllegalArgumentException::class)
@@ -36,8 +35,8 @@ class RegisterUseCase(
         }
     }
 
-    suspend fun checkEmail(email: String): Flow<Boolean> {
-        return accountRepository.isAccountExistsByEmail(email)
+    fun checkEmail(email: String, listener: (Boolean) -> Unit) {
+        return accountRepository.isAccountExistsByEmail(email, listener)
     }
 
     fun validateEmail(email: String): Boolean {

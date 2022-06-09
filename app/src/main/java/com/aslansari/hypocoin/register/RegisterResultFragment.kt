@@ -89,7 +89,10 @@ class RegisterResultFragment : BaseDialogFragment() {
         registerViewModel.registerResultUIStateLiveData.observe(viewLifecycleOwner) {
             when (it.error) {
                 RegisterResultStatus.SUCCESS -> {
-                    Toast.makeText(requireContext(), "register success", Toast.LENGTH_LONG).show()
+                    val direction = RegisterResultFragmentDirections.registerSuccess(
+                        message = getString(R.string.register_success),
+                    )
+                    findNavController().navigate(direction)
                 }
                 else -> {
                     Toast.makeText(requireContext(), it.error.name, Toast.LENGTH_LONG).show()

@@ -34,6 +34,19 @@
         android:name="com.aslansari.hypocoin.register.RegisterResultFragment"
         android:label="Register Result"
         tools:layout="@layout/fragment_register_result">
+        <action
+            android:id="@+id/registerSuccess"
+            app:destination="@id/result_dialog" />
+    </dialog>
+    <dialog
+        android:id="@+id/result_dialog"
+        android:name="com.aslansari.hypocoin.ui.ResultDialog"
+        android:label="Result Dialog"
+        tools:layout="@layout/dialog_result">
+        <argument
+            android:name="message"
+            android:defaultValue=""
+            app:argType="string" />
     </dialog>
     <fragment
         android:id="@+id/login_fragment"

@@ -8,8 +8,6 @@ import com.google.firebase.auth.*
 import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 
 class AccountRepository(
@@ -22,84 +20,78 @@ class AccountRepository(
         return accountDAO.getAccount(id)
     }
 
-    fun isAccountExistsByEmail(email: String) = callbackFlow {
+    fun isAccountExistsByEmail(email: String, listener: (Boolean) -> Unit) {
         auth.fetchSignInMethodsForEmail(email)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    trySend(it.result.signInMethods?.isNotEmpty() == true)
+                    listener(it.result.signInMethods?.isNotEmpty() == true)
                 }
             }
-        awaitClose {  }
     }
 
     fun isLoggedIn(): Boolean {
         return false
     }
 
-    fun register(account: Account) = callbackFlow {
+    fun register(account: Account, listener: (RegisterResult) -> Unit) {
         val task = auth.createUserWithEmailAndPassword(account.email, account.passwordPlaintext)
         task.addOnCompleteListener {
-                if (it.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Timber.d("createUserWithEmail:success")
-                    val user = auth.currentUser
-                    trySend(RegisterResult(
-                        0,
-                        "register success",
-                        RegisterResultStatus.SUCCESS
-                    ))
-                    // update UI with user
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Timber.w("createUserWithEmail:failure - %s", it.exception?.message)
-                    // updateUI(null)
-                    when (it.exception) {
-                        is FirebaseAuthWeakPasswordException -> {
-                            // weak password
-                            trySend(RegisterResult(
-                                1,
-                                "weak password",
-                                RegisterResultStatus.WEAK_PASSWORD
-                            ))
-                        }
-                        is FirebaseAuthInvalidCredentialsException -> {
-                            // invalid email
-                            trySend(RegisterResult(
-                                1,
-                                "weak password",
-                                RegisterResultStatus.INVALID_CREDENTIALS
-                            ))
-                        }
-                        is FirebaseAuthUserCollisionException -> {
-                            // user already exists
-                            trySend(RegisterResult(
-                                1,
-                                "weak password",
-                                RegisterResultStatus.USER_ALREADY_EXISTS
-                            ))
-                        }
-                        else -> {
-                            // general error
-                            trySend(RegisterResult(
-                                1,
-                                "weak password",
-                                RegisterResultStatus.REGISTER_ERROR
-                            ))
-                        }
+            if (it.isSuccessful) {
+                // Sign in success, update UI with the signed-in user's information
+                Timber.d("createUserWithEmail:success")
+                val user = auth.currentUser
+                listener(RegisterResult(
+                    0,
+                    "register success",
+                    RegisterResultStatus.SUCCESS
+                ))
+                // update UI with user
+            } else {
+                // If sign in fails, display a message to the user.
+                Timber.w("createUserWithEmail:failure - %s", it.exception?.message)
+                // updateUI(null)
+                when (it.exception) {
+                    is FirebaseAuthWeakPasswordException -> {
+                        // weak password
+                        listener(RegisterResult(
+                            1,
+                            "weak password",
+                            RegisterResultStatus.WEAK_PASSWORD
+                        ))
+                    }
+                    is FirebaseAuthInvalidCredentialsException -> {
+                        // invalid email
+                        listener(RegisterResult(
+                            1,
+                            "weak password",
+                            RegisterResultStatus.INVALID_CREDENTIALS
+                        ))
+                    }
+                    is FirebaseAuthUserCollisionException -> {
+                        // user already exists
+                        listener(RegisterResult(
+                            1,
+                            "weak password",
+                            RegisterResultStatus.USER_ALREADY_EXISTS
+                        ))
+                    }
+                    else -> {
+                        // general error
+                        listener(RegisterResult(
+                            1,
+                            "weak password",
+                            RegisterResultStatus.REGISTER_ERROR
+                        ))
                     }
                 }
             }
-        awaitClose {  }
+        }
     }
 
-    fun signInWithGoogleCredential(credential: AuthCredential) {
+    fun signInWithGoogleCredential(credential: AuthCredential, completeListener: (Boolean) -> Unit) {
         auth.signInWithCredential(credential)
             .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    // todo publish success data
-                } else {
-                    // todo publish error
-                }
+                completeListener.invoke(it.isSuccessful)
             }
     }
 }

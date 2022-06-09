@@ -21,7 +21,7 @@ import timber.log.Timber
 import java.util.*
 
 /**
- * Todo error handling
+ *
  */
 class RegisterViewModel(
     private val registerUseCase: RegisterUseCase,
@@ -57,7 +57,7 @@ class RegisterViewModel(
             } else {
                 val isValid = registerUseCase.validateEmail(email)
                 if (isValid) {
-                    registerUseCase.checkEmail(email).collect { isExists ->
+                    registerUseCase.checkEmail(email) { isExists ->
                         _registerUIState.value = if (isExists) {
                             RegisterUIState(error = RegisterStatus.USER_ALREADY_EXISTS,
                                 buttonEnabled = false)
@@ -144,10 +144,9 @@ class RegisterViewModel(
             val id = UUID.randomUUID().toString()
             val account = Account(id, registrationData.email ?: "")
             account.passwordPlaintext = registrationData.passwordUnencrypted.toString()
-            registerUseCase.register(account)
-                .collect {
-                    _registerResultUIState.value = RegisterResultUIState(error = it.status)
-                }
+            registerUseCase.register(account) {
+                _registerResultUIState.value = RegisterResultUIState(error = it.status)
+            }
         }
     }
 

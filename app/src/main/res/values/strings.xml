@@ -24,4 +24,5 @@
     <string name="continue_str">Continue</string>
     <string name="continue_with_google">Continue With Google</string>
     <string name="content_desc_hypocoin_icon">Hypocoin application icon</string>
+    <string name="register_success">SUCCESSFULLY REGISTERED</string>
 </resources>
