@@ -19,7 +19,7 @@
     <string name="error_passwords_does_not_match">Passwords does not match</string>
     <string name="error_cannot_register">Register Error</string>
     <string name="error_username_already_exists">Username already exists</string>
-    <string name="hyperlink">By continuing you are confirming that you accept our <a href="https://aslansari.com">Terms &amp; Conditions</a> and have read and understand our <a href="https://aslansari.com">Privacy Policy</a></string>
+    <string name="hyperlink">By continuing you are confirming that you accept our <a href="https://hypo-coin.web.app/termsandconditions.html">Terms &amp; Conditions</a> and have read and understand our <a href="https://hypo-coin.web.app/privacypolicy.html">Privacy Policy</a></string>
     <string name="or">or</string>
     <string name="continue_str">Continue</string>
     <string name="continue_with_google">Continue With Google</string>
