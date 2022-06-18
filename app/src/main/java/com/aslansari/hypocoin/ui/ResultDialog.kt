@@ -43,7 +43,7 @@ class ResultDialog: BaseDialogFragment() {
         }
         lifecycleScope.launch {
             delay(5000)
-            findNavController().popBackStack(R.id.account_fragment, false)
+            findNavController().navigate(R.id.action_register_result_finished)
         }
     }
 }
