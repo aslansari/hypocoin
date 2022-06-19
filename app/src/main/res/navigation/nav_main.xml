@@ -16,13 +16,43 @@
         android:name="com.aslansari.hypocoin.account.AccountFragment"
         android:label="Currencies"
         tools:layout="@layout/fragment_account">
+        <action
+            android:id="@+id/action_account_fragment_to_login_fragment"
+            app:destination="@id/login_fragment" />
     </fragment>
-    <fragment
+    <dialog
         android:id="@+id/register_fragment"
         android:name="com.aslansari.hypocoin.register.RegisterFragment"
         android:label="Currencies"
         tools:layout="@layout/fragment_register">
-    </fragment>
+        <action
+            android:id="@+id/action_register_fragment_to_register_fragment_result"
+            app:destination="@id/register_fragment_result" />
+    </dialog>
+    <dialog
+        android:id="@+id/register_fragment_result"
+        android:name="com.aslansari.hypocoin.register.RegisterResultFragment"
+        android:label="Register Result"
+        tools:layout="@layout/fragment_register_result">
+        <action
+            android:id="@+id/registerSuccess"
+            app:destination="@id/result_dialog" />
+    </dialog>
+    <dialog
+        android:id="@+id/result_dialog"
+        android:name="com.aslansari.hypocoin.ui.ResultDialog"
+        android:label="Result Dialog"
+        tools:layout="@layout/dialog_result">
+        <argument
+            android:name="message"
+            android:defaultValue=""
+            app:argType="string" />
+        <action
+            android:id="@+id/action_register_result_finished"
+            app:destination="@id/account_fragment"
+            app:popUpTo="@id/account_fragment"
+            app:popUpToInclusive="true" />
+    </dialog>
     <fragment
         android:id="@+id/login_fragment"
         android:name="com.aslansari.hypocoin.account.login.ui.LoginFragment"
@@ -30,6 +60,10 @@
         tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_login_to_register"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/fadein"
+            app:popExitAnim="@anim/fadeout"
             app:destination="@id/register_fragment" />
         <action
             android:id="@+id/action_login_to_account"

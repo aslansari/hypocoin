@@ -19,7 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:indeterminateTint="@color/amber_800"
             android:visibility="@{vm.loading}"
             app:layout_constraintBottom_toTopOf="@+id/recyclerCoin"
             app:layout_constraintEnd_toEndOf="parent"

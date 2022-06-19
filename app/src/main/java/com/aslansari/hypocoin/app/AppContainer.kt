@@ -4,6 +4,7 @@ import android.content.Context
 import com.aslansari.hypocoin.BuildConfig
 import com.aslansari.hypocoin.repository.CoinDatabase
 import com.aslansari.hypocoin.repository.restapi.CoinAPI
+import com.google.firebase.FirebaseApp
 import com.google.gson.GsonBuilder
 import okhttp3.Cache
 import okhttp3.OkHttpClient

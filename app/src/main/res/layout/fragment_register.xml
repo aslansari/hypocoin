@@ -1,100 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="vm"
             type="com.aslansari.hypocoin.register.RegisterViewModel" />
+
+        <variable
+            name="isDark"
+            type="boolean" />
+
+        <variable
+            name="email"
+            type="String" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@{isDark ? @drawable/main_gradient_dark : @drawable/main_gradient}"
         tools:context=".register.RegisterFragment">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="Register" />
+
+        <ImageView
+            android:id="@+id/icon_hypocoin"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/ic_hypo_coin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            android:contentDescription="@string/content_desc_hypocoin_icon" />
 
         <ProgressBar
             android:id="@+id/progressRegister"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:indeterminateTint="@color/amber_800"
-            android:visibility="@{vm.registerUIState.loading}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tvAccountTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginStart="3dp"
-            android:text="Account ID"
-            android:textAppearance="@style/TextAppearance.Caption"
-            app:layout_constraintBottom_toTopOf="@+id/etAccountId"
-            app:layout_constraintStart_toStartOf="@id/etAccountId"
-            tools:text="Account ID" />
-
-        <EditText
-            android:id="@+id/etAccountId"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:text="@={vm.accountId}"
-            android:hint="@string/nav_bar_timeline"
-            android:inputType="text"
+            android:visibility="@{vm.registerUIState.loading ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.2" />
+            app:layout_constraintVertical_bias="0.4" />
 
-        <EditText
-            android:id="@+id/etPassword"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textField"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            android:text="@={vm.passwordFirst}"
-            android:hint="@string/password"
-            android:inputType="textPassword"
+            android:layout_margin="20dp"
+            android:hint="@string/email"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etAccountId" />
+            app:layout_constraintTop_toBottomOf="@+id/icon_hypocoin"
+            app:layout_constraintVertical_bias="0.2">
 
-        <EditText
-            android:id="@+id/etPasswordAgain"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            android:text="@={vm.passwordSecond}"
-            android:hint="@string/password"
-            android:inputType="textPassword"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etPassword" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:onTextChanged="@{() -> vm.onTextChange()}"
+                android:text="@={email}" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonRegister"
             android:layout_width="140dp"
             android:layout_height="55dp"
             android:layout_margin="20dp"
-            android:text="@string/register"
+            android:enabled="@{vm.registerUIState.buttonEnabled}"
+            android:onClick="@{() -> vm.onSubmitEmail(email)}"
+            android:text="@string/continue_str"
             android:textAppearance="@style/TextAppearance.Button"
-            android:onClick="@{() -> vm.register(vm.accountId, vm.passwordFirst, vm.passwordSecond)}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etPasswordAgain" />
+            app:layout_constraintTop_toBottomOf="@+id/textField" />
+
+        <include
+            android:id="@+id/seperator"
+            layout="@layout/register_method_seperator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/buttonRegister" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonGoogle"
+            style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:layout_margin="20dp"
+            android:text="@string/continue_with_google"
+            android:onClick="@{() -> vm.registerWithGoogleButtonClick()}"
+            app:icon="@drawable/ic_google"
+            app:iconPadding="15dp"
+            app:iconTint="@null"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/seperator" />
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/coordinator"

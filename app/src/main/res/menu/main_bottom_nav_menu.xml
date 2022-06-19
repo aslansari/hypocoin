@@ -20,7 +20,7 @@
         android:title="@string/nav_bar_timeline"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/login_fragment"
+        android:id="@+id/account_fragment"
         android:icon="@drawable/ic_outline_person"
         android:title="@string/nav_bar_account"
         app:showAsAction="ifRoom" />
