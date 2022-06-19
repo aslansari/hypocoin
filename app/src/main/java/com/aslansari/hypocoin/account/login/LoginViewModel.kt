@@ -1,14 +1,13 @@
 package com.aslansari.hypocoin.account.login
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.aslansari.hypocoin.viewmodel.login.LoginUIModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class LoginViewModel: ViewModel() {
 
-    private var registerClickListener: (() -> Unit)? = null
     private var _loginState = MutableLiveData<LoginUIModel>()
     val loginUIState: LiveData<LoginUIModel> = _loginState
 
@@ -22,20 +21,19 @@ class LoginViewModel: ViewModel() {
         addSource(_loading) { loading -> value = loading.not() }
     }
 
-    fun registerClicked() {
-        registerClickListener?.invoke()
+    fun onLoginClick(email: String, password: String) {
+
     }
 
-    fun onRegisterClicked(registerClickListener: () -> Unit) {
-        this.registerClickListener = registerClickListener
+    fun onSubmitEmailClick(email: String) {
+        // validate and return ui state
     }
 
-    fun loginClicked(id: String) {
-        Timber.i("login clicked with id:$id")
-        viewModelScope.launch {
-            _loading.value = true
-            delay(3000)
-            _loading.value = false
-        }
+    fun onForgotPasswordClick(email: String) {
+
+    }
+
+    fun onGoogleLoginClick() {
+
     }
 }

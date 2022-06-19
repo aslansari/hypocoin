@@ -1,6 +1,10 @@
 package com.aslansari.hypocoin.account.login.ui
 
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,31 +14,25 @@ import androidx.navigation.fragment.findNavController
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.account.login.LoginViewModel
 import com.aslansari.hypocoin.databinding.FragmentLoginBinding
-import com.aslansari.hypocoin.ui.BaseFragment
-import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel
+import com.aslansari.hypocoin.ui.BaseDialogFragment
 import com.aslansari.hypocoin.viewmodel.login.LoginUIModel
-import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 /**
  * A simple [Fragment] subclass.
- * Use the [LoginFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class LoginFragment : BaseFragment() {
-    private val userProfileViewModel: UserProfileViewModel by viewModels(factoryProducer = {
-        viewModelCompositionRoot.viewModelFactory
-    })
+class LoginFragment : BaseDialogFragment() {
+
     private val loginViewModel: LoginViewModel by viewModels {
         viewModelCompositionRoot.viewModelFactory
     }
     private lateinit var binding: FragmentLoginBinding
-    private var disposables: CompositeDisposable? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setStyle(STYLE_NORMAL, R.style.DefaultDialog)
         if (arguments != null) {
             // get arguments if exists
         }
-        disposables = CompositeDisposable()
     }
 
     override fun onCreateView(
@@ -54,9 +52,7 @@ class LoginFragment : BaseFragment() {
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
         }
-        loginViewModel.onRegisterClicked {
-            findNavController().navigate(R.id.action_login_to_register)
-        }
+        setSignupButton()
         loginViewModel.loginUIState.observe(viewLifecycleOwner) { model ->
             when (model) {
                 is LoginUIModel.Fail -> {
@@ -70,25 +66,25 @@ class LoginFragment : BaseFragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        disposables!!.dispose()
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @return A new instance of fragment AccountFragment.
-         */
-        @JvmStatic
-        fun newInstance(): LoginFragment {
-            val fragment = LoginFragment()
-            val args = Bundle()
-            // add arguments if necessary
-            fragment.arguments = args
-            return fragment
+    private fun setSignupButton() {
+        val doNotHaveAccount = getString(R.string.signup_first)
+        val signupText = getString(R.string.signup_second)
+        val displayText = "$doNotHaveAccount $signupText"
+        val spannable = SpannableStringBuilder(displayText)
+        val startIdx = displayText.indexOf(signupText)
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                findNavController().navigate(R.id.action_login_to_register)
+                widget.invalidate()
+            }
         }
+        spannable.setSpan(
+            clickableSpan,
+            startIdx,
+            startIdx + signupText.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        binding.tvSignup.text = spannable
+        binding.tvSignup.movementMethod = LinkMovementMethod.getInstance()
     }
 }

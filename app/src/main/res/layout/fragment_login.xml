@@ -1,23 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+
     <data>
-        <variable
-            name="accountId"
-            type="String" />
+
+        <import type="android.view.View" />
+
         <variable
             name="vm"
             type="com.aslansari.hypocoin.account.login.LoginViewModel" />
-        <import type="android.view.View" />
+
+        <variable
+            name="isDark"
+            type="boolean" />
+
+        <variable
+            name="email"
+            type="String" />
     </data>
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".account.login.ui.LoginFragment">
+        android:background="@{isDark ? @drawable/main_gradient_dark : @drawable/main_gradient}"
+        tools:context=".register.RegisterFragment">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="@string/login_title" />
+
+        <ImageView
+            android:id="@+id/icon_hypocoin"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:contentDescription="@string/content_desc_hypocoin_icon"
+            android:src="@drawable/ic_hypo_coin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
         <ProgressBar
-            android:id="@+id/progressLogin"
+            android:id="@+id/progressRegister"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
@@ -25,59 +56,96 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.4" />
 
-        <TextView
-            android:id="@+id/tvAccountTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginStart="3dp"
-            android:text="Account ID"
-            android:textAppearance="@style/TextAppearance.Caption"
-            app:layout_constraintBottom_toTopOf="@+id/etAccountId"
-            app:layout_constraintStart_toStartOf="@id/etAccountId"
-            tools:text="Account ID" />
-
-        <EditText
-            android:id="@+id/etAccountId"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textField"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:enabled="@{!vm.loading}"
-            android:text="@={vm.accountId}"
-            android:hint="@string/nav_bar_timeline"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_margin="20dp"
+            android:hint="@string/email"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/icon_hypocoin"
+            app:layout_constraintVertical_bias="0.2">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:text="@={email}" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonLogin"
-            android:layout_width="120dp"
+            android:id="@+id/buttonRegister"
+            android:layout_width="140dp"
             android:layout_height="55dp"
-            android:layout_margin="5dp"
-            android:text="@string/login_title"
-            android:enabled="@{vm.loginButtonEnabled}"
+            android:layout_margin="20dp"
+            android:onClick="@{() -> vm.onSubmitEmailClick(email)}"
             android:textAppearance="@style/TextAppearance.Button"
-            android:onClick="@{() -> vm.loginClicked(vm.accountId)}"
+            android:text="@string/continue_str"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etAccountId" />
+            app:layout_constraintTop_toBottomOf="@+id/textField" />
 
+        <include
+            android:id="@+id/seperator"
+            layout="@layout/register_method_seperator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/buttonRegister" />
 
-        <TextView
-            android:id="@+id/tvRegisterRequest"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonGoogle"
+            style="@style/Widget.Material3.Button.OutlinedButton.Icon"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_margin="40dp"
-            android:text="@string/no_account_register"
-            android:textAppearance="@style/TextAppearance.Caption"
-            android:onClick="@{() -> vm.registerClicked()}"
-            app:layout_constraintEnd_toEndOf="@id/etAccountId"
-            app:layout_constraintStart_toStartOf="@id/etAccountId"
-            app:layout_constraintTop_toBottomOf="@+id/buttonLogin" />
+            android:layout_height="55dp"
+            android:layout_margin="20dp"
+            android:onClick="@{() -> vm.onGoogleLoginClick()}"
+            android:text="@string/continue_with_google"
+            app:icon="@drawable/ic_google"
+            app:iconPadding="15dp"
+            app:iconTint="@null"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/seperator" />
 
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvSignup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/buttonGoogle"
+            tools:text="Don't have an account? Sign up"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonForgotPassword"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:onClick="@{() -> vm.onForgotPasswordClick(email)}"
+            android:text="@string/forgot_your_password"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvSignup" />
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/coordinator"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
