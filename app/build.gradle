@@ -32,6 +32,9 @@ android {
     buildFeatures {
         dataBinding true
     }
+    lintOptions {
+        baseline file("lint-baseline.xml")
+    }
 }
 
 dependencies {
