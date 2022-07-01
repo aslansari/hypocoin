@@ -30,4 +30,8 @@
     <string name="signup_first">Don\'t have an account?</string>
     <string name="signup_second">Sign up</string>
     <string name="forgot_your_password">Forgot your password?</string>
+    <string name="error_password_incorrect">Password incorrect</string>
+    <string name="error_email_does_not_exists">There is no account associated with this email</string>
+    <string name="error_login_failed">Login failed</string>
+    <string name="error_invalid_email">Email format is invalid</string>
 </resources>

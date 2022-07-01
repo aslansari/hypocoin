@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -13,12 +12,9 @@ import com.aslansari.hypocoin.account.login.LoginViewModel
 import com.aslansari.hypocoin.databinding.FragmentLoginCompleteBinding
 import com.aslansari.hypocoin.ui.BaseDialogFragment
 import com.aslansari.hypocoin.ui.DarkModeUtil
+import com.aslansari.hypocoin.viewmodel.login.LoginError
 import com.aslansari.hypocoin.viewmodel.login.LoginUIModel
 
-/**
- * A simple [Fragment] subclass.
- * create an instance of this fragment.
- */
 class LoginCompleteFragment : BaseDialogFragment() {
 
     private val loginViewModel: LoginViewModel by viewModels {
@@ -55,7 +51,15 @@ class LoginCompleteFragment : BaseDialogFragment() {
         loginViewModel.loginUIState.observe(viewLifecycleOwner) { state ->
             binding.progressLogin.visibility = if (state is LoginUIModel.Loading) View.VISIBLE else View.GONE
             when(state) {
-                is LoginUIModel.Idle -> {
+                is LoginUIModel.Result -> {
+                    findNavController().navigate(R.id.action_login_completed)
+                }
+                is LoginUIModel.Error -> {
+                    val errorString = when (state.loginError) {
+                        LoginError.PASSWORD_INCORRECT -> getString(R.string.error_password_incorrect)
+                        else -> getString(R.string.error_login_failed)
+                    }
+                    binding.textFieldPassword.error = errorString
                 }
                 else -> {}
             }

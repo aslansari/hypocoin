@@ -4,6 +4,7 @@ import com.aslansari.hypocoin.register.RegisterResult
 import com.aslansari.hypocoin.register.RegisterResultStatus
 import com.aslansari.hypocoin.repository.model.Account
 import com.aslansari.hypocoin.repository.model.AccountDAO
+import com.aslansari.hypocoin.viewmodel.login.LoginError
 import com.google.firebase.auth.*
 import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.CoroutineDispatcher
@@ -86,6 +87,40 @@ class AccountRepository(
                 }
             }
         }
+    }
+
+    fun signInWithEmail(email: String, password: String, completeListener: (LoginResult) -> Unit) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    completeListener.invoke(
+                        LoginResult(
+                            isSuccess = it.isSuccessful,
+                            isCanceled = it.isCanceled,
+                        )
+                    )
+                } else {
+                    val loginError = when(it.exception) {
+                        is FirebaseAuthInvalidCredentialsException -> {
+                            LoginError.PASSWORD_INCORRECT
+                        }
+                        else -> {
+                            LoginError.NONE
+                        }
+                    }
+                    completeListener.invoke(
+                        LoginResult(
+                            isSuccess = it.isSuccessful,
+                            isCanceled = it.isCanceled,
+                            loginError = loginError,
+                        )
+                    )
+                }
+            }
+    }
+
+    fun getCurrentUser(): FirebaseUser? {
+        return auth.currentUser
     }
 
     fun signInWithGoogleCredential(credential: AuthCredential, completeListener: (Boolean) -> Unit) {

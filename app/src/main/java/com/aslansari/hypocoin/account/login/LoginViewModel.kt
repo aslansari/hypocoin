@@ -27,7 +27,14 @@ class LoginViewModel(
         Timber.d("Login clicked")
         _loginUIState.value = LoginUIModel.Loading
         viewModelScope.launch {
-            loginUseCase.loginUser(email, password)
+            loginUseCase.loginUser(email, password) { signInResult ->
+                if (signInResult.isSuccess) {
+                    _loginUIState.value = LoginUIModel.Result
+                    _loginUIState.value = LoginUIModel.Idle
+                } else {
+                    _loginUIState.value = LoginUIModel.Error(signInResult.loginError)
+                }
+            }
             _loginUIState.value = LoginUIModel.Idle
         }
     }
@@ -41,6 +48,7 @@ class LoginViewModel(
             loginUseCase.checkEmail(email) {
                 if (it) {
                     _loginUIState.value = LoginUIModel.Result
+                    _loginUIState.value = LoginUIModel.Idle
                 } else {
                     _loginUIState.value = LoginUIModel.Error(LoginError.EMAIL_DOES_NOT_EXISTS)
                 }

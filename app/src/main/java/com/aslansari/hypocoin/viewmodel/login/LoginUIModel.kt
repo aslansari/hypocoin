@@ -8,8 +8,10 @@ sealed class LoginUIModel {
 }
 
 enum class LoginError {
+    NONE,
     GENERAL,
     EMAIL_INVALID,
     EMAIL_DOES_NOT_EXISTS,
+    PASSWORD_INCORRECT,
     ;
 }

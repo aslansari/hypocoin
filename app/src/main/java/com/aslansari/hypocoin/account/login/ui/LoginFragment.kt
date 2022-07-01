@@ -8,7 +8,6 @@ import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.aslansari.hypocoin.R
@@ -16,12 +15,9 @@ import com.aslansari.hypocoin.account.login.LoginViewModel
 import com.aslansari.hypocoin.databinding.FragmentLoginBinding
 import com.aslansari.hypocoin.ui.BaseDialogFragment
 import com.aslansari.hypocoin.ui.DarkModeUtil
+import com.aslansari.hypocoin.viewmodel.login.LoginError
 import com.aslansari.hypocoin.viewmodel.login.LoginUIModel
 
-/**
- * A simple [Fragment] subclass.
- * create an instance of this fragment.
- */
 class LoginFragment : BaseDialogFragment() {
 
     private val loginViewModel: LoginViewModel by viewModels {
@@ -59,14 +55,19 @@ class LoginFragment : BaseDialogFragment() {
         loginViewModel.loginUIState.observe(viewLifecycleOwner) { model ->
             binding.progressLogin.visibility = if (model is LoginUIModel.Loading) View.VISIBLE else View.GONE
             when (model) {
-                is LoginUIModel.Error -> {
-                    binding.textFieldEmail.error = model.loginError.name
-                }
                 is LoginUIModel.Result -> {
                     val direction = LoginFragmentDirections.actionSubmitLoginEmail(
                         email = binding.email!!
                     )
                     findNavController().navigate(direction)
+                }
+                is LoginUIModel.Error -> {
+                    val errorString = when(model.loginError) {
+                        LoginError.EMAIL_INVALID -> getString(R.string.error_invalid_email)
+                        LoginError.EMAIL_DOES_NOT_EXISTS -> getString(R.string.error_email_does_not_exists)
+                        else -> getString(R.string.error_login_failed)
+                    }
+                    binding.textFieldEmail.error = errorString
                 }
                 is LoginUIModel.Idle -> {
                     binding.textFieldEmail.error = null
