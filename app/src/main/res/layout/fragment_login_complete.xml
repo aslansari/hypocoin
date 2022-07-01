@@ -14,6 +14,10 @@
         <variable
             name="email"
             type="String" />
+
+        <variable
+            name="password"
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -32,6 +36,19 @@
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/ic_arrow_back"
             app:title="@string/login_title" />
+
+        <ProgressBar
+            android:id="@+id/progressLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.4"
+            tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/icon_hypocoin"
@@ -79,6 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
+                android:text="@={password}"
                 />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -89,6 +107,7 @@
             android:layout_margin="30dp"
             android:text="@string/login"
             android:textAppearance="@style/TextAppearance.Button"
+            android:onClick="@{() -> vm.onLoginClick(email, password)}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textFieldPassword" />

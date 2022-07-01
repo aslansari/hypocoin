@@ -15,6 +15,7 @@ import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.account.login.LoginViewModel
 import com.aslansari.hypocoin.databinding.FragmentLoginBinding
 import com.aslansari.hypocoin.ui.BaseDialogFragment
+import com.aslansari.hypocoin.ui.DarkModeUtil
 import com.aslansari.hypocoin.viewmodel.login.LoginUIModel
 
 /**
@@ -42,24 +43,33 @@ class LoginFragment : BaseDialogFragment() {
         // Inflate the layout for this fragment
         binding = FragmentLoginBinding.inflate(inflater, container, false)
         binding.apply {
+            lifecycleOwner = viewLifecycleOwner
             vm = loginViewModel
+            toolbar.setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
         }
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.apply {
-            lifecycleOwner = viewLifecycleOwner
-        }
+        binding.isDark = DarkModeUtil.isDarkMode(requireContext())
         setSignupButton()
         loginViewModel.loginUIState.observe(viewLifecycleOwner) { model ->
+            binding.progressLogin.visibility = if (model is LoginUIModel.Loading) View.VISIBLE else View.GONE
             when (model) {
-                is LoginUIModel.Fail -> {
-                    // todo print or handle error
+                is LoginUIModel.Error -> {
+                    binding.textFieldEmail.error = model.loginError.name
                 }
-                is LoginUIModel.Complete -> {
-                    // todo make complete action, navigate to account fragment
+                is LoginUIModel.Result -> {
+                    val direction = LoginFragmentDirections.actionSubmitLoginEmail(
+                        email = binding.email!!
+                    )
+                    findNavController().navigate(direction)
+                }
+                is LoginUIModel.Idle -> {
+                    binding.textFieldEmail.error = null
                 }
                 else -> {}
             }

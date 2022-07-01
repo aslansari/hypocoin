@@ -6,10 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.account.login.LoginViewModel
 import com.aslansari.hypocoin.databinding.FragmentLoginCompleteBinding
 import com.aslansari.hypocoin.ui.BaseDialogFragment
+import com.aslansari.hypocoin.ui.DarkModeUtil
+import com.aslansari.hypocoin.viewmodel.login.LoginUIModel
 
 /**
  * A simple [Fragment] subclass.
@@ -21,12 +25,11 @@ class LoginCompleteFragment : BaseDialogFragment() {
         viewModelCompositionRoot.viewModelFactory
     }
     private lateinit var binding: FragmentLoginCompleteBinding
+    private val args: LoginCompleteFragmentArgs by navArgs()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.DefaultDialog)
-        if (arguments != null) {
-            // get arguments if exists
-        }
     }
 
     override fun onCreateView(
@@ -36,15 +39,26 @@ class LoginCompleteFragment : BaseDialogFragment() {
         // Inflate the layout for this fragment
         binding = FragmentLoginCompleteBinding.inflate(inflater, container, false)
         binding.apply {
+            lifecycleOwner = viewLifecycleOwner
             vm = loginViewModel
+            email = args.email
+            toolbar.setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
         }
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.apply {
-            lifecycleOwner = viewLifecycleOwner
+        binding.isDark = DarkModeUtil.isDarkMode(requireContext())
+        loginViewModel.loginUIState.observe(viewLifecycleOwner) { state ->
+            binding.progressLogin.visibility = if (state is LoginUIModel.Loading) View.VISIBLE else View.GONE
+            when(state) {
+                is LoginUIModel.Idle -> {
+                }
+                else -> {}
+            }
         }
     }
 }
