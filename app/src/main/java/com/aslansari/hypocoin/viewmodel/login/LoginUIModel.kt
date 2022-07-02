@@ -14,6 +14,7 @@ enum class LoginResult {
     GOOGLE_LOGIN_REQUEST,
     EMAIL_VALID,
     LOGIN_SUCCESS,
+    PASSWORD_RESET_EMAIL_SENT,
 }
 
 enum class LoginError {
@@ -23,5 +24,6 @@ enum class LoginError {
     EMAIL_DOES_NOT_EXISTS,
     PASSWORD_INCORRECT,
     GOOGLE_LOGIN_CANCELED,
+    PASSWORD_RESET_EMAIL_NOT_SENT,
     ;
 }

@@ -129,4 +129,11 @@ class AccountRepository(
                 completeListener.invoke(it.isSuccessful)
             }
     }
+
+    fun forgotPassword(email: String, completeListener: (Boolean) -> Unit) {
+        auth.sendPasswordResetEmail(email)
+            .addOnCompleteListener {
+                completeListener.invoke(it.isSuccessful)
+            }
+    }
 }

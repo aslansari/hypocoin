@@ -26,4 +26,8 @@ class LoginUseCase(
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         accountRepository.signInWithGoogleCredential(credential, completeListener)
     }
+
+    fun forgotPassword(email: String, completeListener: (Boolean) -> Unit) {
+        accountRepository.forgotPassword(email, completeListener)
+    }
 }

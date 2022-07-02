@@ -70,7 +70,16 @@ class LoginViewModel(
 
     fun onForgotPasswordClick(email: String) {
         analyticsReporter.reportForgotPasswordClick()
-        Timber.d(email)
+        _loginUIState.value = LoginUIModel.Loading
+        viewModelScope.launch {
+            loginUseCase.forgotPassword(email) {
+                if (it) {
+                    _loginUIState.value = LoginUIModel.Result(LoginResult.PASSWORD_RESET_EMAIL_SENT)
+                } else {
+                    _loginUIState.value = LoginUIModel.Error(LoginError.PASSWORD_RESET_EMAIL_NOT_SENT)
+                }
+            }
+        }
     }
 
     fun onGoogleLoginClick() {

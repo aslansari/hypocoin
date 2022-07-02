@@ -15,6 +15,7 @@ import com.aslansari.hypocoin.ui.DarkModeUtil
 import com.aslansari.hypocoin.viewmodel.login.LoginError
 import com.aslansari.hypocoin.viewmodel.login.LoginResult
 import com.aslansari.hypocoin.viewmodel.login.LoginUIModel
+import com.google.android.material.snackbar.Snackbar
 
 class LoginCompleteFragment : BaseDialogFragment() {
 
@@ -54,15 +55,27 @@ class LoginCompleteFragment : BaseDialogFragment() {
             when(state) {
                 is LoginUIModel.Result -> {
                     if (state.loginResult == LoginResult.LOGIN_SUCCESS) {
-                        findNavController().navigate(R.id.action_login_completed)
+                    }
+                    when (state.loginResult) {
+                        LoginResult.LOGIN_SUCCESS -> {
+                            findNavController().navigate(R.id.action_login_completed)
+                        }
+                        LoginResult.PASSWORD_RESET_EMAIL_SENT -> {
+                            Snackbar.make(binding.root, "Password reset email sent", Snackbar.LENGTH_INDEFINITE).show()
+                        }
+                        else -> {}
                     }
                 }
                 is LoginUIModel.Error -> {
-                    val errorString = when (state.loginError) {
-                        LoginError.PASSWORD_INCORRECT -> getString(R.string.error_password_incorrect)
-                        else -> getString(R.string.error_login_failed)
+                    if (state.loginError == LoginError.PASSWORD_RESET_EMAIL_NOT_SENT) {
+                        Snackbar.make(binding.root, "Couldn't sent password reset email", Snackbar.LENGTH_LONG).show()
+                    } else {
+                        val errorString = when (state.loginError) {
+                            LoginError.PASSWORD_INCORRECT -> getString(R.string.error_password_incorrect)
+                            else -> getString(R.string.error_login_failed)
+                        }
+                        binding.textFieldPassword.error = errorString
                     }
-                    binding.textFieldPassword.error = errorString
                 }
                 else -> {}
             }
