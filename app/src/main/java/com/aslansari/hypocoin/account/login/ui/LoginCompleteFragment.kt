@@ -13,6 +13,7 @@ import com.aslansari.hypocoin.databinding.FragmentLoginCompleteBinding
 import com.aslansari.hypocoin.ui.BaseDialogFragment
 import com.aslansari.hypocoin.ui.DarkModeUtil
 import com.aslansari.hypocoin.viewmodel.login.LoginError
+import com.aslansari.hypocoin.viewmodel.login.LoginResult
 import com.aslansari.hypocoin.viewmodel.login.LoginUIModel
 
 class LoginCompleteFragment : BaseDialogFragment() {
@@ -52,7 +53,9 @@ class LoginCompleteFragment : BaseDialogFragment() {
             binding.progressLogin.visibility = if (state is LoginUIModel.Loading) View.VISIBLE else View.GONE
             when(state) {
                 is LoginUIModel.Result -> {
-                    findNavController().navigate(R.id.action_login_completed)
+                    if (state.loginResult == LoginResult.LOGIN_SUCCESS) {
+                        findNavController().navigate(R.id.action_login_completed)
+                    }
                 }
                 is LoginUIModel.Error -> {
                     val errorString = when (state.loginError) {

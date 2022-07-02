@@ -66,8 +66,10 @@
             app:popExitAnim="@anim/fadeout"
             app:destination="@id/register_fragment" />
         <action
-            android:id="@+id/action_login_to_account"
-            app:destination="@id/account_fragment" />
+            android:id="@+id/action_login_completed"
+            app:destination="@id/account_fragment"
+            app:popUpTo="@id/account_fragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_submit_login_email"
             app:destination="@id/login_complete_fragment" />

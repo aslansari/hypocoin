@@ -3,6 +3,8 @@ package com.aslansari.hypocoin.account.login
 import androidx.core.util.PatternsCompat
 import com.aslansari.hypocoin.repository.AccountRepository
 import com.aslansari.hypocoin.repository.LoginResult
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.firebase.auth.GoogleAuthProvider
 
 class LoginUseCase(
     private val accountRepository: AccountRepository
@@ -18,5 +20,10 @@ class LoginUseCase(
 
     fun loginUser(email: String, password: String, completeListener: (LoginResult) -> Unit) {
         accountRepository.signInWithEmail(email, password, completeListener)
+    }
+
+    fun signInWithGoogle(account: GoogleSignInAccount, completeListener: (Boolean) -> Unit) {
+        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+        accountRepository.signInWithGoogleCredential(credential, completeListener)
     }
 }

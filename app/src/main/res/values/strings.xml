@@ -34,4 +34,7 @@
     <string name="error_email_does_not_exists">There is no account associated with this email</string>
     <string name="error_login_failed">Login failed</string>
     <string name="error_invalid_email">Email format is invalid</string>
+    <string name="title_dialog_register_with_google">Register With Google?</string>
+    <string name="message_dialog_register_with_google">This email %s is not registered with this app before, do you want to continue?</string>
+    <string name="cancel">Cancel</string>
 </resources>

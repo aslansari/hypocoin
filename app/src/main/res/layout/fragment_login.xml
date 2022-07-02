@@ -4,6 +4,7 @@
     <data>
 
         <import type="android.view.View" />
+        <import type="com.aslansari.hypocoin.viewmodel.login.LoginUIModel" />
 
         <variable
             name="vm"
@@ -52,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="@{vm.loading ? View.VISIBLE : View.GONE}"
+            android:visibility="@{vm.loginUIState instanceof LoginUIModel.Loading ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

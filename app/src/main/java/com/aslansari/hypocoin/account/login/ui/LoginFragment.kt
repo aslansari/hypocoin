@@ -1,5 +1,6 @@
 package com.aslansari.hypocoin.account.login.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -8,6 +9,8 @@ import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.aslansari.hypocoin.R
@@ -16,7 +19,9 @@ import com.aslansari.hypocoin.databinding.FragmentLoginBinding
 import com.aslansari.hypocoin.ui.BaseDialogFragment
 import com.aslansari.hypocoin.ui.DarkModeUtil
 import com.aslansari.hypocoin.viewmodel.login.LoginError
+import com.aslansari.hypocoin.viewmodel.login.LoginResult
 import com.aslansari.hypocoin.viewmodel.login.LoginUIModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class LoginFragment : BaseDialogFragment() {
 
@@ -24,11 +29,13 @@ class LoginFragment : BaseDialogFragment() {
         viewModelCompositionRoot.viewModelFactory
     }
     private lateinit var binding: FragmentLoginBinding
+    private var getSignInResult: ActivityResultLauncher<Intent>? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.DefaultDialog)
-        if (arguments != null) {
-            // get arguments if exists
+        getSignInResult =  registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            loginViewModel.onGoogleSignInResult(it)
         }
     }
 
@@ -44,6 +51,7 @@ class LoginFragment : BaseDialogFragment() {
             toolbar.setNavigationOnClickListener {
                 findNavController().navigateUp()
             }
+            email = ""
         }
         return binding.root
     }
@@ -53,13 +61,39 @@ class LoginFragment : BaseDialogFragment() {
         binding.isDark = DarkModeUtil.isDarkMode(requireContext())
         setSignupButton()
         loginViewModel.loginUIState.observe(viewLifecycleOwner) { model ->
-            binding.progressLogin.visibility = if (model is LoginUIModel.Loading) View.VISIBLE else View.GONE
             when (model) {
                 is LoginUIModel.Result -> {
-                    val direction = LoginFragmentDirections.actionSubmitLoginEmail(
-                        email = binding.email!!
-                    )
-                    findNavController().navigate(direction)
+                    when (model.loginResult) {
+                        LoginResult.EMAIL_VALID -> {
+                            val direction = LoginFragmentDirections.actionSubmitLoginEmail(
+                                email = binding.email!!
+                            )
+                            findNavController().navigate(direction)
+                        }
+                        LoginResult.GOOGLE_LOGIN_REQUEST -> {
+                            getSignInResult?.let {
+                                loginViewModel.signInWithGoogle(requireActivity(), it)
+                            }
+                        }
+                        LoginResult.LOGIN_SUCCESS -> {
+                            findNavController().navigate(R.id.action_login_completed)
+                        }
+                    }
+                }
+                is LoginUIModel.RegisterWithGoogle -> {
+                    MaterialAlertDialogBuilder(requireContext()).apply {
+                        setTitle(getString(R.string.title_dialog_register_with_google))
+                        val message = getString(R.string.message_dialog_register_with_google, model.account.email) +
+                                "\n\n" +
+                                getString(R.string.hyperlink)
+                        setMessage(message)
+                        setPositiveButton(getString(R.string.continue_str)) { _,_ ->
+                            loginViewModel.continueRegisterWithGoogle(model.account)
+                        }
+                        setNegativeButton(getString(R.string.cancel)) { _, _ ->
+                            loginViewModel.cancelGoogleSignIn()
+                        }
+                    }.show()
                 }
                 is LoginUIModel.Error -> {
                     val errorString = when(model.loginError) {
