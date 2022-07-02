@@ -6,6 +6,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
 import com.aslansari.hypocoin.R
+import com.aslansari.hypocoin.app.util.AnalyticsReporter
 import com.aslansari.hypocoin.repository.model.Account
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -25,6 +26,7 @@ import java.util.*
  */
 class RegisterViewModel(
     private val registerUseCase: RegisterUseCase,
+    private val analyticsReporter: AnalyticsReporter,
 ) : ViewModel() {
 
     private val _registerUIState = MutableLiveData(RegisterUIState())
@@ -50,6 +52,7 @@ class RegisterViewModel(
     }
 
     fun onSubmitEmail(email: String?) {
+        analyticsReporter.reportSubmitEmailForRegisterClick()
         viewModelScope.launch {
             _registerUIState.value = (RegisterUIState(loading = true, buttonEnabled = false))
             if (email.isNullOrBlank()) {
@@ -76,6 +79,7 @@ class RegisterViewModel(
     }
 
     fun registerWithGoogleButtonClick() {
+        analyticsReporter.reportRegisterWGoogleButtonClick()
         _registerUIState.value = RegisterUIState(error = RegisterStatus.SIGN_IN_WITH_GOOGLE)
     }
 
@@ -146,6 +150,9 @@ class RegisterViewModel(
             account.passwordPlaintext = registrationData.passwordUnencrypted.toString()
             registerUseCase.register(account) {
                 _registerResultUIState.value = RegisterResultUIState(error = it.status)
+                if (it.status == RegisterResultStatus.SUCCESS) {
+                    analyticsReporter.reportEmailRegisterSuccess()
+                }
             }
         }
     }

@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 class ResultDialog: BaseDialogFragment() {
 
     private lateinit var binding: DialogResultBinding
-    val args: ResultDialogArgs by navArgs()
+    private val args: ResultDialogArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,7 +1,6 @@
 package com.aslansari.hypocoin.register
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.databinding.FragmentRegisterBinding
 import com.aslansari.hypocoin.ui.BaseDialogFragment
+import com.aslansari.hypocoin.ui.DarkModeUtil
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 
@@ -62,15 +62,7 @@ class RegisterFragment : BaseDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        when (requireContext().resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-            Configuration.UI_MODE_NIGHT_YES -> {
-                binding.isDark = true
-            }
-            else -> {
-                binding.isDark = false
-            }
-        }
-
+        binding.isDark = DarkModeUtil.isDarkMode(requireContext())
         registerViewModel.registerUIState.observe(viewLifecycleOwner) { state ->
             when (state.error) {
                 RegisterStatus.NO_ERROR -> binding.textField.error = null

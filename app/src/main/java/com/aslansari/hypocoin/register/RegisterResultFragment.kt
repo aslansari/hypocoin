@@ -1,6 +1,5 @@
 package com.aslansari.hypocoin.register
 
-import android.content.res.Configuration
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -13,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.databinding.FragmentRegisterResultBinding
 import com.aslansari.hypocoin.ui.BaseDialogFragment
+import com.aslansari.hypocoin.ui.DarkModeUtil
 import kotlinx.coroutines.launch
 
 /**
@@ -52,14 +52,7 @@ class RegisterResultFragment : BaseDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        when (requireContext().resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-            Configuration.UI_MODE_NIGHT_YES -> {
-                binding.isDark = true
-            }
-            else -> {
-                binding.isDark = false
-            }
-        }
+        binding.isDark = DarkModeUtil.isDarkMode(requireContext())
         binding.textFieldTos.movementMethod = LinkMovementMethod.getInstance()
         binding.textFieldEmail.text = email
 
@@ -71,17 +64,18 @@ class RegisterResultFragment : BaseDialogFragment() {
                         binding.textFieldPasswordConfirm.error = null
                     }
                     RegisterResultStatus.DOES_NOT_MATCH -> {
-                        binding.textFieldPassword.error = "Passwords does not match"
+                        binding.textFieldPassword.error = getString(R.string.error_passwords_does_not_match)
                     }
                     RegisterResultStatus.CONFIRM_YOUR_PASSWORD -> {
-                        binding.textFieldPasswordConfirm.error = "Please confirm your password"
+                        binding.textFieldPasswordConfirm.error = getString(R.string.confirm_password)
                     }
                     RegisterResultStatus.SHOULD_NOT_BE_EMPTY -> {
-                        binding.textFieldPassword.error = "Password should not be empty"
+                        binding.textFieldPassword.error = getString(R.string.error_password_cannot_be_empty)
                     }
                     RegisterResultStatus.NOT_VALID -> {
-                        binding.textFieldPassword.error = "password is not valid"
+                        binding.textFieldPassword.error = getString(R.string.error_invalid_password)
                     }
+                    else -> {}
                 }
             }
         }

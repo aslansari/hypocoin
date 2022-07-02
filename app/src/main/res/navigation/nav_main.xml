@@ -53,10 +53,10 @@
             app:popUpTo="@id/account_fragment"
             app:popUpToInclusive="true" />
     </dialog>
-    <fragment
+    <dialog
         android:id="@+id/login_fragment"
         android:name="com.aslansari.hypocoin.account.login.ui.LoginFragment"
-        android:label="Currencies"
+        android:label="Login"
         tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_login_to_register"
@@ -66,7 +66,27 @@
             app:popExitAnim="@anim/fadeout"
             app:destination="@id/register_fragment" />
         <action
-            android:id="@+id/action_login_to_account"
-            app:destination="@id/account_fragment" />
-    </fragment>
+            android:id="@+id/action_login_completed"
+            app:destination="@id/account_fragment"
+            app:popUpTo="@id/account_fragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_submit_login_email"
+            app:destination="@id/login_complete_fragment" />
+    </dialog>
+    <dialog
+        android:id="@+id/login_complete_fragment"
+        android:name="com.aslansari.hypocoin.account.login.ui.LoginCompleteFragment"
+        android:label="Complete Login"
+        tools:layout="@layout/fragment_login_complete">
+        <argument
+            android:name="email"
+            android:defaultValue=""
+            app:argType="string" />
+        <action
+            android:id="@+id/action_login_completed"
+            app:destination="@id/account_fragment"
+            app:popUpTo="@id/account_fragment"
+            app:popUpToInclusive="true" />
+    </dialog>
 </navigation>

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.aslansari.hypocoin.R
@@ -12,24 +11,12 @@ import com.aslansari.hypocoin.databinding.FragmentAccountBinding
 import com.aslansari.hypocoin.ui.BaseFragment
 import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel
 
-/**
- * A simple [Fragment] subclass.
- * Use the [AccountFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AccountFragment : BaseFragment() {
     private val userProfileViewModel: UserProfileViewModel by activityViewModels(factoryProducer = {
         viewModelCompositionRoot.viewModelFactory
     })
 
     private lateinit var binding: FragmentAccountBinding
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            // get arguments if exists
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

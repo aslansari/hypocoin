@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues name="AGP (7.0.4)" by="lint 7.0.4" client="gradle" format="6" type="baseline" variant="all" version="7.0.4">
+
+    <issue
+        id="ObsoleteLintCustomCheck"
+        message="Lint found an issue registry (`androidx.fragment.lint.FragmentIssueRegistry`) which requires a newer API level. That means that the custom lint checks are intended for a newer lint version; please upgrade.">
+        <location
+            file="../../../.gradle/caches/transforms-3/d32e9dd70361caa93b418c90113c9ff8/transformed/fragment-1.4.1/jars/lint.jar"/>
+    </issue>
+
+    <issue
+        id="ObsoleteLintCustomCheck"
+        message="Lint found an issue registry (`androidx.fragment.lint.FragmentIssueRegistry`) which requires a newer API level. That means that the custom lint checks are intended for a newer lint version; please upgrade.">
+        <location
+            file="../../../.gradle/caches/transforms-3/d32e9dd70361caa93b418c90113c9ff8/transformed/fragment-1.4.1/jars/lint.jar"/>
+    </issue>
+
+    <issue
+        errorLine1="        targetSdkVersion 31"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~"
+        id="OldTargetApi"
+        message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the android.os.Build.VERSION_CODES javadoc for details.">
+        <location
+            column="9"
+            file="build.gradle"
+            line="15"/>
+    </issue>
+
+    <issue
+        errorLine1="    &lt;clip-path"
+        errorLine2="    ^"
+        id="VectorRaster"
+        message="This tag is not supported in images generated from this vector icon for API &lt; 24; check generated icon to make sure it looks acceptable">
+        <location
+            column="5"
+            file="src/main/res/drawable/ic_launcher_foreground.xml"
+            line="7"/>
+    </issue>
+
+    <issue
+        errorLine1="    implementation &apos;androidx.activity:activity-ktx:1.4.0&apos;"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        id="GradleDependency"
+        message="A newer version of androidx.activity:activity-ktx than 1.4.0 is available: 1.5.0">
+        <location
+            column="20"
+            file="build.gradle"
+            line="44"/>
+    </issue>
+
+    <issue
+        errorLine1="    implementation &apos;androidx.fragment:fragment-ktx:1.4.1&apos;"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        id="GradleDependency"
+        message="A newer version of androidx.fragment:fragment-ktx than 1.4.1 is available: 1.5.0">
+        <location
+            column="20"
+            file="build.gradle"
+            line="45"/>
+    </issue>
+
+    <issue
+        errorLine1="    implementation &quot;androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1&quot;"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        id="GradleDependency"
+        message="A newer version of androidx.lifecycle:lifecycle-viewmodel-ktx than 2.4.1 is available: 2.5.0">
+        <location
+            column="20"
+            file="build.gradle"
+            line="49"/>
+    </issue>
+
+    <issue
+        errorLine1="    implementation &quot;androidx.lifecycle:lifecycle-livedata-ktx:2.4.1&quot;"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        id="GradleDependency"
+        message="A newer version of androidx.lifecycle:lifecycle-livedata-ktx than 2.4.1 is available: 2.5.0">
+        <location
+            column="20"
+            file="build.gradle"
+            line="50"/>
+    </issue>
+
+    <issue
+        errorLine1="    implementation platform(&apos;com.google.firebase:firebase-bom:30.1.0&apos;)"
+        errorLine2="                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        id="GradleDependency"
+        message="A newer version of com.google.firebase:firebase-bom than 30.1.0 is available: 30.2.0">
+        <location
+            column="29"
+            file="build.gradle"
+            line="59"/>
+    </issue>
+
+    <issue
+        errorLine1="    implementation &quot;androidx.navigation:navigation-fragment-ktx:$nav_version&quot;"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        id="GradleDependency"
+        message="A newer version of androidx.navigation:navigation-fragment-ktx than 2.4.2 is available: 2.5.0">
+        <location
+            column="20"
+            file="build.gradle"
+            line="86"/>
+    </issue>
+
+    <issue
+        errorLine1="    implementation &quot;androidx.navigation:navigation-ui-ktx:$nav_version&quot;"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        id="GradleDependency"
+        message="A newer version of androidx.navigation:navigation-ui-ktx than 2.4.2 is available: 2.5.0">
+        <location
+            column="20"
+            file="build.gradle"
+            line="87"/>
+    </issue>
+
+    <issue
+        errorLine1="        android:allowBackup=&quot;true&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~"
+        id="AllowBackup"
+        message="On SDK version 23 and up, your app data will be automatically backed up and restored on app install. Consider adding the attribute `android:fullBackupContent` to specify an `@xml` resource which configures which files to backup, or just set `android:fullBackupOnly=true`. More info: https://developer.android.com/guide/topics/data/autobackup">
+        <location
+            column="9"
+            file="src/main/AndroidManifest.xml"
+            line="9"/>
+    </issue>
+
+    <issue
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^"
+        id="UnusedResources"
+        message="The resource `R.drawable.button_bg` appears to be unused">
+        <location
+            column="1"
+            file="src/main/res/drawable/button_bg.xml"
+            line="1"/>
+    </issue>
+
+    <issue
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^"
+        id="UnusedResources"
+        message="The resource `R.drawable.button_dark_bg` appears to be unused">
+        <location
+            column="1"
+            file="src/main/res/drawable/button_dark_bg.xml"
+            line="1"/>
+    </issue>
+
+    <issue
+        errorLine1="    &lt;color name=&quot;md_theme_light_inversePrimary&quot;>#79DA9E&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        id="UnusedResources"
+        message="The resource `R.color.md_theme_light_inversePrimary` appears to be unused">
+        <location
+            column="12"
+            file="src/main/res/values/colors.xml"
+            line="27"/>
+    </issue>
+
+    <issue
+        errorLine1="    &lt;color name=&quot;md_theme_light_shadow&quot;>#000000&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        id="UnusedResources"
+        message="The resource `R.color.md_theme_light_shadow` appears to be unused">
+        <location
+            column="12"
+            file="src/main/res/values/colors.xml"
+            line="28"/>
+    </issue>
+
+    <issue
+        errorLine1="    &lt;color name=&quot;md_theme_dark_primaryContainer&quot;>#00522C&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        id="UnusedResources"
+        message="The resource `R.color.md_theme_dark_primaryContainer` appears to be unused">
+        <location
+            column="12"
+            file="src/main/res/values/colors.xml"
+            line="32"/>
+    </issue>
+
+    <issue
+        errorLine1="    &lt;color name=&quot;md_theme_dark_inversePrimary&quot;>#006D3D&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        id="UnusedResources"
+        message="The resource `R.color.md_theme_dark_inversePrimary` appears to be unused">
+        <location
+            column="12"
+            file="src/main/res/values/colors.xml"
+            line="55"/>
+    </issue>
+
+    <issue
+        errorLine1="    &lt;color name=&quot;md_theme_dark_shadow&quot;>#000000&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        id="UnusedResources"
+        message="The resource `R.color.md_theme_dark_shadow` appears to be unused">
+        <location
+            column="12"
+            file="src/main/res/values/colors.xml"
+            line="56"/>
+    </issue>
+
+    <issue
+        errorLine1="    &lt;color name=&quot;seed&quot;>#85D5A1&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~"
+        id="UnusedResources"
+        message="The resource `R.color.seed` appears to be unused">
+        <location
+            column="12"
+            file="src/main/res/values/colors.xml"
+            line="58"/>
+    </issue>
+
+    <issue
+        errorLine1="    &lt;color name=&quot;error&quot;>#BA1B1B&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~"
+        id="UnusedResources"
+        message="The resource `R.color.error` appears to be unused">
+        <location
+            column="12"
+            file="src/main/res/values/colors.xml"
+            line="59"/>
+    </issue>
+
+    <issue
+        errorLine1="&lt;font-family xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;>"
+        errorLine2="^"
+        id="UnusedResources"
+        message="The resource `R.font.rubik` appears to be unused">
+        <location
+            column="1"
+            file="src/main/res/font/rubik.xml"
+            line="2"/>
+    </issue>
+
+    <issue
+        errorLine1="&lt;set xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^"
+        id="UnusedResources"
+        message="The resource `R.anim.sink_out` appears to be unused">
+        <location
+            column="1"
+            file="src/main/res/anim/sink_out.xml"
+            line="2"/>
+    </issue>
+
+    <issue
+        errorLine1="&lt;set xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^"
+        id="UnusedResources"
+        message="The resource `R.anim.sink_out_fast` appears to be unused">
+        <location
+            column="1"
+            file="src/main/res/anim/sink_out_fast.xml"
+            line="2"/>
+    </issue>
+
+    <issue
+        errorLine1="&lt;set xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        errorLine2="^"
+        id="UnusedResources"
+        message="The resource `R.anim.slide_down` appears to be unused">
+        <location
+            column="1"
+            file="src/main/res/anim/slide_down.xml"
+            line="2"/>
+    </issue>
+
+    <issue
+        errorLine1="&lt;set xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^"
+        id="UnusedResources"
+        message="The resource `R.anim.slide_in_left` appears to be unused">
+        <location
+            column="1"
+            file="src/main/res/anim/slide_in_left.xml"
+            line="2"/>
+    </issue>
+
+    <issue
+        errorLine1="&lt;set xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^"
+        id="UnusedResources"
+        message="The resource `R.anim.slide_out_left` appears to be unused">
+        <location
+            column="1"
+            file="src/main/res/anim/slide_out_left.xml"
+            line="2"/>
+    </issue>
+
+    <issue
+        errorLine1="&lt;set xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        errorLine2="^"
+        id="UnusedResources"
+        message="The resource `R.anim.slide_up` appears to be unused">
+        <location
+            column="1"
+            file="src/main/res/anim/slide_up.xml"
+            line="2"/>
+    </issue>
+
+    <issue
+        errorLine1="    &lt;string name=&quot;username&quot;>username&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~"
+        id="UnusedResources"
+        message="The resource `R.string.username` appears to be unused">
+        <location
+            column="13"
+            file="src/main/res/values/strings.xml"
+            line="13"/>
+    </issue>
+
+    <issue
+        errorLine1="    &lt;string name=&quot;no_account_register&quot;>&lt;u>I don\&apos;t have an account, register&lt;/u>&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        id="UnusedResources"
+        message="The resource `R.string.no_account_register` appears to be unused">
+        <location
+            column="13"
+            file="src/main/res/values/strings.xml"
+            line="16"/>
+    </issue>
+
+    <issue
+        errorLine1="    &lt;string name=&quot;error_username_required&quot;>Username Required&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        id="UnusedResources"
+        message="The resource `R.string.error_username_required` appears to be unused">
+        <location
+            column="13"
+            file="src/main/res/values/strings.xml"
+            line="17"/>
+    </issue>
+
+    <issue
+        errorLine1="    &lt;string name=&quot;error_password_cannot_be_empty&quot;>Password cannot be empty&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        id="UnusedResources"
+        message="The resource `R.string.error_password_cannot_be_empty` appears to be unused">
+        <location
+            column="13"
+            file="src/main/res/values/strings.xml"
+            line="18"/>
+    </issue>
+
+    <issue
+        errorLine1="    &lt;string name=&quot;error_passwords_does_not_match&quot;>Passwords does not match&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        id="UnusedResources"
+        message="The resource `R.string.error_passwords_does_not_match` appears to be unused">
+        <location
+            column="13"
+            file="src/main/res/values/strings.xml"
+            line="19"/>
+    </issue>
+
+    <issue
+        errorLine1="    &lt;string name=&quot;error_cannot_register&quot;>Register Error&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        id="UnusedResources"
+        message="The resource `R.string.error_cannot_register` appears to be unused">
+        <location
+            column="13"
+            file="src/main/res/values/strings.xml"
+            line="20"/>
+    </issue>
+
+    <issue
+        errorLine1="    &lt;string name=&quot;error_username_already_exists&quot;>Username already exists&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        id="UnusedResources"
+        message="The resource `R.string.error_username_already_exists` appears to be unused">
+        <location
+            column="13"
+            file="src/main/res/values/strings.xml"
+            line="21"/>
+    </issue>
+
+    <issue
+        errorLine1="&lt;set xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        errorLine2="^"
+        id="UnusedResources"
+        message="The resource `R.anim.surface` appears to be unused">
+        <location
+            column="1"
+            file="src/main/res/anim/surface.xml"
+            line="2"/>
+    </issue>
+
+    <issue
+        errorLine1="    &lt;alpha xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        id="RedundantNamespace"
+        message="This namespace declaration is redundant">
+        <location
+            column="12"
+            file="src/main/res/anim/fadeout.xml"
+            line="3"/>
+    </issue>
+
+    <issue
+        errorLine1="        &lt;ImageView"
+        errorLine2="         ~~~~~~~~~"
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image">
+        <location
+            column="10"
+            file="src/main/res/layout/fragment_login_complete.xml"
+            line="53"/>
+    </issue>
+
+    <issue
+        errorLine1="        &lt;ImageView"
+        errorLine2="         ~~~~~~~~~"
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image">
+        <location
+            column="10"
+            file="src/main/res/layout/fragment_register_result.xml"
+            line="32"/>
+    </issue>
+
+    <issue
+        errorLine1="            android:text=&quot;login&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~"
+        id="HardcodedText"
+        message="Hardcoded string &quot;login&quot;, should use `@string` resource">
+        <location
+            column="13"
+            file="src/main/res/layout/fragment_account.xml"
+            line="37"/>
+    </issue>
+
+</issues>

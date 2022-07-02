@@ -33,7 +33,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/ic_arrow_back"
-            app:title="Register" />
+            app:title="@string/register_toolbar_title" />
 
         <ImageView
             android:id="@+id/icon_hypocoin"

@@ -13,6 +13,10 @@ open class BaseActivity: AppCompatActivity() {
         ActivityCompositionRoot((application as HypoCoinApp).appContainer)
     }
 
+    protected val analyticsReporter by lazy {
+        ActivityCompositionRoot((application as HypoCoinApp).appContainer).analyticsReporter
+    }
+
     val viewModelCompositionRoot by lazy {
         ViewModelCompositionRoot(activityCompositionRoot)
     }

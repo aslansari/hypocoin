@@ -1,0 +1,64 @@
+name: Build And Deploy App To Firebase Distribution
+
+on:
+  push:
+    branches: [ main ]
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up our JDK environment
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 11
+      - name: Write compile time google-services.json file
+        env:
+          GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
+        run: echo $GOOGLE_SERVICES > app/google-services.json
+      - name: Build all artifacts
+        id: buildAllApks
+        uses: eskatos/gradle-command-action@v1.3.3
+        with:
+          gradle-version: current
+          wrapper-cache-enabled: true
+          dependencies-cache-enabled: true
+          configuration-cache-enabled: true
+          arguments: assembleRelease
+      - name: Sign artifact
+        id: sign_app
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.KEYSTORE }}
+          alias: ${{ secrets.KEYALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+      - name: Upload our APK
+        uses: actions/upload-artifact@v2.2.0
+        with:
+          name: Release artifact
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+      - name: Save name of our Artifact
+        id: set-result-artifact
+        run: |
+          ARTIFACT_PATHNAME_APK=${{steps.sign_app.outputs.signedReleaseFile}}
+          ARTIFACT_NAME_APK=$(basename $ARTIFACT_PATHNAME_APK)
+          echo "ARTIFACT_NAME_APK is " ${ARTIFACT_NAME_APK}
+          echo "ARTIFACT_PATHNAME_APK=${ARTIFACT_PATHNAME_APK}" >> $GITHUB_ENV
+          echo "ARTIFACT_NAME_APK=${ARTIFACT_NAME_APK}" >> $GITHUB_ENV
+      - name: Upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          token: ${{secrets.FIREBASE_TOKEN}}
+          groups: core-team
+          file: ${{ env.ARTIFACT_PATHNAME_APK }}
+          
