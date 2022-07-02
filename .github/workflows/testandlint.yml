@@ -27,6 +27,10 @@ jobs:
         uses: actions/setup-java@v1.4.3
         with:
           java-version: 11
+      - name: Write compile time google-services.json file
+        env:
+          GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
+        run: echo $GOOGLE_SERVICES > app/google-services.json
       - name: Unit tests
         run: bash ./gradlew test --stacktrace
       - name: Unit tests results
@@ -46,6 +50,10 @@ jobs:
         uses: actions/setup-java@v1.4.3
         with:
           java-version: 11
+      - name: Write compile time google-services.json file
+        env:
+          GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
+        run: echo $GOOGLE_SERVICES > app/google-services.json
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       - name: Lint debug flavor
