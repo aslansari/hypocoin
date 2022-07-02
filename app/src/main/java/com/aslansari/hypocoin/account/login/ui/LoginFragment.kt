@@ -119,6 +119,7 @@ class LoginFragment : BaseDialogFragment() {
         val startIdx = displayText.indexOf(signupText)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
+                analyticsReporter.reportSignUpButtonClick()
                 findNavController().navigate(R.id.action_login_to_register)
                 widget.invalidate()
             }

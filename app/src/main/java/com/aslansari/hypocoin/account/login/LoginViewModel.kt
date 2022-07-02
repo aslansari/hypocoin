@@ -6,6 +6,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
 import com.aslansari.hypocoin.R
+import com.aslansari.hypocoin.app.util.AnalyticsReporter
 import com.aslansari.hypocoin.viewmodel.login.LoginError
 import com.aslansari.hypocoin.viewmodel.login.LoginResult
 import com.aslansari.hypocoin.viewmodel.login.LoginUIModel
@@ -17,20 +18,23 @@ import com.google.android.gms.common.api.Status
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.*
 
 class LoginViewModel(
-    private val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUseCase,
+    private val analyticsReporter: AnalyticsReporter,
 ): ViewModel() {
 
     private var _loginUIState = MutableLiveData<LoginUIModel>()
     val loginUIState: LiveData<LoginUIModel> = _loginUIState
 
     fun onLoginClick(email: String, password: String) {
-        Timber.d("Login clicked")
+        analyticsReporter.reportLoginButtonClick()
         _loginUIState.value = LoginUIModel.Loading
         viewModelScope.launch {
             loginUseCase.loginUser(email, password) { signInResult ->
                 if (signInResult.isSuccess) {
+                    analyticsReporter.reportEmailLoginSuccess()
                     _loginUIState.value = LoginUIModel.Result(LoginResult.LOGIN_SUCCESS)
                     _loginUIState.value = LoginUIModel.Idle
                 } else {
@@ -46,6 +50,7 @@ class LoginViewModel(
     }
 
     fun onSubmitEmailClick(email: String) {
+        analyticsReporter.reportSubmitEmailForLoginClick()
         _loginUIState.value = LoginUIModel.Loading
         viewModelScope.launch {
             if (loginUseCase.validateEmail(email)) {
@@ -64,10 +69,12 @@ class LoginViewModel(
     }
 
     fun onForgotPasswordClick(email: String) {
+        analyticsReporter.reportForgotPasswordClick()
         Timber.d(email)
     }
 
     fun onGoogleLoginClick() {
+        analyticsReporter.reportSignInWithGoogleClick()
         _loginUIState.value = LoginUIModel.Result(LoginResult.GOOGLE_LOGIN_REQUEST)
     }
 
@@ -82,6 +89,9 @@ class LoginViewModel(
                         if (exists) {
                             loginUseCase.signInWithGoogle(account) { success ->
                                 onSignInWithCredentialResult(success)
+                                if (success) {
+                                    analyticsReporter.reportGoogleLoginSuccess()
+                                }
                             }
                         } else {
                             _loginUIState.value = LoginUIModel.RegisterWithGoogle(account)
@@ -123,12 +133,17 @@ class LoginViewModel(
     }
 
     fun cancelGoogleSignIn() {
+        analyticsReporter.reportRegisterWGoogleDialogCancelClick()
         _loginUIState.value = LoginUIModel.Idle
     }
 
     fun continueRegisterWithGoogle(account: GoogleSignInAccount) {
+        analyticsReporter.reportRegisterWGoogleDialogContinueClick()
         loginUseCase.signInWithGoogle(account) {
             onSignInWithCredentialResult(it)
+            if (it) {
+                analyticsReporter.reportGoogleRegisterSuccess()
+            }
         }
     }
 }

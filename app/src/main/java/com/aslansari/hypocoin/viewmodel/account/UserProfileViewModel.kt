@@ -1,6 +1,7 @@
 package com.aslansari.hypocoin.viewmodel.account
 
 import androidx.lifecycle.ViewModel
+import com.aslansari.hypocoin.app.util.AnalyticsReporter
 import com.aslansari.hypocoin.repository.AccountRepository
 import com.aslansari.hypocoin.repository.model.Account
 import io.reactivex.rxjava3.core.Single
@@ -10,7 +11,8 @@ import java.text.DecimalFormatSymbols
 import java.util.*
 
 class UserProfileViewModel(
-    private val accountRepository: AccountRepository
+    private val accountRepository: AccountRepository,
+    private val analyticsReporter: AnalyticsReporter,
 ) : ViewModel() {
 
     companion object {
