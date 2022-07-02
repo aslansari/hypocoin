@@ -64,17 +64,18 @@ class RegisterResultFragment : BaseDialogFragment() {
                         binding.textFieldPasswordConfirm.error = null
                     }
                     RegisterResultStatus.DOES_NOT_MATCH -> {
-                        binding.textFieldPassword.error = "Passwords does not match"
+                        binding.textFieldPassword.error = getString(R.string.error_passwords_does_not_match)
                     }
                     RegisterResultStatus.CONFIRM_YOUR_PASSWORD -> {
-                        binding.textFieldPasswordConfirm.error = "Please confirm your password"
+                        binding.textFieldPasswordConfirm.error = getString(R.string.confirm_password)
                     }
                     RegisterResultStatus.SHOULD_NOT_BE_EMPTY -> {
-                        binding.textFieldPassword.error = "Password should not be empty"
+                        binding.textFieldPassword.error = getString(R.string.error_password_cannot_be_empty)
                     }
                     RegisterResultStatus.NOT_VALID -> {
-                        binding.textFieldPassword.error = "password is not valid"
+                        binding.textFieldPassword.error = getString(R.string.error_invalid_password)
                     }
+                    else -> {}
                 }
             }
         }

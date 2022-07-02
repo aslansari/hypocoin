@@ -37,4 +37,6 @@
     <string name="title_dialog_register_with_google">Register With Google?</string>
     <string name="message_dialog_register_with_google">This email %s is not registered with this app before, do you want to continue?</string>
     <string name="cancel">Cancel</string>
+    <string name="confirm_password">Please confirm your password</string>
+    <string name="error_invalid_password">password is not valid</string>
 </resources>
