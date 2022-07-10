@@ -9,7 +9,7 @@ interface CoinAPI {
     @GET("/api/v2/assets")
     fun getCurrencyAssets(
         @Query("limit") limit: Int,
-        @Query("fields") fields: String?
+        @Query("fields") fields: String?,
     ): Observable<Asset<Currency>>
 
     companion object {

@@ -39,4 +39,12 @@
     <string name="cancel">Cancel</string>
     <string name="confirm_password">Please confirm your password</string>
     <string name="error_invalid_password">password is not valid</string>
+    <string name="balance">Balance</string>
+    <string name="net_worth">Net Worth</string>
+    <string name="assets">Assets</string>
+    <string name="content_desc_no_asset_exists">No Asset Exists</string>
+    <string name="dollar_amount">$%s</string>
+    <string name="withdrawal">Withdrawal</string>
+    <string name="exchange">Exchange</string>
+    <string name="deposit">Deposit</string>
 </resources>

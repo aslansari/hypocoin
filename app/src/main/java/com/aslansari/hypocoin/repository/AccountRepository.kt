@@ -6,19 +6,47 @@ import com.aslansari.hypocoin.repository.model.Account
 import com.aslansari.hypocoin.repository.model.AccountDAO
 import com.aslansari.hypocoin.viewmodel.login.LoginError
 import com.google.firebase.auth.*
-import io.reactivex.rxjava3.core.Single
+import com.google.firebase.database.DatabaseReference
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import timber.log.Timber
+
+sealed class UserResult {
+    object Error: UserResult()
+    data class User(
+        val uid: String,
+        val email: String,
+        val displayName: String,
+        val balance: Long,
+    ): UserResult()
+}
 
 class AccountRepository(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val accountDAO: AccountDAO,
     private val auth: FirebaseAuth,
+    val database: DatabaseReference,
 ) {
 
-    fun getAccount(id: String): Single<Account> {
-        return accountDAO.getAccount(id)
+    suspend fun getAccountWithInfo(completeListener: (UserResult) -> Unit) {
+        withContext(ioDispatcher) {
+            auth.currentUser?.let {
+                database.child("users").child(it.uid).child("balance").get().addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val balance = task.result.value ?: 0L
+                        completeListener(UserResult.User(
+                            uid = auth.currentUser?.uid ?: "",
+                            email = auth.currentUser?.email ?: "",
+                            displayName = auth.currentUser?.displayName ?: "",
+                            balance = balance as Long
+                        ))
+                    } else {
+                        completeListener(UserResult.Error)
+                    }
+                }
+            }
+        }
     }
 
     fun isAccountExistsByEmail(email: String, listener: (Boolean) -> Unit) {
@@ -31,7 +59,20 @@ class AccountRepository(
     }
 
     fun isLoggedIn(): Boolean {
-        return false
+        return auth.currentUser != null
+    }
+
+    private fun createUserOnDB(user: FirebaseUser) {
+        database.child("users").child(user.uid).setValue(
+            UserResult.User(
+                uid = user.uid,
+                email = user.email ?: "",
+                displayName = user.displayName ?: "",
+                balance = 0L,
+            )
+        ).addOnCompleteListener {
+            Timber.d("create user on realtime db ${it.isSuccessful}")
+        }
     }
 
     fun register(account: Account, listener: (RegisterResult) -> Unit) {
@@ -40,7 +81,7 @@ class AccountRepository(
             if (it.isSuccessful) {
                 // Sign in success, update UI with the signed-in user's information
                 Timber.d("createUserWithEmail:success")
-                val user = auth.currentUser
+                auth.currentUser?.let { user -> createUserOnDB(user) }
                 listener(RegisterResult(
                     0,
                     "register success",
@@ -49,7 +90,8 @@ class AccountRepository(
                 // update UI with user
             } else {
                 // If sign in fails, display a message to the user.
-                Timber.w("createUserWithEmail:failure - %s", it.exception?.message)
+                Timber.w("createUserWithEmail:failure")
+                Timber.v(it.exception)
                 // updateUI(null)
                 when (it.exception) {
                     is FirebaseAuthWeakPasswordException -> {
@@ -119,7 +161,7 @@ class AccountRepository(
             }
     }
 
-    fun getCurrentUser(): FirebaseUser? {
+    private fun getCurrentUser(): FirebaseUser? {
         return auth.currentUser
     }
 
@@ -134,6 +176,18 @@ class AccountRepository(
         auth.sendPasswordResetEmail(email)
             .addOnCompleteListener {
                 completeListener.invoke(it.isSuccessful)
+            }
+    }
+
+    fun registerWithGoogle(credential: AuthCredential, completeListener: (Boolean) -> Unit) {
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    auth.currentUser?.let { user ->
+                        createUserOnDB(user)
+                    }
+                }
+                completeListener(it.isSuccessful)
             }
     }
 }

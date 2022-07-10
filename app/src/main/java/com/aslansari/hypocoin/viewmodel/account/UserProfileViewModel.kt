@@ -1,44 +1,48 @@
 package com.aslansari.hypocoin.viewmodel.account
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.aslansari.hypocoin.app.util.AnalyticsReporter
 import com.aslansari.hypocoin.repository.AccountRepository
-import com.aslansari.hypocoin.repository.model.Account
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.subjects.PublishSubject
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.*
+import com.aslansari.hypocoin.repository.UserResult
+import kotlinx.coroutines.launch
 
 class UserProfileViewModel(
     private val accountRepository: AccountRepository,
     private val analyticsReporter: AnalyticsReporter,
 ) : ViewModel() {
 
-    companion object {
-        @JvmField
-        val AMOUNT_FORMAT: DecimalFormat =
-            DecimalFormat("###,##0.00", DecimalFormatSymbols.getInstance(Locale.US))
-    }
+    private val _userInfoUIModel = MutableLiveData<UserInfoUIModel>()
+    val userInfoUIModelLiveData = _userInfoUIModel as LiveData<UserInfoUIModel>
 
-    val actionPublishSubject: PublishSubject<UserProfileAction> = PublishSubject.create()
-    var id: String? = null
-    fun login() {
-        actionPublishSubject.onNext(UserProfileAction.LOGIN)
+    fun getUserInfo() {
+        viewModelScope.launch {
+            _userInfoUIModel.value = UserInfoUIModel.Loading
+            accountRepository.getAccountWithInfo {
+                when(it) {
+                    UserResult.Error -> {
+                        _userInfoUIModel.value = UserInfoUIModel.Error
+                    }
+                    is UserResult.User -> {
+                        _userInfoUIModel.value = UserInfoUIModel.User(it)
+                    }
+                    else -> {
+                        _userInfoUIModel.value = UserInfoUIModel.Error
+                    }
+                }
+            }
+        }
     }
-
-    fun registerRequest() {
-        actionPublishSubject.onNext(UserProfileAction.REGISTER_REQUEST)
-    }
-
-    fun register() {
-        actionPublishSubject.onNext(UserProfileAction.REGISTER)
-    }
-
-    val account: Single<Account>
-        get() = accountRepository.getAccount(id!!)
 
     fun isLoggedIn(): Boolean {
         return accountRepository.isLoggedIn()
     }
+}
+
+sealed class UserInfoUIModel {
+    object Error: UserInfoUIModel()
+    data class User(val data: UserResult.User): UserInfoUIModel()
+    object Loading: UserInfoUIModel()
 }

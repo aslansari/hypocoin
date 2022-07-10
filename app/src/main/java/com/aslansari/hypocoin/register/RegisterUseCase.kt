@@ -17,7 +17,7 @@ class RegisterUseCase(
 
     fun authRegisterWithGoogle(account: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-        accountRepository.signInWithGoogleCredential(credential) { isSuccess -> }
+        accountRepository.registerWithGoogle(credential) { isSuccess -> }
     }
 
     @Throws(IllegalArgumentException::class)
