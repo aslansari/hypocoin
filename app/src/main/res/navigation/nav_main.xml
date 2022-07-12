@@ -29,9 +29,23 @@
         android:label="Account"
         tools:layout="@layout/dialog_account_details">
         <action
+            android:id="@+id/edit_account_details"
+            app:destination="@id/edit_account_details_dialog" />
+        <action
             android:id="@+id/action_logout"
             app:destination="@id/account_fragment"
             app:popUpTo="@id/account_fragment"
+            app:popUpToInclusive="true" />
+    </dialog>
+    <dialog
+        android:id="@+id/edit_account_details_dialog"
+        android:name="com.aslansari.hypocoin.account.EditAccountDetailsDialogFragment"
+        android:label="Edit Details"
+        tools:layout="@layout/dialog_edit_account_details">
+        <action
+            android:id="@+id/action_discard"
+            app:destination="@id/account_details_dialog"
+            app:popUpTo="@id/account_details_dialog"
             app:popUpToInclusive="true" />
     </dialog>
     <dialog

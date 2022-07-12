@@ -43,6 +43,11 @@ class AccountDetailsDialogFragment : BaseDialogFragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        userProfileViewModel.getUserInfo()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userProfileViewModel.userInfoUIModelLiveData.observe(viewLifecycleOwner) {
@@ -82,7 +87,7 @@ class AccountDetailsDialogFragment : BaseDialogFragment() {
             }
         }
         binding.buttonEditAccount.setOnClickListener {
-            // todo open edit account page
+            findNavController().navigate(R.id.edit_account_details)
         }
         binding.buttonChangePassword.setOnClickListener {
             // todo open password set dialog

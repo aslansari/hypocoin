@@ -236,4 +236,22 @@ class AccountRepository(
         }
     }
 
+    fun updateDisplayName(displayName: String, completeListener: (Boolean) -> Unit) {
+        auth.currentUser?.let {
+            val changeRequestBuilder = UserProfileChangeRequest.Builder()
+            changeRequestBuilder.displayName = displayName
+            it.updateProfile(changeRequestBuilder.build()).addOnCompleteListener { task ->
+                completeListener(task.isSuccessful)
+            }
+        }
+    }
+
+    fun updateEmail(email: String, completeListener: (Boolean) -> Unit) {
+        auth.currentUser?.let {
+            it.updateEmail(email).addOnCompleteListener { task ->
+                completeListener(task.isSuccessful)
+            }
+        }
+    }
+
 }

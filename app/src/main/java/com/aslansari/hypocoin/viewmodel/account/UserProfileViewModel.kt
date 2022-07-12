@@ -48,6 +48,14 @@ class UserProfileViewModel(
     fun sendVerificationEmail(completeListener: (SendVerificationEmailTask) -> Unit) {
         accountRepository.sendVerificationEmail(completeListener)
     }
+
+    fun updateDisplayNumber(displayName: String, completeListener: (Boolean) -> Unit) {
+        accountRepository.updateDisplayName(displayName, completeListener)
+    }
+
+    fun updateEmail(email: String, completeListener: (Boolean) -> Unit) {
+        accountRepository.updateEmail(email, completeListener)
+    }
 }
 
 sealed class UserInfoUIModel {

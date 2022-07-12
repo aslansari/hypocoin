@@ -65,4 +65,9 @@
     <string name="content_desc_profile_picture">Profile Picture</string>
     <string name="verification_email_sent">Verification Email is sent, please check your inbox</string>
     <string name="verification_email_fail">Verification email could not sent</string>
+    <string name="error_updating_display_name">Error updating display name</string>
+    <string name="error_updating_email">Error updating email</string>
+    <string name="save">Save</string>
+    <string name="discard">Discard</string>
+    <string name="display_name">Display Name</string>
 </resources>
