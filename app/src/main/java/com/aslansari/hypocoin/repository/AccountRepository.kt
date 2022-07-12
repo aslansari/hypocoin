@@ -222,4 +222,18 @@ class AccountRepository(
         auth.signOut()
         completeListener()
     }
+
+    fun sendVerificationEmail(completeListener: (SendVerificationEmailTask) -> Unit) {
+        auth.currentUser?.let { user ->
+            user.sendEmailVerification()
+                .addOnCompleteListener {
+                    completeListener(
+                        SendVerificationEmailTask(
+                        isSuccessful = it.isSuccessful,
+                    )
+                    )
+                }
+        }
+    }
+
 }

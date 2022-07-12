@@ -63,4 +63,6 @@
     <string name="edit">Edit</string>
     <string name="change_password">Change Password</string>
     <string name="content_desc_profile_picture">Profile Picture</string>
+    <string name="verification_email_sent">Verification Email is sent, please check your inbox</string>
+    <string name="verification_email_fail">Verification email could not sent</string>
 </resources>

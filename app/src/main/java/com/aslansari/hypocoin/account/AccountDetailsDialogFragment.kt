@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -26,6 +27,7 @@ class AccountDetailsDialogFragment : BaseDialogFragment() {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.DefaultDialog)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,10 +55,12 @@ class AccountDetailsDialogFragment : BaseDialogFragment() {
                 binding.textFieldLastLogin.text = it.data.lastLogin
                 binding.buttonSendVerificationEmail.isVisible = it.data.isEmailVerified.not()
                 if (it.data.multiFactorMethods.isEmpty()) {
-                    binding.textFieldMultiFactorMethods.text = getString(R.string.no_multi_factor_method)
+                    binding.textFieldMultiFactorMethods.text =
+                        getString(R.string.no_multi_factor_method)
                     binding.textFieldMultiFactorMethods.setTextColor(getErrorColor())
                 } else {
-                    binding.textFieldMultiFactorMethods.text = it.data.multiFactorMethods.joinToString(",")
+                    binding.textFieldMultiFactorMethods.text =
+                        it.data.multiFactorMethods.joinToString(",")
                 }
                 if (it.data.phoneNumber.isEmpty()) {
                     binding.textFieldPhoneNumber.text = getString(R.string.no_phone_number)
@@ -64,7 +68,8 @@ class AccountDetailsDialogFragment : BaseDialogFragment() {
                 } else {
                     binding.textFieldPhoneNumber.text = it.data.phoneNumber
                 }
-                binding.textFieldEmail.text = if (it.data.isEmailVerified) getString(R.string.email_verified) else getString(R.string.email_not_verified)
+                binding.textFieldEmail.text =
+                    if (it.data.isEmailVerified) getString(R.string.email_verified) else getString(R.string.email_not_verified)
                 if (it.data.isEmailVerified.not()) {
                     binding.textFieldEmail.setTextColor(getErrorColor())
                 }
@@ -81,6 +86,16 @@ class AccountDetailsDialogFragment : BaseDialogFragment() {
         }
         binding.buttonChangePassword.setOnClickListener {
             // todo open password set dialog
+        }
+        binding.buttonSendVerificationEmail.setOnClickListener {
+            userProfileViewModel.sendVerificationEmail {
+                val toastText = if (it.isSuccessful) {
+                    getString(R.string.verification_email_sent)
+                } else {
+                    getString(R.string.verification_email_fail)
+                }
+                Toast.makeText(requireContext(), toastText, Toast.LENGTH_LONG ).show()
+            }
         }
     }
 

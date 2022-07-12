@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aslansari.hypocoin.app.util.AnalyticsReporter
 import com.aslansari.hypocoin.repository.AccountRepository
+import com.aslansari.hypocoin.repository.SendVerificationEmailTask
 import com.aslansari.hypocoin.repository.UserResult
 import kotlinx.coroutines.launch
 
@@ -42,6 +43,10 @@ class UserProfileViewModel(
 
     fun logout(completeListener: () -> Unit) {
         accountRepository.logout(completeListener)
+    }
+
+    fun sendVerificationEmail(completeListener: (SendVerificationEmailTask) -> Unit) {
+        accountRepository.sendVerificationEmail(completeListener)
     }
 }
 
