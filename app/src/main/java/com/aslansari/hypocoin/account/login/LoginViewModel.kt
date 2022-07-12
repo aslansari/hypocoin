@@ -148,7 +148,7 @@ class LoginViewModel(
 
     fun continueRegisterWithGoogle(account: GoogleSignInAccount) {
         analyticsReporter.reportRegisterWGoogleDialogContinueClick()
-        loginUseCase.signInWithGoogle(account) {
+        loginUseCase.registerWithGoogle(account) {
             onSignInWithCredentialResult(it)
             if (it) {
                 analyticsReporter.reportGoogleRegisterSuccess()

@@ -47,4 +47,20 @@
     <string name="withdrawal">Withdrawal</string>
     <string name="exchange">Exchange</string>
     <string name="deposit">Deposit</string>
+    <string name="no_assets_image_text">You have no assets yet</string>
+    <string name="invest_button_text">Invest to Currencies</string>
+    <string name="no_multi_factor_method">No MultiFactor methods used</string>
+    <string name="no_phone_number">No phone number associated with this account</string>
+    <string name="email_verified">Verified</string>
+    <string name="email_not_verified">Not verified</string>
+    <string name="account_security_title">Security</string>
+    <string name="account_email_title">Email</string>
+    <string name="account_phone_number_title">Phone Number</string>
+    <string name="account_last_login_title">Last Login</string>
+    <string name="account_created_at_title">Created At</string>
+    <string name="button_logout_title">Logout</string>
+    <string name="button_send_verification_email">Send Verification Email</string>
+    <string name="edit">Edit</string>
+    <string name="change_password">Change Password</string>
+    <string name="content_desc_profile_picture">Profile Picture</string>
 </resources>

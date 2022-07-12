@@ -4,9 +4,11 @@ import com.aslansari.hypocoin.register.RegisterResult
 import com.aslansari.hypocoin.register.RegisterResultStatus
 import com.aslansari.hypocoin.repository.model.Account
 import com.aslansari.hypocoin.repository.model.AccountDAO
+import com.aslansari.hypocoin.ui.DisplayTextUtil
 import com.aslansari.hypocoin.viewmodel.login.LoginError
 import com.google.firebase.auth.*
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.Exclude
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,7 +21,19 @@ sealed class UserResult {
         val email: String,
         val displayName: String,
         val balance: Long,
+        @Exclude val hasPassword: Boolean = false,
+        @Exclude val netWorth: Long = 0L,
+        @Exclude val createdAt: String = "",
+        @Exclude val lastLogin: String = "",
+        @Exclude val isEmailVerified: Boolean = false,
+        @Exclude val multiFactorMethods: List<String> = listOf(),
+        @Exclude val phoneNumber: String = "",
     ): UserResult()
+}
+
+object DatabaseModel {
+    const val USERS = "users"
+    const val BALANCE = "balance"
 }
 
 class AccountRepository(
@@ -29,24 +43,37 @@ class AccountRepository(
     val database: DatabaseReference,
 ) {
 
+    private val usersReference = database.child(DatabaseModel.USERS)
+
     suspend fun getAccountWithInfo(completeListener: (UserResult) -> Unit) {
         withContext(ioDispatcher) {
-            auth.currentUser?.let {
-                database.child("users").child(it.uid).child("balance").get().addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val balance = task.result.value ?: 0L
-                        completeListener(UserResult.User(
-                            uid = auth.currentUser?.uid ?: "",
-                            email = auth.currentUser?.email ?: "",
-                            displayName = auth.currentUser?.displayName ?: "",
-                            balance = balance as Long
-                        ))
-                    } else {
-                        completeListener(UserResult.Error)
-                    }
+            auth.currentUser?.let { it ->
+                val hasPassword = it.providerData
+                    .map { userInfo ->  userInfo.providerId }
+                    .contains(EmailAuthProvider.PROVIDER_ID)
+                usersReference.child(it.uid).child(DatabaseModel.BALANCE).get().addOnSuccessListener { result ->
+                    val balance = result.value ?: 0L
+                    completeListener(UserResult.User(
+                        uid = auth.currentUser?.uid ?: "",
+                        email = auth.currentUser?.email ?: "",
+                        displayName = auth.currentUser?.displayName ?: "",
+                        balance = balance as Long,
+                        createdAt = DisplayTextUtil.Date.getFormattedDate(it.metadata?.creationTimestamp),
+                        lastLogin = DisplayTextUtil.Date.getFormattedTime(it.metadata?.lastSignInTimestamp),
+                        phoneNumber = it.phoneNumber ?: "",
+                        multiFactorMethods = getMultiFactorList(it.multiFactor.enrolledFactors),
+                        isEmailVerified = it.isEmailVerified,
+                        hasPassword = hasPassword
+                    ))
+                }.addOnFailureListener {
+                    completeListener(UserResult.Error)
                 }
             }
         }
+    }
+
+    private fun getMultiFactorList(enrolledFactors: MutableList<MultiFactorInfo>): List<String> {
+        return enrolledFactors.map { it.displayName ?: "default" }
     }
 
     fun isAccountExistsByEmail(email: String, listener: (Boolean) -> Unit) {
@@ -63,7 +90,7 @@ class AccountRepository(
     }
 
     private fun createUserOnDB(user: FirebaseUser) {
-        database.child("users").child(user.uid).setValue(
+        database.child(DatabaseModel.USERS).child(user.uid).setValue(
             UserResult.User(
                 uid = user.uid,
                 email = user.email ?: "",
@@ -189,5 +216,10 @@ class AccountRepository(
                 }
                 completeListener(it.isSuccessful)
             }
+    }
+
+    fun logout(completeListener: () -> Unit) {
+        auth.signOut()
+        completeListener()
     }
 }

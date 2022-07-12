@@ -39,10 +39,16 @@ class UserProfileViewModel(
     fun isLoggedIn(): Boolean {
         return accountRepository.isLoggedIn()
     }
+
+    fun logout(completeListener: () -> Unit) {
+        accountRepository.logout(completeListener)
+    }
 }
 
 sealed class UserInfoUIModel {
     object Error: UserInfoUIModel()
-    data class User(val data: UserResult.User): UserInfoUIModel()
+    data class User(
+        val data: UserResult.User,
+    ): UserInfoUIModel()
     object Loading: UserInfoUIModel()
 }

@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.databinding.FragmentAccountBinding
 import com.aslansari.hypocoin.ui.BaseFragment
-import com.aslansari.hypocoin.ui.DisplayAmountUtil
+import com.aslansari.hypocoin.ui.DisplayTextUtil
 import com.aslansari.hypocoin.viewmodel.account.UserInfoUIModel
 import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel
 import timber.log.Timber
@@ -37,6 +38,12 @@ class AccountFragment : BaseFragment() {
                 findNavController().navigate(R.id.action_account_fragment_to_login_fragment)
             }
         }
+        val profileClickListener: (View) -> Unit = {
+            findNavController().navigate(R.id.open_account_details)
+        }
+        binding.ivProfilePhoto.setOnClickListener(profileClickListener)
+        binding.textFieldProfileEmail.setOnClickListener(profileClickListener)
+        binding.textFieldProfileDisplayName.setOnClickListener(profileClickListener)
 
         if (userProfileViewModel.isLoggedIn()) {
             userProfileViewModel.getUserInfo()
@@ -44,11 +51,7 @@ class AccountFragment : BaseFragment() {
             findNavController().navigate(R.id.action_account_fragment_to_login_fragment)
         }
         userProfileViewModel.userInfoUIModelLiveData.observe(viewLifecycleOwner) {
-            binding.progressBar.visibility = if (it is UserInfoUIModel.Loading) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
+            binding.progressBar.isVisible = it is UserInfoUIModel.Loading
             when(it) {
                 is UserInfoUIModel.Error -> {
                     Timber.d("user info error")
@@ -56,7 +59,9 @@ class AccountFragment : BaseFragment() {
                 is UserInfoUIModel.User -> {
                     binding.textFieldProfileEmail.text = it.data.email
                     binding.textFieldProfileDisplayName.text = it.data.displayName
-                    binding.textFieldBalance.text = DisplayAmountUtil.getDollarAmount(it.data.balance)
+                    binding.textFieldBalance.text = DisplayTextUtil.Amount.getDollarAmount(it.data.balance)
+                    binding.textFieldNetWorth.text = DisplayTextUtil.Amount.getAmountForNetWorth(it.data.netWorth)
+                    binding.layoutNoAssets.isVisible = true
                 }
                 else -> {}
             }
