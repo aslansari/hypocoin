@@ -21,17 +21,12 @@ class UserProfileViewModel(
     fun getUserInfo() {
         viewModelScope.launch {
             _userInfoUIModel.value = UserInfoUIModel.Loading
-            accountRepository.getAccountWithInfo {
-                when(it) {
-                    UserResult.Error -> {
-                        _userInfoUIModel.value = UserInfoUIModel.Error
-                    }
-                    is UserResult.User -> {
-                        _userInfoUIModel.value = UserInfoUIModel.User(it)
-                    }
-                    else -> {
-                        _userInfoUIModel.value = UserInfoUIModel.Error
-                    }
+            when(val userResult = accountRepository.getAccountWithInfo()) {
+                UserResult.Error -> {
+                    _userInfoUIModel.value = UserInfoUIModel.Error
+                }
+                is UserResult.User -> {
+                    _userInfoUIModel.value = UserInfoUIModel.User(userResult)
                 }
             }
         }

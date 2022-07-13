@@ -13,6 +13,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 sealed class UserResult {
     object Error: UserResult()
@@ -45,30 +47,43 @@ class AccountRepository(
 
     private val usersReference = database.child(DatabaseModel.USERS)
 
-    suspend fun getAccountWithInfo(completeListener: (UserResult) -> Unit) {
-        withContext(ioDispatcher) {
-            auth.currentUser?.let { it ->
-                val hasPassword = it.providerData
-                    .map { userInfo ->  userInfo.providerId }
-                    .contains(EmailAuthProvider.PROVIDER_ID)
-                usersReference.child(it.uid).child(DatabaseModel.BALANCE).get().addOnSuccessListener { result ->
-                    val balance = result.value ?: 0L
-                    completeListener(UserResult.User(
-                        uid = auth.currentUser?.uid ?: "",
-                        email = auth.currentUser?.email ?: "",
-                        displayName = auth.currentUser?.displayName ?: "",
-                        balance = balance as Long,
-                        createdAt = DisplayTextUtil.Date.getFormattedDate(it.metadata?.creationTimestamp),
-                        lastLogin = DisplayTextUtil.Date.getFormattedTime(it.metadata?.lastSignInTimestamp),
-                        phoneNumber = it.phoneNumber ?: "",
-                        multiFactorMethods = getMultiFactorList(it.multiFactor.enrolledFactors),
-                        isEmailVerified = it.isEmailVerified,
-                        hasPassword = hasPassword
-                    ))
-                }.addOnFailureListener {
-                    completeListener(UserResult.Error)
+    suspend fun getAccountWithInfo(): UserResult {
+        return withContext(ioDispatcher) {
+            getAccount()
+        }
+    }
+
+    private suspend fun getAccount(): UserResult = suspendCoroutine { continuation ->
+        if (getCurrentUser() != null) {
+            val user = getCurrentUser()!!
+            val hasPassword = user.providerData
+                .map { userInfo ->  userInfo.providerId }
+                .contains(EmailAuthProvider.PROVIDER_ID)
+            usersReference.child(user.uid).child(DatabaseModel.BALANCE).get().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val balance = task.result.value ?: 0L
+                    continuation.resume(
+                        UserResult.User(
+                            uid = auth.currentUser?.uid ?: "",
+                            email = auth.currentUser?.email ?: "",
+                            displayName = auth.currentUser?.displayName ?: "",
+                            balance = balance as Long,
+                            createdAt = DisplayTextUtil.Date.getFormattedDate(user.metadata?.creationTimestamp),
+                            lastLogin = DisplayTextUtil.Date.getFormattedTime(user.metadata?.lastSignInTimestamp),
+                            phoneNumber = user.phoneNumber ?: "",
+                            multiFactorMethods = getMultiFactorList(user.multiFactor.enrolledFactors),
+                            isEmailVerified = user.isEmailVerified,
+                            hasPassword = hasPassword
+                        )
+                    )
+                } else {
+                    continuation.resume(UserResult.Error)
                 }
+            }.addOnCanceledListener {
+                continuation.resume(UserResult.Error)
             }
+        } else {
+            continuation.resume(UserResult.Error)
         }
     }
 

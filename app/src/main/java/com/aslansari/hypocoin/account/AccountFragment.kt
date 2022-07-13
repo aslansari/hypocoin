@@ -33,13 +33,11 @@ class AccountFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.buttonLogin.setOnClickListener {
-            if (userProfileViewModel.isLoggedIn().not()) {
-                findNavController().navigate(R.id.action_account_fragment_to_login_fragment)
-            }
-        }
         val profileClickListener: (View) -> Unit = {
-            findNavController().navigate(R.id.open_account_details)
+            val navController = findNavController()
+            if (navController.currentDestination?.id == R.id.account_fragment) {
+                navController.navigate(R.id.open_account_details)
+            }
         }
         binding.ivProfilePhoto.setOnClickListener(profileClickListener)
         binding.textFieldProfileEmail.setOnClickListener(profileClickListener)
@@ -61,10 +59,13 @@ class AccountFragment : BaseFragment() {
                     binding.textFieldProfileDisplayName.text = it.data.displayName
                     binding.textFieldBalance.text = DisplayTextUtil.Amount.getDollarAmount(it.data.balance)
                     binding.textFieldNetWorth.text = DisplayTextUtil.Amount.getAmountForNetWorth(it.data.netWorth)
-                    binding.layoutNoAssets.isVisible = true
+                    binding.layoutNoAssets.root.isVisible = true
                 }
                 else -> {}
             }
+        }
+        binding.layoutNoAssets.buttonInvestCTA.setOnClickListener {
+            findNavController().navigate(R.id.action_invest_currency)
         }
     }
 }

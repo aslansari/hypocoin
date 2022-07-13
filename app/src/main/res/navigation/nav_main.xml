@@ -17,6 +17,9 @@
         android:label="Currencies"
         tools:layout="@layout/fragment_account">
         <action
+            android:id="@+id/action_invest_currency"
+            app:destination="@id/currency_fragment" />
+        <action
             android:id="@+id/action_account_fragment_to_login_fragment"
             app:destination="@id/login_fragment" />
         <action
