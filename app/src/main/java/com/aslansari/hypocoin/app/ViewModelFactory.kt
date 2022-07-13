@@ -2,15 +2,15 @@ package com.aslansari.hypocoin.app
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.aslansari.hypocoin.account.login.LoginUseCase
-import com.aslansari.hypocoin.account.login.LoginViewModel
+import com.aslansari.hypocoin.account.data.AccountRepository
+import com.aslansari.hypocoin.account.login.domain.LoginUseCase
+import com.aslansari.hypocoin.account.login.ui.LoginViewModel
+import com.aslansari.hypocoin.account.register.domain.RegisterUseCase
+import com.aslansari.hypocoin.account.register.ui.RegisterViewModel
+import com.aslansari.hypocoin.account.ui.UserProfileViewModel
 import com.aslansari.hypocoin.app.util.AnalyticsReporter
-import com.aslansari.hypocoin.register.RegisterUseCase
-import com.aslansari.hypocoin.register.RegisterViewModel
-import com.aslansari.hypocoin.repository.AccountRepository
 import com.aslansari.hypocoin.repository.CoinRepository
 import com.aslansari.hypocoin.viewmodel.CoinViewModel
-import com.aslansari.hypocoin.viewmodel.account.UserProfileViewModel
 
 class ViewModelFactory(
     private val coinRepository: CoinRepository,
