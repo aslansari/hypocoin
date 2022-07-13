@@ -12,6 +12,7 @@ import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.databinding.DialogAccountDetailsBinding
 import com.aslansari.hypocoin.ui.BaseDialogFragment
 import com.aslansari.hypocoin.ui.DarkModeUtil
+import com.aslansari.hypocoin.ui.DisplayTextUtil
 
 class AccountDetailsDialogFragment : BaseDialogFragment() {
 
@@ -54,8 +55,8 @@ class AccountDetailsDialogFragment : BaseDialogFragment() {
                     "--"
                 }
                 binding.textFieldProfileEmail.text = it.data.email
-                binding.textFieldCreatedAt.text = it.data.createdAt
-                binding.textFieldLastLogin.text = it.data.lastLogin
+                binding.textFieldCreatedAt.text = DisplayTextUtil.Date.getFormattedDate(it.data.createdAt)
+                binding.textFieldLastLogin.text = DisplayTextUtil.Date.getFormattedTime(it.data.lastLogin)
                 binding.buttonSendVerificationEmail.isVisible = it.data.isEmailVerified.not()
                 if (it.data.multiFactorMethods.isEmpty()) {
                     binding.textFieldMultiFactorMethods.text =

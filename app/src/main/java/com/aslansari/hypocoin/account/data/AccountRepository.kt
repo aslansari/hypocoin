@@ -3,38 +3,14 @@ package com.aslansari.hypocoin.account.data
 import com.aslansari.hypocoin.account.login.data.LoginError
 import com.aslansari.hypocoin.account.register.data.RegisterResult
 import com.aslansari.hypocoin.account.register.data.RegisterResultStatus
-import com.aslansari.hypocoin.ui.DisplayTextUtil
 import com.google.firebase.auth.*
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.Exclude
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-
-sealed class UserResult {
-    object Error: UserResult()
-    data class User(
-        val uid: String,
-        val email: String,
-        val displayName: String,
-        val balance: Long,
-        @Exclude val hasPassword: Boolean = false,
-        @Exclude val netWorth: Long = 0L,
-        @Exclude val createdAt: String = "",
-        @Exclude val lastLogin: String = "",
-        @Exclude val isEmailVerified: Boolean = false,
-        @Exclude val multiFactorMethods: List<String> = listOf(),
-        @Exclude val phoneNumber: String = "",
-    ): UserResult()
-}
-
-object DatabaseModel {
-    const val USERS = "users"
-    const val BALANCE = "balance"
-}
 
 class AccountRepository(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
@@ -66,8 +42,8 @@ class AccountRepository(
                             email = auth.currentUser?.email ?: "",
                             displayName = auth.currentUser?.displayName ?: "",
                             balance = balance as Long,
-                            createdAt = DisplayTextUtil.Date.getFormattedDate(user.metadata?.creationTimestamp),
-                            lastLogin = DisplayTextUtil.Date.getFormattedTime(user.metadata?.lastSignInTimestamp),
+                            createdAt = user.metadata?.creationTimestamp ?: 0L,
+                            lastLogin = user.metadata?.lastSignInTimestamp ?: 0L,
                             phoneNumber = user.phoneNumber ?: "",
                             multiFactorMethods = getMultiFactorList(user.multiFactor.enrolledFactors),
                             isEmailVerified = user.isEmailVerified,
@@ -276,5 +252,4 @@ class AccountRepository(
             }
         }
     }
-
 }

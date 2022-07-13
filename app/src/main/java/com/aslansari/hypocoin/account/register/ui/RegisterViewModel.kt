@@ -178,25 +178,4 @@ class RegisterViewModel(
     }
 }
 
-data class RegisterResultUIState(
-    val loading: Boolean = false,
-    val error: RegisterResultStatus = RegisterResultStatus.NO_ERROR,
-    val buttonEnabled: Boolean = true,
-)
-
-data class RegisterUIState(
-    val loading: Boolean = false,
-    val error: RegisterStatus = RegisterStatus.NO_ERROR,
-    val buttonEnabled: Boolean = true,
-    val onSubmit: RegistrationData? = null,
-)
-
 fun defaultRegisterUIState() = RegisterUIState()
-
-enum class RegisterStatus {
-    NO_ERROR,
-    USER_ALREADY_EXISTS,
-    INPUT_FORMAT_WRONG,
-    INPUT_EMPTY,
-    SIGN_IN_WITH_GOOGLE,
-}

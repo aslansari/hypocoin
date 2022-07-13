@@ -52,11 +52,3 @@ class UserProfileViewModel(
         accountRepository.updateEmail(email, completeListener)
     }
 }
-
-sealed class UserInfoUIModel {
-    object Error: UserInfoUIModel()
-    data class User(
-        val data: UserResult.User,
-    ): UserInfoUIModel()
-    object Loading: UserInfoUIModel()
-}
