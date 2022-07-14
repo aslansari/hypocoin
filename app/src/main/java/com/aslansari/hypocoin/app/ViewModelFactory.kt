@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.aslansari.hypocoin.account.data.AccountRepository
 import com.aslansari.hypocoin.account.data.AssetRepository
+import com.aslansari.hypocoin.account.domain.NetWorthUseCase
 import com.aslansari.hypocoin.account.domain.WalletInfoUseCase
 import com.aslansari.hypocoin.account.login.domain.LoginUseCase
 import com.aslansari.hypocoin.account.login.ui.LoginViewModel
@@ -18,6 +19,7 @@ import com.aslansari.hypocoin.viewmodel.CoinViewModel
 class ViewModelFactory(
     private val coinRepository: CoinRepository,
     private val accountRepository: AccountRepository,
+    private val assetRepository: AssetRepository,
     private val analyticsReporter: AnalyticsReporter,
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
@@ -27,9 +29,10 @@ class ViewModelFactory(
             UserProfileViewModel::class.java -> UserProfileViewModel(
                 WalletInfoUseCase(
                     accountRepository,
-                    AssetRepository()
+                    assetRepository
                 ),
                 CurrencyPriceUseCase(coinRepository),
+                NetWorthUseCase(assetRepository, coinRepository, accountRepository),
                 accountRepository,
                 analyticsReporter
             ) as T

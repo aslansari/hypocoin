@@ -102,14 +102,28 @@
 
         <TextView
             android:id="@+id/textFieldNetWorth"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginHorizontal="20dp"
             android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textFieldNetWorthTitle"
             tools:text="$14,230.24" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/roiChip"
+            style="@style/Widget.Material3.Chip.Suggestion.Elevated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            app:chipBackgroundColor="?attr/colorSurfaceVariant"
+            app:layout_constraintBottom_toBottomOf="@+id/textFieldNetWorth"
+            app:layout_constraintStart_toEndOf="@+id/textFieldNetWorth"
+            app:layout_constraintTop_toTopOf="@+id/textFieldNetWorth"
+            tools:text="+%3.4"
+            />
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonDeposit"

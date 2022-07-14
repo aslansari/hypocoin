@@ -4,11 +4,13 @@ class ViewModelCompositionRoot(private val activityCompositionRoot: ActivityComp
 
     private val coinRepository get() = activityCompositionRoot.coinRepository
     private val accountRepository get() = activityCompositionRoot.accountRepository
+    private val assetRepository get() = activityCompositionRoot.assetRepository
     val analyticsReporter get() = activityCompositionRoot.analyticsReporter
 
     val viewModelFactory: ViewModelFactory = ViewModelFactory(
         coinRepository,
         accountRepository,
+        assetRepository,
         analyticsReporter,
     )
 }

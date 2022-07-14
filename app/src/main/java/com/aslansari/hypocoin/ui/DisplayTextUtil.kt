@@ -9,6 +9,7 @@ object DisplayTextUtil {
     object Amount {
         private val decimalFormat = DecimalFormat("###,##0.00")
         private val currencyFormat = DecimalFormat("###,##0.################")
+        private val rateFormat = DecimalFormat("#0.###")
 
         /**
          * Get dollar amount for display
@@ -26,6 +27,8 @@ object DisplayTextUtil {
         }
 
         fun getCurrencyFormat(amount: Double): String = currencyFormat.format(amount)
+
+        fun getRateFormat(amount: Double): String = rateFormat.format(amount)
     }
 
     object Date {

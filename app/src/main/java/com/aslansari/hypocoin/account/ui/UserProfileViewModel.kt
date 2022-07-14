@@ -6,15 +6,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aslansari.hypocoin.account.data.AccountRepository
 import com.aslansari.hypocoin.account.data.SendVerificationEmailTask
+import com.aslansari.hypocoin.account.domain.NetWorthUseCase
 import com.aslansari.hypocoin.account.domain.WalletInfoUseCase
 import com.aslansari.hypocoin.app.util.AnalyticsReporter
 import com.aslansari.hypocoin.currency.domain.CurrencyPriceUseCase
 import com.aslansari.hypocoin.ui.DisplayTextUtil
 import kotlinx.coroutines.launch
+import kotlin.math.absoluteValue
 
 class UserProfileViewModel(
     private val walletInfoUseCase: WalletInfoUseCase,
     private val currencyPriceUseCase: CurrencyPriceUseCase,
+    private val netWorthUseCase: NetWorthUseCase,
     private val accountRepository: AccountRepository,
     private val analyticsReporter: AnalyticsReporter,
 ) : ViewModel() {
@@ -37,6 +40,13 @@ class UserProfileViewModel(
                 _userInfoUIModel.value = UserWalletUIModel.Result(userWallet.user, assetListItems)
             }
         }
+    }
+
+    fun getNetWorth(): NetWorthUIModel {
+        val netWorth = netWorthUseCase.get()
+        val roiData = netWorthUseCase.getRoiData()
+        val roiType = if (roiData.percentChangeLast1Week > 0) RoiType.GAIN else RoiType.LOSS
+        return NetWorthUIModel(netWorth, RoiChip(roiType, roiData.percentChangeLast1Week.absoluteValue * 100))
     }
 
     fun isLoggedIn(): Boolean {
