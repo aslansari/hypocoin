@@ -7,10 +7,13 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.databinding.FragmentAccountBinding
 import com.aslansari.hypocoin.ui.BaseFragment
 import com.aslansari.hypocoin.ui.DisplayTextUtil
+import com.aslansari.hypocoin.ui.adapters.MarginItemDecorator
 import timber.log.Timber
 
 class AccountFragment : BaseFragment() {
@@ -26,6 +29,14 @@ class AccountFragment : BaseFragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentAccountBinding.inflate(inflater, container, false)
+        binding.apply {
+            assetList.layoutManager =
+                LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
+            val verticalMargin = resources.getDimensionPixelSize(R.dimen.currency_margin_vertical)
+            val horizontalMargin = resources.getDimensionPixelSize(R.dimen.currency_margin_horizontal)
+            assetList.addItemDecoration(MarginItemDecorator(verticalMargin, horizontalMargin))
+            binding.assetList.adapter = AssetsRecyclerAdapter()
+        }
         return binding.root
     }
 
@@ -47,17 +58,25 @@ class AccountFragment : BaseFragment() {
             findNavController().navigate(R.id.action_account_fragment_to_login_fragment)
         }
         userProfileViewModel.userInfoUIModelLiveData.observe(viewLifecycleOwner) {
-            binding.progressBar.isVisible = it is UserInfoUIModel.Loading
+            binding.progressBar.isVisible = it is UserWalletUIModel.Loading
             when(it) {
-                is UserInfoUIModel.Error -> {
+                is UserWalletUIModel.Error -> {
                     Timber.d("user info error")
                 }
-                is UserInfoUIModel.User -> {
-                    binding.textFieldProfileEmail.text = it.data.email
-                    binding.textFieldProfileDisplayName.text = it.data.displayName
-                    binding.textFieldBalance.text = DisplayTextUtil.Amount.getDollarAmount(it.data.balance)
-                    binding.textFieldNetWorth.text = DisplayTextUtil.Amount.getAmountForNetWorth(it.data.netWorth)
-                    binding.layoutNoAssets.root.isVisible = true
+                is UserWalletUIModel.Result -> {
+                    binding.textFieldProfileEmail.text = it.user.email
+                    binding.textFieldProfileDisplayName.text = it.user.displayName
+                    binding.textFieldBalance.text = DisplayTextUtil.Amount.getDollarAmount(it.user.balance)
+                    binding.textFieldNetWorth.text = DisplayTextUtil.Amount.getAmountForNetWorth(it.user.netWorth)
+                    binding.layoutNoAssets.root.isVisible = it.assets.isEmpty()
+                    binding.assetList.isVisible = true
+                    if (it.assets.isNotEmpty()) {
+                        val listAdapter = (binding.assetList.adapter as AssetsRecyclerAdapter)
+                        listAdapter.submitList(it.assets) {
+                            Timber.d("AssetList is committed ${listAdapter.itemCount}")
+                        }
+                        Timber.d("AssetList items ${listAdapter.itemCount}")
+                    }
                 }
                 else -> {}
             }
@@ -65,5 +84,11 @@ class AccountFragment : BaseFragment() {
         binding.layoutNoAssets.buttonInvestCTA.setOnClickListener {
             findNavController().navigate(R.id.action_invest_currency)
         }
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.assetList.adapter = null
     }
 }

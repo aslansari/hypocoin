@@ -42,12 +42,12 @@ class EditAccountDetailsDialogFragment : BaseDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var user: UserInfoUIModel.User? = null
+        var user: UserWalletUIModel.Result? = null
         userProfileViewModel.userInfoUIModelLiveData.observe(viewLifecycleOwner) {
-            if (it is UserInfoUIModel.User) {
+            if (it is UserWalletUIModel.Result) {
                 user = it
-                binding.textFieldProfileDisplayName.editText?.setText(it.data.displayName)
-                binding.textFieldProfileEmail.editText?.setText(it.data.email)
+                binding.textFieldProfileDisplayName.editText?.setText(it.user.displayName)
+                binding.textFieldProfileEmail.editText?.setText(it.user.email)
             }
         }
         binding.buttonSaveChanges.setOnClickListener {_->
@@ -56,26 +56,26 @@ class EditAccountDetailsDialogFragment : BaseDialogFragment() {
             user?.let { it ->
                 val textDisplayName = binding.textFieldProfileDisplayName.editText?.text.toString()
                 val textEmail = binding.textFieldProfileEmail.editText?.text.toString()
-                if (it.data.displayName != textDisplayName) {
+                if (it.user.displayName != textDisplayName) {
                     changeCount++
                     userProfileViewModel.updateDisplayNumber(textDisplayName) { success ->
                         changeCount--
                         if (success.not()) {
                             Toast.makeText(requireContext(), getString(R.string.error_updating_display_name), Toast.LENGTH_LONG).show()
-                            binding.textFieldProfileDisplayName.editText?.setText(it.data.displayName)
+                            binding.textFieldProfileDisplayName.editText?.setText(it.user.displayName)
                             tryReleaseSaveButton()
                         } else {
                             onUpdateResult()
                         }
                     }
                 }
-                if (it.data.email != textEmail) {
+                if (it.user.email != textEmail) {
                     changeCount++
                     userProfileViewModel.updateEmail(textEmail) { success ->
                         changeCount--
                         if (success.not()) {
                             Toast.makeText(requireContext(), getString(R.string.error_updating_email), Toast.LENGTH_LONG).show()
-                            binding.textFieldProfileEmail.editText?.setText(it.data.email)
+                            binding.textFieldProfileEmail.editText?.setText(it.user.email)
                             tryReleaseSaveButton()
                         } else {
                             onUpdateResult()

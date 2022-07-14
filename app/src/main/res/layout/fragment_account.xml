@@ -27,6 +27,7 @@
             android:layout_height="50dp"
             android:layout_margin="20dp"
             android:src="@mipmap/ic_launcher"
+            android:contentDescription="@string/content_desc_profile_picture"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             />
@@ -181,6 +182,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="10dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/assetList"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
