@@ -12,6 +12,12 @@ interface CoinAPI {
         @Query("fields") fields: String?,
     ): Observable<Asset<Currency>>
 
+    @GET("/api/v2/assets")
+    suspend fun getCurrencies(
+        @Query("limit") limit: Int,
+        @Query("fields") fields: String?,
+    ): Asset<Currency>
+
     companion object {
         const val BASE_URL = "https://data.messari.io/"
     }

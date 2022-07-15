@@ -37,16 +37,13 @@ class UserProfileViewModel(
                     val priceUsdText = DisplayTextUtil.Amount.getDollarAmount(priceUsd)
                     AssetListItem(item.id, DisplayTextUtil.Amount.getCurrencyFormat(item.amount), item.name, item.symbol, priceUsdText)
                 }
-                _userInfoUIModel.value = UserWalletUIModel.Result(userWallet.user, assetListItems)
+                val netWorth = netWorthUseCase.get(userWallet.user.uid)
+                val roiData = netWorthUseCase.getRoiData(userWallet.user.uid)
+                val roiType = if (roiData.percentChangeLast1Week > 0) RoiType.GAIN else RoiType.LOSS
+                val netWorthModel = NetWorthUIModel(netWorth, RoiChip(roiType, roiData.percentChangeLast1Week.absoluteValue * 100))
+                _userInfoUIModel.value = UserWalletUIModel.Result(userWallet.user, assetListItems, netWorthModel)
             }
         }
-    }
-
-    fun getNetWorth(): NetWorthUIModel {
-        val netWorth = netWorthUseCase.get()
-        val roiData = netWorthUseCase.getRoiData()
-        val roiType = if (roiData.percentChangeLast1Week > 0) RoiType.GAIN else RoiType.LOSS
-        return NetWorthUIModel(netWorth, RoiChip(roiType, roiData.percentChangeLast1Week.absoluteValue * 100))
     }
 
     fun isLoggedIn(): Boolean {

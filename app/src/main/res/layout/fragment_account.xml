@@ -117,6 +117,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:textColor="?attr/colorOnSurfaceVariant"
+            android:visibility="gone"
             app:chipBackgroundColor="?attr/colorSurfaceVariant"
             app:layout_constraintBottom_toBottomOf="@+id/textFieldNetWorth"
             app:layout_constraintStart_toEndOf="@+id/textFieldNetWorth"

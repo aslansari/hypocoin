@@ -7,6 +7,7 @@ sealed class UserWalletUIModel {
     data class Result(
         val user: UserResult.User,
         val assets: List<AssetListItem>,
+        val netWorthUIModel: NetWorthUIModel,
     ): UserWalletUIModel()
     object Loading: UserWalletUIModel()
 }

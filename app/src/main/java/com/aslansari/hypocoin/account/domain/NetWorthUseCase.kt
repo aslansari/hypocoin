@@ -2,22 +2,38 @@ package com.aslansari.hypocoin.account.domain
 
 import com.aslansari.hypocoin.account.data.AccountRepository
 import com.aslansari.hypocoin.account.data.AssetRepository
+import com.aslansari.hypocoin.account.data.UserResult
+import com.aslansari.hypocoin.currency.data.CurrencyRepository
 import com.aslansari.hypocoin.currency.data.RoiData
-import com.aslansari.hypocoin.repository.CoinRepository
+import com.aslansari.hypocoin.currency.domain.CurrencyPriceUseCase
 
 class NetWorthUseCase(
     private val assetRepository: AssetRepository,
-    private val currencyRepository: CoinRepository,
+    private val currencyRepository: CurrencyRepository,
     private val accountRepository: AccountRepository,
+    private val currencyPriceUseCase: CurrencyPriceUseCase,
 ) {
 
-    fun get(): Long {
-        // balance + assets and their usd price
-        return 45123L
+    suspend fun get(uid: String): Long {
+        val balance = when (val user = accountRepository.getAccountWithInfo()) {
+            is UserResult.User -> {user.balance}
+            else -> {0L}
+        }
+        val assetsAmount = assetRepository.getAssets(uid).sumOf {
+            it.amount.times(currencyPriceUseCase.getCurrencyPrice(it.id))
+        }
+
+        return balance + assetsAmount.toLong()
     }
 
-    fun getRoiData(): RoiData {
-        // (usd price, rate) pairs ->
-        return RoiData(0.12345678)
+    suspend fun getRoiData(uid: String): RoiData {
+        val roiPairs = assetRepository.getAssets(uid).map {
+            val currentValue = currencyPriceUseCase.getCurrencyPrice(it.id) * it.amount
+            Pair(currentValue, 1 + it.roiData.percentChangeLast1Week)
+        }
+        val totalCurrentValues = roiPairs.sumOf { it.first }
+        val totalOldValues = roiPairs.sumOf { it.first / it.second }
+        val roi = (totalCurrentValues / totalOldValues) - 1
+        return RoiData(roi)
     }
 }

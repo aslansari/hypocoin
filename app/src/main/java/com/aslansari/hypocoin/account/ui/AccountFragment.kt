@@ -67,25 +67,8 @@ class AccountFragment : BaseFragment() {
                 is UserWalletUIModel.Result -> {
                     binding.textFieldProfileEmail.text = it.user.email
                     binding.textFieldProfileDisplayName.text = it.user.displayName
+                    bindNetWorth(it.netWorthUIModel)
                     binding.textFieldBalance.text = DisplayTextUtil.Amount.getDollarAmount(it.user.balance)
-                    val netWorthUIModel = userProfileViewModel.getNetWorth()
-                    binding.textFieldNetWorth.text = DisplayTextUtil.Amount.getAmountForNetWorth(netWorthUIModel.netWorth)
-                    when(netWorthUIModel.roiData.roiType) {
-                        RoiType.GAIN -> {
-                            val chipBackgroundColor = DisplayColorUtil.getGainColor()
-                            val chipTextColor = DisplayColorUtil.getGainTextColor(resources)
-                            binding.roiChip.setChipBackgroundColorResource(chipBackgroundColor)
-                            binding.roiChip.setTextColor(chipTextColor)
-                            binding.roiChip.text = getString(R.string.positive_rate, DisplayTextUtil.Amount.getRateFormat(netWorthUIModel.roiData.rate))
-                        }
-                        RoiType.LOSS -> {
-                            val chipBackgroundColor = DisplayColorUtil.getLossColor(requireContext())
-                            val chipTextColor = DisplayColorUtil.getLossTextColor(requireContext(), resources)
-                            binding.roiChip.setChipBackgroundColorResource(chipBackgroundColor)
-                            binding.roiChip.setTextColor(chipTextColor)
-                            binding.roiChip.text = getString(R.string.negative_rate, DisplayTextUtil.Amount.getRateFormat(netWorthUIModel.roiData.rate))
-                        }
-                    }
                     binding.layoutNoAssets.root.isVisible = it.assets.isEmpty()
                     binding.assetList.isVisible = true
                     if (it.assets.isNotEmpty()) {
@@ -103,6 +86,27 @@ class AccountFragment : BaseFragment() {
             findNavController().navigate(R.id.action_invest_currency)
         }
 
+    }
+
+    private fun bindNetWorth(netWorthUIModel: NetWorthUIModel) {
+        binding.roiChip.isVisible = true
+        binding.textFieldNetWorth.text = DisplayTextUtil.Amount.getAmountForNetWorth(netWorthUIModel.netWorth)
+        when(netWorthUIModel.roiData.roiType) {
+            RoiType.GAIN -> {
+                val chipBackgroundColor = DisplayColorUtil.getGainColor()
+                val chipTextColor = DisplayColorUtil.getGainTextColor(resources)
+                binding.roiChip.setChipBackgroundColorResource(chipBackgroundColor)
+                binding.roiChip.setTextColor(chipTextColor)
+                binding.roiChip.text = getString(R.string.positive_rate, DisplayTextUtil.Amount.getRateFormat(netWorthUIModel.roiData.rate))
+            }
+            RoiType.LOSS -> {
+                val chipBackgroundColor = DisplayColorUtil.getLossColor(requireContext())
+                val chipTextColor = DisplayColorUtil.getLossTextColor(requireContext(), resources)
+                binding.roiChip.setChipBackgroundColorResource(chipBackgroundColor)
+                binding.roiChip.setTextColor(chipTextColor)
+                binding.roiChip.text = getString(R.string.negative_rate, DisplayTextUtil.Amount.getRateFormat(netWorthUIModel.roiData.rate))
+            }
+        }
     }
 
     override fun onDestroy() {

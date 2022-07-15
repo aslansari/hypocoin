@@ -12,12 +12,14 @@ import com.aslansari.hypocoin.account.register.domain.RegisterUseCase
 import com.aslansari.hypocoin.account.register.ui.RegisterViewModel
 import com.aslansari.hypocoin.account.ui.UserProfileViewModel
 import com.aslansari.hypocoin.app.util.AnalyticsReporter
+import com.aslansari.hypocoin.currency.data.CurrencyRepository
 import com.aslansari.hypocoin.currency.domain.CurrencyPriceUseCase
 import com.aslansari.hypocoin.repository.CoinRepository
 import com.aslansari.hypocoin.viewmodel.CoinViewModel
 
 class ViewModelFactory(
     private val coinRepository: CoinRepository,
+    private val currencyRepository: CurrencyRepository,
     private val accountRepository: AccountRepository,
     private val assetRepository: AssetRepository,
     private val analyticsReporter: AnalyticsReporter,
@@ -29,10 +31,11 @@ class ViewModelFactory(
             UserProfileViewModel::class.java -> UserProfileViewModel(
                 WalletInfoUseCase(
                     accountRepository,
-                    assetRepository
+                    assetRepository,
+                    currencyRepository,
                 ),
-                CurrencyPriceUseCase(coinRepository),
-                NetWorthUseCase(assetRepository, coinRepository, accountRepository),
+                CurrencyPriceUseCase(currencyRepository),
+                NetWorthUseCase(assetRepository, currencyRepository, accountRepository, CurrencyPriceUseCase(currencyRepository)),
                 accountRepository,
                 analyticsReporter
             ) as T
