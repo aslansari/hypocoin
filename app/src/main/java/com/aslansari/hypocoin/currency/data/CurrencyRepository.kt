@@ -25,6 +25,10 @@ class CurrencyRepository(
         }
     }
 
+    suspend fun getRoi(id: String): RoiData {
+        return RoiData(coinAPI.getRoiByCurrencyId(id).data.roiData.percentChangeLast1Week)
+    }
+
     private fun isExpired(): Boolean {
         return SystemClock.elapsedRealtime() > lastFetchDate + ONE_MINUTE
     }

@@ -95,26 +95,27 @@ class AccountFragment : BaseFragment() {
         binding.buttonDeposit.setOnClickListener {
             Toast.makeText(requireContext(), R.string.feature_not_supported, Toast.LENGTH_SHORT).show()
         }
-
     }
 
     private fun bindNetWorth(netWorthUIModel: NetWorthUIModel) {
-        binding.roiChip.isVisible = true
         binding.textFieldNetWorth.text = DisplayTextUtil.Amount.getAmountForNetWorth(netWorthUIModel.netWorth)
-        when(netWorthUIModel.roiData.roiType) {
-            RoiType.GAIN -> {
-                val chipBackgroundColor = DisplayColorUtil.getGainColor()
-                val chipTextColor = DisplayColorUtil.getGainTextColor(resources)
-                binding.roiChip.setChipBackgroundColorResource(chipBackgroundColor)
-                binding.roiChip.setTextColor(chipTextColor)
-                binding.roiChip.text = getString(R.string.positive_rate, DisplayTextUtil.Amount.getRateFormat(netWorthUIModel.roiData.rate))
-            }
-            RoiType.LOSS -> {
-                val chipBackgroundColor = DisplayColorUtil.getLossColor(requireContext())
-                val chipTextColor = DisplayColorUtil.getLossTextColor(requireContext(), resources)
-                binding.roiChip.setChipBackgroundColorResource(chipBackgroundColor)
-                binding.roiChip.setTextColor(chipTextColor)
-                binding.roiChip.text = getString(R.string.negative_rate, DisplayTextUtil.Amount.getRateFormat(netWorthUIModel.roiData.rate))
+        if (netWorthUIModel.roiData.rate.isNaN().not()) {
+            binding.roiChip.isVisible = true
+            when(netWorthUIModel.roiData.roiType) {
+                RoiType.GAIN -> {
+                    val chipBackgroundColor = DisplayColorUtil.getGainColor()
+                    val chipTextColor = DisplayColorUtil.getGainTextColor(resources)
+                    binding.roiChip.setChipBackgroundColorResource(chipBackgroundColor)
+                    binding.roiChip.setTextColor(chipTextColor)
+                    binding.roiChip.text = getString(R.string.positive_rate, DisplayTextUtil.Amount.getRateFormat(netWorthUIModel.roiData.rate))
+                }
+                RoiType.LOSS -> {
+                    val chipBackgroundColor = DisplayColorUtil.getLossColor(requireContext())
+                    val chipTextColor = DisplayColorUtil.getLossTextColor(requireContext(), resources)
+                    binding.roiChip.setChipBackgroundColorResource(chipBackgroundColor)
+                    binding.roiChip.setTextColor(chipTextColor)
+                    binding.roiChip.text = getString(R.string.negative_rate, DisplayTextUtil.Amount.getRateFormat(netWorthUIModel.roiData.rate))
+                }
             }
         }
     }

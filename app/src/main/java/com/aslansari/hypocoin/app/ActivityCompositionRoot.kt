@@ -14,14 +14,20 @@ import com.google.firebase.ktx.Firebase
 class ActivityCompositionRoot(private val appContainer: AppContainer) {
 
     private val databaseReference: DatabaseReference
+
     init {
         val database = Firebase.database("https://hypo-coin-default-rtdb.europe-west1.firebasedatabase.app")
         databaseReference = database.reference
     }
 
-    val coinRepository: CoinRepository = CoinRepository(appContainer.coinDatabase, appContainer.coinAPI)
-    val accountRepository: AccountRepository = AccountRepository(accountDAO = appContainer.coinDatabase.accountDAO(), auth = Firebase.auth, database = databaseReference)
-    val assetRepository: AssetRepository = AssetRepository()
+    val coinRepository: CoinRepository =
+        CoinRepository(appContainer.coinDatabase, appContainer.coinAPI)
+    val accountRepository: AccountRepository = AccountRepository(
+        accountDAO = appContainer.coinDatabase.accountDAO(),
+        auth = Firebase.auth,
+        database = databaseReference
+    )
     val currencyRepository: CurrencyRepository = CurrencyRepository(appContainer.coinAPI)
+    val assetRepository: AssetRepository = AssetRepository(currencyRepository, databaseReference)
     val analyticsReporter: AnalyticsReporter by lazy { AnalyticsReporter(Firebase.analytics) }
 }

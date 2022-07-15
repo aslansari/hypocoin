@@ -1,9 +1,21 @@
 package com.aslansari.hypocoin.account.data
 
+import com.aslansari.hypocoin.account.data.dto.AssetItemDTO
+import com.aslansari.hypocoin.currency.data.CurrencyRepository
 import com.aslansari.hypocoin.currency.data.RoiData
+import com.google.firebase.database.DatabaseReference
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import kotlin.random.Random
 
-class AssetRepository {
+class AssetRepository(
+    private val currencyRepository: CurrencyRepository,
+    private val database: DatabaseReference,
+) {
+
+    private val usersReference = database.child(DatabaseModel.USERS)
 
     private val btcAmount by lazy { Random.nextDouble(1.0) }
     private val ethAmount by lazy { Random.nextDouble(1.0) }
@@ -11,6 +23,27 @@ class AssetRepository {
     private val btcRoiRate by lazy { getFakeRoiData() }
     private val ethRoiRate by lazy { getFakeRoiData() }
     private val dogeRoiRate by lazy { getFakeRoiData() }
+
+    private suspend fun getAssetDTOList(uid: String): List<AssetItemDTO> = suspendCoroutine { continuation ->
+        usersReference.child(uid).child(DatabaseModel.ASSETS).get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val assetDTO = task.result.children.map { it.getValue(AssetItemDTO::class.java) as AssetItemDTO}.toList()
+                continuation.resume(assetDTO)
+            } else {
+                continuation.resume(emptyList())
+            }
+        }
+    }
+
+    suspend fun getAssetList(uid: String): List<AssetItem> = withContext(Dispatchers.IO) {
+        val assetItemDTOs = getAssetDTOList(uid)
+        val assets = assetItemDTOs.map {
+            val (id, symbol, name, amount) = it
+            val roiData = currencyRepository.getRoi(id)
+            AssetItem(id, symbol, name, amount, roiData)
+        }
+        assets
+    }
 
     fun getAssets(uid: String): List<AssetItem> {
         // todo fetch from api

@@ -15,7 +15,7 @@ class WalletInfoUseCase (
     suspend fun getUserWallet(): UserWallet? {
         val userResult = accountRepository.getAccountWithInfo()
         if (userResult is UserResult.User) {
-            val userAssets = assetRepository.getAssets(userResult.uid)
+            val userAssets = assetRepository.getAssetList(userResult.uid)
             return UserWallet(userResult, userAssets)
         }
         return null

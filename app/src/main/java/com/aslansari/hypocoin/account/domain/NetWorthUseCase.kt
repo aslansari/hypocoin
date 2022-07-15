@@ -19,7 +19,7 @@ class NetWorthUseCase(
             is UserResult.User -> {user.balance}
             else -> {0L}
         }
-        val assetsAmount = assetRepository.getAssets(uid).sumOf {
+        val assetsAmount = assetRepository.getAssetList(uid).sumOf {
             it.amount.times(currencyPriceUseCase.getCurrencyPrice(it.id))
         }
 
@@ -27,9 +27,9 @@ class NetWorthUseCase(
     }
 
     suspend fun getRoiData(uid: String): RoiData {
-        val roiPairs = assetRepository.getAssets(uid).map {
+        val roiPairs = assetRepository.getAssetList(uid).map {
             val currentValue = currencyPriceUseCase.getCurrencyPrice(it.id) * it.amount
-            Pair(currentValue, 1 + it.roiData.percentChangeLast1Week)
+            Pair(currentValue, 1 + (it.roiData.percentChangeLast1Week / 100))
         }
         val totalCurrentValues = roiPairs.sumOf { it.first }
         val totalOldValues = roiPairs.sumOf { it.first / it.second }
