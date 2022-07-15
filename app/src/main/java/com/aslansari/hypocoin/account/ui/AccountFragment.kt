@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -84,6 +85,15 @@ class AccountFragment : BaseFragment() {
         }
         binding.layoutNoAssets.buttonInvestCTA.setOnClickListener {
             findNavController().navigate(R.id.action_invest_currency)
+        }
+        binding.buttonExchange.setOnClickListener {
+            Toast.makeText(requireContext(), R.string.feature_not_supported, Toast.LENGTH_SHORT).show()
+        }
+        binding.buttonWithdrawal.setOnClickListener {
+            Toast.makeText(requireContext(), R.string.feature_not_supported, Toast.LENGTH_SHORT).show()
+        }
+        binding.buttonDeposit.setOnClickListener {
+            Toast.makeText(requireContext(), R.string.feature_not_supported, Toast.LENGTH_SHORT).show()
         }
 
     }
