@@ -1,7 +1,8 @@
 package com.aslansari.hypocoin.account.data
 
-import com.google.firebase.database.Exclude
+import androidx.annotation.Keep
 
+@Keep
 sealed class UserResult {
     object Error: UserResult()
     data class User(
@@ -9,12 +10,12 @@ sealed class UserResult {
         val email: String,
         val displayName: String,
         val balance: Long,
-        @Exclude val hasPassword: Boolean = false,
-        @Exclude val netWorth: Long = 0L,
-        @Exclude val createdAt: Long = 0L,
-        @Exclude val lastLogin: Long = 0L,
-        @Exclude val isEmailVerified: Boolean = false,
-        @Exclude val multiFactorMethods: List<String> = listOf(),
-        @Exclude val phoneNumber: String = "",
+        val hasPassword: Boolean = false,
+        val netWorth: Long = 0L,
+        val createdAt: Long = 0L,
+        val lastLogin: Long = 0L,
+        val isEmailVerified: Boolean = false,
+        val multiFactorMethods: List<String> = listOf(),
+        val phoneNumber: String = "",
     ): UserResult()
 }

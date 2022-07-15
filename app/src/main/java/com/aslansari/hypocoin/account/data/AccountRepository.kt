@@ -1,5 +1,6 @@
 package com.aslansari.hypocoin.account.data
 
+import com.aslansari.hypocoin.account.data.dto.User
 import com.aslansari.hypocoin.account.login.data.LoginError
 import com.aslansari.hypocoin.account.register.data.RegisterResult
 import com.aslansari.hypocoin.account.register.data.RegisterResultStatus
@@ -80,10 +81,8 @@ class AccountRepository(
 
     private fun createUserOnDB(user: FirebaseUser) {
         database.child(DatabaseModel.USERS).child(user.uid).setValue(
-            UserResult.User(
-                uid = user.uid,
-                email = user.email ?: "",
-                displayName = user.displayName ?: "",
+            User(
+                id = user.uid,
                 balance = 0L,
             )
         ).addOnCompleteListener {
