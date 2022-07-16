@@ -7,12 +7,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.databinding.DialogAccountDetailsBinding
 import com.aslansari.hypocoin.ui.BaseDialogFragment
 import com.aslansari.hypocoin.ui.DarkModeUtil
 import com.aslansari.hypocoin.ui.DisplayTextUtil
+import kotlinx.coroutines.flow.collectLatest
 
 class AccountDetailsDialogFragment : BaseDialogFragment() {
 
@@ -42,42 +44,40 @@ class AccountDetailsDialogFragment : BaseDialogFragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        userProfileViewModel.getUserInfo()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        userProfileViewModel.userInfoUIModelLiveData.observe(viewLifecycleOwner) {
-            if (it is UserWalletUIModel.Result) {
-                binding.textFieldProfileDisplayName.text = it.user.displayName.ifBlank {
-                    "--"
+        lifecycleScope.launchWhenStarted {
+            userProfileViewModel.walletUIState.collectLatest {
+                binding.progressBar.isVisible = it is UserWalletUIModel.Loading
+                if (it is UserWalletUIModel.Result) {
+                    binding.textFieldProfileDisplayName.text = it.user.displayName.ifBlank {
+                        "--"
+                    }
+                    binding.textFieldProfileEmail.text = it.user.email
+                    binding.textFieldCreatedAt.text = DisplayTextUtil.Date.getFormattedDate(it.user.createdAt)
+                    binding.textFieldLastLogin.text = DisplayTextUtil.Date.getFormattedTime(it.user.lastLogin)
+                    binding.buttonSendVerificationEmail.isVisible = it.user.isEmailVerified.not()
+                    if (it.user.multiFactorMethods.isEmpty()) {
+                        binding.textFieldMultiFactorMethods.text =
+                            getString(R.string.no_multi_factor_method)
+                        binding.textFieldMultiFactorMethods.setTextColor(getErrorColor())
+                    } else {
+                        binding.textFieldMultiFactorMethods.text =
+                            it.user.multiFactorMethods.joinToString(",")
+                    }
+                    if (it.user.phoneNumber.isEmpty()) {
+                        binding.textFieldPhoneNumber.text = getString(R.string.no_phone_number)
+                        binding.textFieldPhoneNumber.setTextColor(getErrorColor())
+                    } else {
+                        binding.textFieldPhoneNumber.text = it.user.phoneNumber
+                    }
+                    binding.textFieldEmail.text =
+                        if (it.user.isEmailVerified) getString(R.string.email_verified) else getString(R.string.email_not_verified)
+                    if (it.user.isEmailVerified.not()) {
+                        binding.textFieldEmail.setTextColor(getErrorColor())
+                    }
+                    binding.buttonChangePassword.isVisible = it.user.hasPassword
                 }
-                binding.textFieldProfileEmail.text = it.user.email
-                binding.textFieldCreatedAt.text = DisplayTextUtil.Date.getFormattedDate(it.user.createdAt)
-                binding.textFieldLastLogin.text = DisplayTextUtil.Date.getFormattedTime(it.user.lastLogin)
-                binding.buttonSendVerificationEmail.isVisible = it.user.isEmailVerified.not()
-                if (it.user.multiFactorMethods.isEmpty()) {
-                    binding.textFieldMultiFactorMethods.text =
-                        getString(R.string.no_multi_factor_method)
-                    binding.textFieldMultiFactorMethods.setTextColor(getErrorColor())
-                } else {
-                    binding.textFieldMultiFactorMethods.text =
-                        it.user.multiFactorMethods.joinToString(",")
-                }
-                if (it.user.phoneNumber.isEmpty()) {
-                    binding.textFieldPhoneNumber.text = getString(R.string.no_phone_number)
-                    binding.textFieldPhoneNumber.setTextColor(getErrorColor())
-                } else {
-                    binding.textFieldPhoneNumber.text = it.user.phoneNumber
-                }
-                binding.textFieldEmail.text =
-                    if (it.user.isEmailVerified) getString(R.string.email_verified) else getString(R.string.email_not_verified)
-                if (it.user.isEmailVerified.not()) {
-                    binding.textFieldEmail.setTextColor(getErrorColor())
-                }
-                binding.buttonChangePassword.isVisible = it.user.hasPassword
             }
         }
         binding.buttonLogout.setOnClickListener {

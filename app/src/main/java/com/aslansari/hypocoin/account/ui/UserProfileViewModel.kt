@@ -1,7 +1,5 @@
 package com.aslansari.hypocoin.account.ui
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aslansari.hypocoin.account.data.AccountRepository
@@ -11,7 +9,9 @@ import com.aslansari.hypocoin.account.domain.WalletInfoUseCase
 import com.aslansari.hypocoin.app.util.AnalyticsReporter
 import com.aslansari.hypocoin.currency.domain.CurrencyPriceUseCase
 import com.aslansari.hypocoin.ui.DisplayTextUtil
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlin.math.absoluteValue
 
 class UserProfileViewModel(
@@ -22,29 +22,25 @@ class UserProfileViewModel(
     private val analyticsReporter: AnalyticsReporter,
 ) : ViewModel() {
 
-    private val _userInfoUIModel = MutableLiveData<UserWalletUIModel>()
-    val userInfoUIModelLiveData = _userInfoUIModel as LiveData<UserWalletUIModel>
-
-    fun getUserInfo() {
-        viewModelScope.launch {
-            _userInfoUIModel.value = UserWalletUIModel.Loading
-            val userWallet = walletInfoUseCase.getUserWallet()
-            if (userWallet == null) {
-                _userInfoUIModel.value = UserWalletUIModel.Error
-            } else {
-                val assetListItems = userWallet.userAssets.map { item ->
-                    val priceUsd = currencyPriceUseCase.getCurrencyPrice(item.id)
-                    val priceUsdText = DisplayTextUtil.Amount.getDollarAmount(priceUsd)
-                    AssetListItem(item.id, DisplayTextUtil.Amount.getCurrencyFormat(item.amount), item.name, item.symbol, priceUsdText)
-                }
-                val netWorth = netWorthUseCase.get(userWallet.user.uid)
-                val roiData = netWorthUseCase.getRoiData(userWallet.user.uid)
-                val roiType = if (roiData.percentChangeLast1Week > 0) RoiType.GAIN else RoiType.LOSS
-                val netWorthModel = NetWorthUIModel(netWorth, RoiChip(roiType, roiData.percentChangeLast1Week.absoluteValue * 100))
-                _userInfoUIModel.value = UserWalletUIModel.Result(userWallet.user, assetListItems, netWorthModel)
+    val walletUIState = combine(walletInfoUseCase.wallet(), netWorthUseCase.netWorthFlow, netWorthUseCase.roiDataFlow) {
+        userWallet, netWorth, roiData,  ->
+        if (userWallet == null) {
+            UserWalletUIModel.Error
+        } else {
+            val assetListItems = userWallet.userAssets.map { item ->
+                val priceUsd = currencyPriceUseCase.getCurrencyPrice(item.id)
+                val priceUsdText = DisplayTextUtil.Amount.getDollarAmount(priceUsd)
+                AssetListItem(item.id, DisplayTextUtil.Amount.getCurrencyFormat(item.amount), item.name, item.symbol, priceUsdText)
             }
+            val roiType = if (roiData.percentChangeLast1Week > 0) RoiType.GAIN else RoiType.LOSS
+            val netWorthModel = NetWorthUIModel(netWorth, RoiChip(roiType, roiData.percentChangeLast1Week.absoluteValue * 100))
+            UserWalletUIModel.Result(userWallet.user, assetListItems, netWorthModel)
         }
-    }
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(),
+        UserWalletUIModel.Loading
+    )
 
     fun isLoggedIn(): Boolean {
         return accountRepository.isLoggedIn()

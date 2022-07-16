@@ -4,6 +4,7 @@ import android.content.Context
 import com.aslansari.hypocoin.BuildConfig
 import com.aslansari.hypocoin.repository.CoinDatabase
 import com.aslansari.hypocoin.repository.restapi.CoinAPI
+import com.aslansari.hypocoin.repository.restapi.ResponseCacheInterceptor
 import com.google.gson.GsonBuilder
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -20,6 +21,7 @@ class AppContainer(context: Context) {
     val coinAPI: CoinAPI
 
     private val DISK_CACHE_SIZE = 10 * 1024 * 1024 // 10MB
+    private val CACHE_DURATION_MINUTES = 10L
     private val gson = GsonBuilder().create()
     private val retrofitBuilder = Retrofit.Builder()
         .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
@@ -32,11 +34,10 @@ class AppContainer(context: Context) {
         val okHttpClientBuilder: OkHttpClient.Builder = defaultOkHttpClient.newBuilder()
         val modifiedOkHttpClient: OkHttpClient = okHttpClientBuilder
             .addInterceptor(httpLoggingInterceptor)
+            .addNetworkInterceptor(ResponseCacheInterceptor(TimeUnit.MINUTES.toMillis(CACHE_DURATION_MINUTES)))
             .connectTimeout(20, TimeUnit.SECONDS)
             .readTimeout(20, TimeUnit.SECONDS)
             .build()
-        retrofitBuilder.client(modifiedOkHttpClient)
-        retrofitBuilder.baseUrl(CoinAPI.BASE_URL)
         val retrofit = retrofitBuilder.apply {
             client(modifiedOkHttpClient)
             baseUrl(CoinAPI.BASE_URL)

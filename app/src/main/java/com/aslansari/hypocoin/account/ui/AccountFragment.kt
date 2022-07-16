@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,7 @@ import com.aslansari.hypocoin.ui.BaseFragment
 import com.aslansari.hypocoin.ui.DisplayColorUtil
 import com.aslansari.hypocoin.ui.DisplayTextUtil
 import com.aslansari.hypocoin.ui.adapters.MarginItemDecorator
+import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
 class AccountFragment : BaseFragment() {
@@ -54,33 +56,33 @@ class AccountFragment : BaseFragment() {
         binding.textFieldProfileEmail.setOnClickListener(profileClickListener)
         binding.textFieldProfileDisplayName.setOnClickListener(profileClickListener)
 
-        if (userProfileViewModel.isLoggedIn()) {
-            userProfileViewModel.getUserInfo()
-        } else {
+        if (userProfileViewModel.isLoggedIn().not()) {
             findNavController().navigate(R.id.action_account_fragment_to_login_fragment)
         }
-        userProfileViewModel.userInfoUIModelLiveData.observe(viewLifecycleOwner) {
-            binding.progressBar.isVisible = it is UserWalletUIModel.Loading
-            when(it) {
-                is UserWalletUIModel.Error -> {
-                    Timber.d("user info error")
-                }
-                is UserWalletUIModel.Result -> {
-                    binding.textFieldProfileEmail.text = it.user.email
-                    binding.textFieldProfileDisplayName.text = it.user.displayName
-                    bindNetWorth(it.netWorthUIModel)
-                    binding.textFieldBalance.text = DisplayTextUtil.Amount.getDollarAmount(it.user.balance)
-                    binding.layoutNoAssets.root.isVisible = it.assets.isEmpty()
-                    binding.assetList.isVisible = true
-                    if (it.assets.isNotEmpty()) {
-                        val listAdapter = (binding.assetList.adapter as AssetsRecyclerAdapter)
-                        listAdapter.submitList(it.assets) {
-                            Timber.d("AssetList is committed ${listAdapter.itemCount}")
-                        }
-                        Timber.d("AssetList items ${listAdapter.itemCount}")
+        lifecycleScope.launchWhenStarted {
+            userProfileViewModel.walletUIState.collectLatest {
+                binding.progressBar.isVisible = it is UserWalletUIModel.Loading
+                when(it) {
+                    is UserWalletUIModel.Error -> {
+                        Timber.d("user info error")
                     }
+                    is UserWalletUIModel.Result -> {
+                        binding.textFieldProfileEmail.text = it.user.email
+                        binding.textFieldProfileDisplayName.text = it.user.displayName
+                        bindNetWorth(it.netWorthUIModel)
+                        binding.textFieldBalance.text = DisplayTextUtil.Amount.getDollarAmount(it.user.balance)
+                        binding.layoutNoAssets.root.isVisible = it.assets.isEmpty()
+                        binding.assetList.isVisible = true
+                        if (it.assets.isNotEmpty()) {
+                            val listAdapter = (binding.assetList.adapter as AssetsRecyclerAdapter)
+                            listAdapter.submitList(it.assets) {
+                                Timber.d("AssetList is committed ${listAdapter.itemCount}")
+                            }
+                            Timber.d("AssetList items ${listAdapter.itemCount}")
+                        }
+                    }
+                    else -> {}
                 }
-                else -> {}
             }
         }
         binding.layoutNoAssets.buttonInvestCTA.setOnClickListener {

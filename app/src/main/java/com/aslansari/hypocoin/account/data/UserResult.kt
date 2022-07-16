@@ -4,6 +4,7 @@ import androidx.annotation.Keep
 
 @Keep
 sealed class UserResult {
+    object Loading: UserResult()
     object Error: UserResult()
     data class User(
         val uid: String,

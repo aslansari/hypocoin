@@ -5,13 +5,16 @@ import com.aslansari.hypocoin.account.login.data.LoginError
 import com.aslansari.hypocoin.account.register.data.RegisterResult
 import com.aslansari.hypocoin.account.register.data.RegisterResultStatus
 import com.google.firebase.auth.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flowOn
 import timber.log.Timber
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class AccountRepository(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
@@ -21,46 +24,44 @@ class AccountRepository(
 ) {
 
     private val usersReference = database.child(DatabaseModel.USERS)
+    private var listener: ValueEventListener? = null
 
-    suspend fun getAccountWithInfo(): UserResult {
-        return withContext(ioDispatcher) {
-            getAccount()
-        }
-    }
-
-    private suspend fun getAccount(): UserResult = suspendCoroutine { continuation ->
+    fun getAccountFlow() = callbackFlow {
         if (getCurrentUser() != null) {
             val user = getCurrentUser()!!
             val hasPassword = user.providerData
-                .map { userInfo ->  userInfo.providerId }
+                .map { userInfo -> userInfo.providerId }
                 .contains(EmailAuthProvider.PROVIDER_ID)
-            usersReference.child(user.uid).child(DatabaseModel.BALANCE).get().addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val balance = task.result.value ?: 0L
-                    continuation.resume(
-                        UserResult.User(
-                            uid = auth.currentUser?.uid ?: "",
-                            email = auth.currentUser?.email ?: "",
-                            displayName = auth.currentUser?.displayName ?: "",
-                            balance = balance as Long,
-                            createdAt = user.metadata?.creationTimestamp ?: 0L,
-                            lastLogin = user.metadata?.lastSignInTimestamp ?: 0L,
-                            phoneNumber = user.phoneNumber ?: "",
-                            multiFactorMethods = getMultiFactorList(user.multiFactor.enrolledFactors),
-                            isEmailVerified = user.isEmailVerified,
-                            hasPassword = hasPassword
+            listener =
+                usersReference.child(user.uid).addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val balance = snapshot.getValue(User::class.java)?.balance ?: 0L
+                        trySend(
+                            UserResult.User(
+                                uid = user.uid,
+                                email = user.email ?: "",
+                                displayName = user.displayName ?: "",
+                                balance = balance,
+                                createdAt = user.metadata?.creationTimestamp ?: 0L,
+                                lastLogin = user.metadata?.lastSignInTimestamp ?: 0L,
+                                phoneNumber = user.phoneNumber ?: "",
+                                multiFactorMethods = getMultiFactorList(user.multiFactor.enrolledFactors),
+                                isEmailVerified = user.isEmailVerified,
+                                hasPassword = hasPassword
+                            )
                         )
-                    )
-                } else {
-                    continuation.resume(UserResult.Error)
-                }
-            }.addOnCanceledListener {
-                continuation.resume(UserResult.Error)
-            }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Timber.e("user fetch error, code=${error.code}")
+                    }
+                })
         } else {
-            continuation.resume(UserResult.Error)
+            send(UserResult.Error)
         }
-    }
+
+        awaitClose { listener?.let { usersReference.child("").removeEventListener(it) } }
+    }.flowOn(ioDispatcher)
 
     private fun getMultiFactorList(enrolledFactors: MutableList<MultiFactorInfo>): List<String> {
         return enrolledFactors.map { it.displayName ?: "default" }
@@ -81,10 +82,7 @@ class AccountRepository(
 
     private fun createUserOnDB(user: FirebaseUser) {
         database.child(DatabaseModel.USERS).child(user.uid).setValue(
-            User(
-                id = user.uid,
-                balance = 0L,
-            )
+            User(id = user.uid, balance = 0L)
         ).addOnCompleteListener {
             Timber.d("create user on realtime db ${it.isSuccessful}")
         }
@@ -96,13 +94,14 @@ class AccountRepository(
             if (it.isSuccessful) {
                 // Sign in success, update UI with the signed-in user's information
                 Timber.d("createUserWithEmail:success")
+                Timber.d("UserInfo: current user is null : ${auth.currentUser == null}")
                 auth.currentUser?.let { user -> createUserOnDB(user) }
                 listener(
                     RegisterResult(
-                    0,
-                    "register success",
-                    RegisterResultStatus.SUCCESS
-                )
+                        0,
+                        "register success",
+                        RegisterResultStatus.SUCCESS
+                    )
                 )
                 // update UI with user
             } else {
@@ -115,40 +114,40 @@ class AccountRepository(
                         // weak password
                         listener(
                             RegisterResult(
-                            1,
-                            "weak password",
-                            RegisterResultStatus.WEAK_PASSWORD
-                        )
+                                1,
+                                "weak password",
+                                RegisterResultStatus.WEAK_PASSWORD
+                            )
                         )
                     }
                     is FirebaseAuthInvalidCredentialsException -> {
                         // invalid email
                         listener(
                             RegisterResult(
-                            1,
-                            "weak password",
-                            RegisterResultStatus.INVALID_CREDENTIALS
-                        )
+                                1,
+                                "weak password",
+                                RegisterResultStatus.INVALID_CREDENTIALS
+                            )
                         )
                     }
                     is FirebaseAuthUserCollisionException -> {
                         // user already exists
                         listener(
                             RegisterResult(
-                            1,
-                            "weak password",
-                            RegisterResultStatus.USER_ALREADY_EXISTS
-                        )
+                                1,
+                                "weak password",
+                                RegisterResultStatus.USER_ALREADY_EXISTS
+                            )
                         )
                     }
                     else -> {
                         // general error
                         listener(
                             RegisterResult(
-                            1,
-                            "weak password",
-                            RegisterResultStatus.REGISTER_ERROR
-                        )
+                                1,
+                                "weak password",
+                                RegisterResultStatus.REGISTER_ERROR
+                            )
                         )
                     }
                 }
@@ -167,7 +166,7 @@ class AccountRepository(
                         )
                     )
                 } else {
-                    val loginError = when(it.exception) {
+                    val loginError = when (it.exception) {
                         is FirebaseAuthInvalidCredentialsException -> {
                             LoginError.PASSWORD_INCORRECT
                         }
@@ -190,7 +189,10 @@ class AccountRepository(
         return auth.currentUser
     }
 
-    fun signInWithGoogleCredential(credential: AuthCredential, completeListener: (Boolean) -> Unit) {
+    fun signInWithGoogleCredential(
+        credential: AuthCredential,
+        completeListener: (Boolean) -> Unit
+    ) {
         auth.signInWithCredential(credential)
             .addOnCompleteListener {
                 completeListener.invoke(it.isSuccessful)
@@ -227,8 +229,8 @@ class AccountRepository(
                 .addOnCompleteListener {
                     completeListener(
                         SendVerificationEmailTask(
-                        isSuccessful = it.isSuccessful,
-                    )
+                            isSuccessful = it.isSuccessful,
+                        )
                     )
                 }
         }

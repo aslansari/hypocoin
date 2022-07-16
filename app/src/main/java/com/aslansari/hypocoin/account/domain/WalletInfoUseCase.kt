@@ -1,10 +1,15 @@
 package com.aslansari.hypocoin.account.domain
 
+import androidx.lifecycle.ProcessLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.aslansari.hypocoin.account.data.AccountRepository
 import com.aslansari.hypocoin.account.data.AssetItem
 import com.aslansari.hypocoin.account.data.AssetRepository
 import com.aslansari.hypocoin.account.data.UserResult
 import com.aslansari.hypocoin.currency.data.CurrencyRepository
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 
 class WalletInfoUseCase (
     private val accountRepository: AccountRepository,
@@ -12,14 +17,16 @@ class WalletInfoUseCase (
     private val currencyRepository: CurrencyRepository,
 ){
 
-    suspend fun getUserWallet(): UserWallet? {
-        val userResult = accountRepository.getAccountWithInfo()
-        if (userResult is UserResult.User) {
-            val userAssets = assetRepository.getAssetList(userResult.uid)
-            return UserWallet(userResult, userAssets)
+    fun wallet() = accountRepository.getAccountFlow().combine(assetRepository.assetItems()) { user, asset ->
+        if (user is UserResult.User) {
+            return@combine UserWallet(user, asset)
         }
-        return null
-    }
+        return@combine null
+    }.stateIn(
+        ProcessLifecycleOwner.get().lifecycleScope,
+        SharingStarted.WhileSubscribed(),
+        null
+    )
 }
 
 data class UserWallet(

@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.databinding.DialogEditAccountDetailsBinding
 import com.aslansari.hypocoin.ui.BaseDialogFragment
+import kotlinx.coroutines.flow.collectLatest
 
 class EditAccountDetailsDialogFragment : BaseDialogFragment() {
 
@@ -43,11 +45,13 @@ class EditAccountDetailsDialogFragment : BaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var user: UserWalletUIModel.Result? = null
-        userProfileViewModel.userInfoUIModelLiveData.observe(viewLifecycleOwner) {
-            if (it is UserWalletUIModel.Result) {
-                user = it
-                binding.textFieldProfileDisplayName.editText?.setText(it.user.displayName)
-                binding.textFieldProfileEmail.editText?.setText(it.user.email)
+        lifecycleScope.launchWhenStarted {
+            userProfileViewModel.walletUIState.collectLatest {
+                if (it is UserWalletUIModel.Result) {
+                    user = it
+                    binding.textFieldProfileDisplayName.editText?.setText(it.user.displayName)
+                    binding.textFieldProfileEmail.editText?.setText(it.user.email)
+                }
             }
         }
         binding.buttonSaveChanges.setOnClickListener {_->
