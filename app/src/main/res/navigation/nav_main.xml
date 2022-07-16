@@ -13,16 +13,47 @@
     </fragment>
     <fragment
         android:id="@+id/account_fragment"
-        android:name="com.aslansari.hypocoin.account.AccountFragment"
+        android:name="com.aslansari.hypocoin.account.ui.AccountFragment"
         android:label="Currencies"
         tools:layout="@layout/fragment_account">
         <action
+            android:id="@+id/action_invest_currency"
+            app:destination="@id/currency_fragment" />
+        <action
             android:id="@+id/action_account_fragment_to_login_fragment"
             app:destination="@id/login_fragment" />
+        <action
+            android:id="@+id/open_account_details"
+            app:destination="@id/account_details_dialog" />
     </fragment>
     <dialog
+        android:id="@+id/account_details_dialog"
+        android:name="com.aslansari.hypocoin.account.ui.AccountDetailsDialogFragment"
+        android:label="Account"
+        tools:layout="@layout/dialog_account_details">
+        <action
+            android:id="@+id/edit_account_details"
+            app:destination="@id/edit_account_details_dialog" />
+        <action
+            android:id="@+id/action_logout"
+            app:destination="@id/account_fragment"
+            app:popUpTo="@id/account_fragment"
+            app:popUpToInclusive="true" />
+    </dialog>
+    <dialog
+        android:id="@+id/edit_account_details_dialog"
+        android:name="com.aslansari.hypocoin.account.ui.EditAccountDetailsDialogFragment"
+        android:label="Edit Details"
+        tools:layout="@layout/dialog_edit_account_details">
+        <action
+            android:id="@+id/action_discard"
+            app:destination="@id/account_details_dialog"
+            app:popUpTo="@id/account_details_dialog"
+            app:popUpToInclusive="true" />
+    </dialog>
+    <dialog
         android:id="@+id/register_fragment"
-        android:name="com.aslansari.hypocoin.register.RegisterFragment"
+        android:name="com.aslansari.hypocoin.account.register.ui.RegisterFragment"
         android:label="Currencies"
         tools:layout="@layout/fragment_register">
         <action
@@ -31,7 +62,7 @@
     </dialog>
     <dialog
         android:id="@+id/register_fragment_result"
-        android:name="com.aslansari.hypocoin.register.RegisterResultFragment"
+        android:name="com.aslansari.hypocoin.account.register.ui.RegisterResultFragment"
         android:label="Register Result"
         tools:layout="@layout/fragment_register_result">
         <action

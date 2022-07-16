@@ -8,13 +8,10 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.aslansari.hypocoin.R
-import com.aslansari.hypocoin.account.login.LoginViewModel
+import com.aslansari.hypocoin.account.login.data.LoginError
 import com.aslansari.hypocoin.databinding.FragmentLoginCompleteBinding
 import com.aslansari.hypocoin.ui.BaseDialogFragment
 import com.aslansari.hypocoin.ui.DarkModeUtil
-import com.aslansari.hypocoin.viewmodel.login.LoginError
-import com.aslansari.hypocoin.viewmodel.login.LoginResult
-import com.aslansari.hypocoin.viewmodel.login.LoginUIModel
 import com.google.android.material.snackbar.Snackbar
 
 class LoginCompleteFragment : BaseDialogFragment() {

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".account.ui.AccountFragment">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="Account" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.4"
+            tools:visibility="visible"/>
+
+        <ImageView
+            android:id="@+id/ivProfilePhoto"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_margin="20dp"
+            android:contentDescription="@string/content_desc_profile_picture"
+            android:src="@drawable/profile_head"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            />
+
+        <TextView
+            android:id="@+id/textFieldProfileDisplayName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="8dp"
+            android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivProfilePhoto"
+            tools:text="John Doe" />
+
+        <TextView
+            android:id="@+id/textFieldProfileEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="8dp"
+            android:alpha=".7"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+            app:layout_constraintEnd_toEndOf="@id/textFieldProfileDisplayName"
+            app:layout_constraintStart_toStartOf="@id/textFieldProfileDisplayName"
+            app:layout_constraintTop_toBottomOf="@id/textFieldProfileDisplayName"
+            tools:text="email@test.com" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonLogout"
+            style="@style/Widget.Material3.Button.TonalButton.Icon"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:backgroundTint="?attr/colorErrorContainer"
+            android:text="@string/button_logout_title"
+            android:textColor="?attr/colorOnErrorContainer"
+            app:layout_constraintEnd_toEndOf="@+id/textFieldProfileEmail"
+            app:layout_constraintStart_toStartOf="@+id/textFieldProfileEmail"
+            app:layout_constraintTop_toBottomOf="@+id/textFieldProfileEmail"/>
+
+        <TextView
+            android:id="@+id/titleCreatedAt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="25dp"
+            android:text="@string/account_created_at_title"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/buttonLogout"
+            />
+
+        <TextView
+            android:id="@+id/textFieldCreatedAt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleCreatedAt"
+            tools:text="7 July 2022" />
+
+        <TextView
+            android:id="@+id/titleLastLogin"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="35dp"
+            android:text="@string/account_last_login_title"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textFieldCreatedAt"
+            />
+
+        <TextView
+            android:id="@+id/textFieldLastLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleLastLogin"
+            tools:text="7:30 am Yesterday" />
+
+        <TextView
+            android:id="@+id/titlePhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="35dp"
+            android:text="@string/account_phone_number_title"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textFieldLastLogin"
+            />
+
+        <TextView
+            android:id="@+id/textFieldPhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titlePhoneNumber"
+            tools:text="+90 512 345 6789" />
+
+        <TextView
+            android:id="@+id/titleSecurity"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="35dp"
+            android:text="@string/account_security_title"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textFieldPhoneNumber"
+            />
+
+        <TextView
+            android:id="@+id/textFieldMultiFactorMethods"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+            android:textColor="@color/error"
+            android:textAlignment="viewStart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleSecurity"
+            tools:text="@string/no_multi_factor_method" />
+
+        <TextView
+            android:id="@+id/titleEmail"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="35dp"
+            android:text="@string/account_email_title"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textFieldMultiFactorMethods"
+            />
+
+        <TextView
+            android:id="@+id/textFieldEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+            android:textColor="?attr/colorPrimary"
+            android:textAlignment="viewStart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleEmail"
+            tools:text="Verified" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonSendVerificationEmail"
+            style="@style/Widget.Material3.Button.TextButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_send_verification_email"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/textFieldEmail"
+            app:layout_constraintEnd_toEndOf="@+id/textFieldEmail"
+            app:layout_constraintTop_toTopOf="@+id/textFieldEmail"
+            tools:visibility="visible"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonEditAccount"
+            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/edit"
+            app:icon="@drawable/ic_edit"
+            app:iconGravity="textStart"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/buttonChangePassword"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonChangePassword"
+            style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/change_password"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/buttonEditAccount" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
