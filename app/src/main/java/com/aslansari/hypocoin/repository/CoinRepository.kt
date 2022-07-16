@@ -20,12 +20,14 @@ class CoinRepository(private val coinDatabase: CoinDatabase, private val coinAPI
     private var currency: List<Currency> = listOf()
     val currencyList: @NonNull Observable<List<Currency>>
         get() = coinAPI.getCurrencyAssets(30, "id,slug,symbol,name,metrics")
+            .onErrorComplete()
             .subscribeOn(Schedulers.io())
             .map { currencyAsset: Asset<Currency> -> storeAssets(currencyAsset) }
             .observeOn(AndroidSchedulers.mainThread())
 
     fun getCurrency(): Flowable<Currency> {
         return coinAPI.getCurrencyAssets(30, "id,slug,symbol,name,metrics")
+            .onErrorComplete()
             .subscribeOn(Schedulers.io())
             .map { currencyAsset: Asset<Currency> -> storeAssets(currencyAsset) }
             .flatMap { source: List<Currency> -> Observable.fromIterable(source) }

@@ -5,7 +5,7 @@
 
         <variable
             name="vm"
-            type="com.aslansari.hypocoin.register.RegisterViewModel" />
+            type="com.aslansari.hypocoin.account.register.ui.RegisterViewModel" />
 
         <variable
             name="isDark"
@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@{isDark ? @drawable/main_gradient_dark : @drawable/main_gradient}"
-        tools:context=".register.RegisterResultFragment">
+        tools:context="com.aslansari.hypocoin.account.register.ui.RegisterResultFragment">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"

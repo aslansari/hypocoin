@@ -11,5 +11,5 @@ data class MarketData(
     var priceBTC: Double = 0.0,
 
     @SerializedName("price_eth")
-    var priceETH: Double = 0.0
+    var priceETH: Double = 0.0,
 )
