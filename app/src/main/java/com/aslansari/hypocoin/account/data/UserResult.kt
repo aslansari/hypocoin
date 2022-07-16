@@ -6,6 +6,7 @@ import androidx.annotation.Keep
 sealed class UserResult {
     object Loading: UserResult()
     object Error: UserResult()
+    object NotLogin: UserResult()
     data class User(
         val uid: String,
         val email: String,

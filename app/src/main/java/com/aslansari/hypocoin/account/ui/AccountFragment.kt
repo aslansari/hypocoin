@@ -81,6 +81,14 @@ class AccountFragment : BaseFragment() {
                             Timber.d("AssetList items ${listAdapter.itemCount}")
                         }
                     }
+                    is UserWalletUIModel.NotLogin -> {
+                        binding.textFieldProfileEmail.text = ""
+                        binding.textFieldProfileDisplayName.text = ""
+                        bindNetWorth(NetWorthUIModel(0L, RoiChip(RoiType.LOSS, Double.NaN)))
+                        binding.textFieldBalance.text = ""
+                        binding.layoutNoAssets.root.isVisible = false
+                        binding.assetList.isVisible = false
+                    }
                     else -> {}
                 }
             }

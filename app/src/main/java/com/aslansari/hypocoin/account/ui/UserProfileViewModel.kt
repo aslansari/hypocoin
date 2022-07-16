@@ -25,7 +25,7 @@ class UserProfileViewModel(
     val walletUIState = combine(walletInfoUseCase.wallet(), netWorthUseCase.netWorthFlow, netWorthUseCase.roiDataFlow) {
         userWallet, netWorth, roiData,  ->
         if (userWallet == null) {
-            UserWalletUIModel.Error
+            UserWalletUIModel.NotLogin
         } else {
             val assetListItems = userWallet.userAssets.map { item ->
                 val priceUsd = currencyPriceUseCase.getCurrencyPrice(item.id)

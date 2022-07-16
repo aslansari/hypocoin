@@ -1,5 +1,7 @@
 package com.aslansari.hypocoin.account.data
 
+import androidx.lifecycle.ProcessLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.aslansari.hypocoin.account.data.dto.User
 import com.aslansari.hypocoin.account.login.data.LoginError
 import com.aslansari.hypocoin.account.register.data.RegisterResult
@@ -12,8 +14,10 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.shareIn
 import timber.log.Timber
 
 class AccountRepository(
@@ -25,10 +29,29 @@ class AccountRepository(
 
     private val usersReference = database.child(DatabaseModel.USERS)
     private var listener: ValueEventListener? = null
+    private var userListener: ((FirebaseUser?) -> Unit)? = null
 
-    fun getAccountFlow() = callbackFlow {
+    private val userLoginFlow = callbackFlow {
         if (getCurrentUser() != null) {
-            val user = getCurrentUser()!!
+            trySend(getCurrentUser())
+        }
+        userListener = {
+            trySend(it)
+        }
+        awaitClose { userListener = null }
+    }.shareIn(
+        ProcessLifecycleOwner.get().lifecycleScope,
+        SharingStarted.WhileSubscribed(),
+        1
+    )
+
+    val accountFlow = userLoginFlow.flatMapLatest {
+        accountFlowWithUser(it)
+    }
+
+    private fun accountFlowWithUser(user: FirebaseUser?) = callbackFlow {
+        trySend(UserResult.Loading)
+        if (user != null) {
             val hasPassword = user.providerData
                 .map { userInfo -> userInfo.providerId }
                 .contains(EmailAuthProvider.PROVIDER_ID)
@@ -57,11 +80,13 @@ class AccountRepository(
                     }
                 })
         } else {
-            send(UserResult.Error)
+            send(UserResult.NotLogin)
         }
 
-        awaitClose { listener?.let { usersReference.child("").removeEventListener(it) } }
-    }.flowOn(ioDispatcher)
+        awaitClose {
+            listener?.let { usersReference.child("").removeEventListener(it) }
+        }
+    }
 
     private fun getMultiFactorList(enrolledFactors: MutableList<MultiFactorInfo>): List<String> {
         return enrolledFactors.map { it.displayName ?: "default" }
@@ -95,7 +120,10 @@ class AccountRepository(
                 // Sign in success, update UI with the signed-in user's information
                 Timber.d("createUserWithEmail:success")
                 Timber.d("UserInfo: current user is null : ${auth.currentUser == null}")
-                auth.currentUser?.let { user -> createUserOnDB(user) }
+                auth.currentUser?.let { user ->
+                    createUserOnDB(user)
+                    userListener?.invoke(user)
+                }
                 listener(
                     RegisterResult(
                         0,
@@ -159,6 +187,7 @@ class AccountRepository(
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
+                    userListener?.invoke(it.result.user)
                     completeListener.invoke(
                         LoginResult(
                             isSuccess = it.isSuccessful,
@@ -196,6 +225,9 @@ class AccountRepository(
         auth.signInWithCredential(credential)
             .addOnCompleteListener {
                 completeListener.invoke(it.isSuccessful)
+                if (it.isSuccessful) {
+                    userListener?.invoke(it.result.user)
+                }
             }
     }
 
@@ -212,6 +244,7 @@ class AccountRepository(
                 if (it.isSuccessful) {
                     auth.currentUser?.let { user ->
                         createUserOnDB(user)
+                        userListener?.invoke(user)
                     }
                 }
                 completeListener(it.isSuccessful)
@@ -220,6 +253,7 @@ class AccountRepository(
 
     fun logout(completeListener: () -> Unit) {
         auth.signOut()
+        userListener?.invoke(null)
         completeListener()
     }
 

@@ -17,7 +17,7 @@ class NetWorthUseCase(
     private val currencyPriceUseCase: CurrencyPriceUseCase,
 ) {
 
-    val roiDataFlow = assetRepository.assetListState.map { assetItemList ->
+    val roiDataFlow = assetRepository.assetItems().map { assetItemList ->
         val roiPairs = assetItemList.map {
             val currentValue = currencyPriceUseCase.getCurrencyPrice(it.id) * it.amount
             Pair(currentValue, 1 + (it.roiData.percentChangeLast1Week / 100))
@@ -27,17 +27,16 @@ class NetWorthUseCase(
         RoiData((totalCurrentValues / totalOldValues) - 1)
     }
 
-    val netWorthFlow: Flow<Long> = accountRepository.getAccountFlow().combine(assetRepository.assetItems()) {
+    val netWorthFlow: Flow<Long> = accountRepository.accountFlow.combine(assetRepository.assetItems()) {
         result, assets ->
-        val balance = when (result) {
+        when (result) {
             is UserResult.User -> {
-                result.balance
+                val assetsAmount = assets.sumOf {
+                    it.amount.times(currencyPriceUseCase.getCurrencyPrice(it.id))
+                }
+                result.balance + assetsAmount.toLong()
             }
             else -> {0L}
         }
-        val assetsAmount = assets.sumOf {
-            it.amount.times(currencyPriceUseCase.getCurrencyPrice(it.id))
-        }
-        balance + assetsAmount.toLong()
     }
 }

@@ -17,7 +17,7 @@ class WalletInfoUseCase (
     private val currencyRepository: CurrencyRepository,
 ){
 
-    fun wallet() = accountRepository.getAccountFlow().combine(assetRepository.assetItems()) { user, asset ->
+    fun wallet() = accountRepository.accountFlow.combine(assetRepository.assetItems()) { user, asset ->
         if (user is UserResult.User) {
             return@combine UserWallet(user, asset)
         }

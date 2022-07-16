@@ -9,5 +9,6 @@ sealed class UserWalletUIModel {
         val assets: List<AssetListItem>,
         val netWorthUIModel: NetWorthUIModel,
     ): UserWalletUIModel()
+    object NotLogin: UserWalletUIModel()
     object Loading: UserWalletUIModel()
 }

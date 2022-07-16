@@ -47,14 +47,14 @@ class AssetRepository(
         1
     )
 
-    private fun assetsFlowWithUser() = accountRepository.getAccountFlow().flatMapConcat { result ->
+    private val assetsFlowWithUser = accountRepository.accountFlow.flatMapLatest { result ->
         when (result) {
             is UserResult.User -> assetsFlow(result.uid)
-            else -> flow { emptyList<List<AssetItemDTO>>() }
+            else -> flow { emit(emptyList()) }
         }
     }
 
-    fun assetItems() = assetsFlowWithUser().map { list ->
+    fun assetItems() = assetsFlowWithUser.map { list ->
         val assets = list.map {
             val (id, symbol, name, amount) = it
             val roiData = currencyRepository.getRoi(id)
@@ -62,10 +62,4 @@ class AssetRepository(
         }
         assets
     }
-
-    val assetListState = assetItems().stateIn(
-        ProcessLifecycleOwner.get().lifecycleScope,
-        SharingStarted.WhileSubscribed(),
-        emptyList()
-    )
 }

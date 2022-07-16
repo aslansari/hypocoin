@@ -28,6 +28,6 @@ class ActivityCompositionRoot(private val appContainer: AppContainer) {
         database = databaseReference
     )
     val currencyRepository: CurrencyRepository = CurrencyRepository(appContainer.coinAPI)
-    val assetRepository: AssetRepository = AssetRepository(currencyRepository, databaseReference)
+    val assetRepository: AssetRepository = AssetRepository(accountRepository, currencyRepository, databaseReference)
     val analyticsReporter: AnalyticsReporter by lazy { AnalyticsReporter(Firebase.analytics) }
 }
