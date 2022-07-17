@@ -20,8 +20,6 @@ Application UI is designed in Figma. I have used [Material 3 Design Kit](https:/
 
 ## Roadmap
 
-- wallet page
-- account details page
 - deposit/withdraw balance page
 - crypto coin detail page
 - pagination of currency list
@@ -34,11 +32,11 @@ Like any other personal project, this one is also doomed to be left unfinished. 
 You can also check out this timeline at [hypo.dev](https://hypo.dev)
 
 - Release v0.2.0 - Login and Register - July 4th 2022
-- Release v0.3.0 - Wallet & Account - July 31th 2022
-- Release v0.4.0 - Balance Actions - August 7th 2022
-- Release v0.5.0 - Coin Details - August 22th 2022
-- Release v0.6.0 - Exchange - September 11th 2022
-- Release v1.0.0 - MVP with all core functions - September 28th 2022
+- Release v0.3.0 - Wallet & Account - July 16th 2022
+- Release v0.4.0 - Balance Actions - July 24th 2022
+- Release v0.5.0 - Coin Details - August 7th 2022
+- Release v0.6.0 - Exchange - August 28th 2022
+- Release v1.0.0 - MVP with all core functions - September 11th 2022
 
 ## Technology Stack & Details
 
