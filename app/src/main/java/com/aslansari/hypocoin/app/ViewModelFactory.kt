@@ -38,7 +38,12 @@ class ViewModelFactory(
                     currencyRepository,
                 ),
                 CurrencyPriceUseCase(currencyRepository),
-                NetWorthUseCase(assetRepository, currencyRepository, accountRepository, CurrencyPriceUseCase(currencyRepository)),
+                NetWorthUseCase(
+                    assetRepository,
+                    currencyRepository,
+                    accountRepository,
+                    CurrencyPriceUseCase(currencyRepository)
+                ),
                 accountRepository,
                 analyticsReporter
             ) as T
@@ -50,7 +55,11 @@ class ViewModelFactory(
                 LoginUseCase(accountRepository),
                 analyticsReporter
             ) as T
-            BalanceActionViewModel::class.java -> BalanceActionViewModel(accountRepository, DepositBalanceUseCase(), WithdrawBalanceUseCase()) as T
+            BalanceActionViewModel::class.java -> BalanceActionViewModel(
+                accountRepository,
+                DepositBalanceUseCase(accountRepository),
+                WithdrawBalanceUseCase(accountRepository)
+            ) as T
             else -> throw IllegalArgumentException("Wrong class type $modelClass")
         }
     }

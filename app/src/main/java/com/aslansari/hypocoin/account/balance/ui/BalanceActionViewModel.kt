@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class BalanceActionViewModel(
-    private val accountRepository: AccountRepository,
+    accountRepository: AccountRepository,
     private val depositBalanceUseCase: DepositBalanceUseCase,
     private val withdrawBalanceUseCase: WithdrawBalanceUseCase,
 ): ViewModel() {

@@ -85,6 +85,7 @@ class WithdrawBalanceDialogFragment : BaseDialogFragment() {
             if (it !is WithdrawUIModel.Error) {
                 binding.textFieldDollarAmount.helperText = null
                 binding.textFieldDollarAmount.error = null
+                binding.chipGroup.clearCheck()
             }
             when(it) {
                 is WithdrawUIModel.Error -> {
@@ -94,6 +95,9 @@ class WithdrawBalanceDialogFragment : BaseDialogFragment() {
                         it.errorType.name
                     }
                     binding.textFieldDollarAmount.error = errorText
+                }
+                is WithdrawUIModel.Result -> {
+                    findNavController().navigate(R.id.action_balance_complete)
                 }
                 else -> {}
             }

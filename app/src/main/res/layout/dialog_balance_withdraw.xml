@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:layout_marginVertical="30dp"
-            android:hint="Withdraw Amount"
+            android:hint="@string/withdraw_amount"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/balance"
@@ -41,7 +41,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
+                android:inputType="numberDecimal"
                 />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -61,14 +61,14 @@
                 style="@style/Widget.Material3.Chip.Suggestion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="$50" />
+                android:text="@string/dollar_50" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip100dollar"
                 style="@style/Widget.Material3.Chip.Suggestion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="$100"
+                android:text="@string/dollar_100"
                 tools:checked="true" />
 
             <com.google.android.material.chip.Chip
@@ -76,14 +76,14 @@
                 style="@style/Widget.Material3.Chip.Suggestion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="$250" />
+                android:text="@string/dollar_250" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipAllIn"
                 style="@style/Widget.Material3.Chip.Suggestion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="All In" />
+                android:text="@string/dollar_all_in" />
         </com.google.android.material.chip.ChipGroup>
 
         <com.google.android.material.button.MaterialButton
@@ -93,7 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="60dp"
             android:layout_marginTop="35dp"
-            android:text="Withdraw"
+            android:text="@string/withdraw"
             android:textAllCaps="true"
             android:textSize="16sp"
             android:textStyle="bold"

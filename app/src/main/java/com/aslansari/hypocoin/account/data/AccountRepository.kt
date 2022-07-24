@@ -7,10 +7,7 @@ import com.aslansari.hypocoin.account.login.data.LoginError
 import com.aslansari.hypocoin.account.register.data.RegisterResult
 import com.aslansari.hypocoin.account.register.data.RegisterResultStatus
 import com.google.firebase.auth.*
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -24,7 +21,7 @@ class AccountRepository(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val accountDAO: AccountDAO,
     private val auth: FirebaseAuth,
-    val database: DatabaseReference,
+    private val database: DatabaseReference,
 ) {
 
     private val usersReference = database.child(DatabaseModel.USERS)
@@ -85,6 +82,30 @@ class AccountRepository(
 
         awaitClose {
             listener?.let { usersReference.child("").removeEventListener(it) }
+        }
+    }
+
+    fun depositBalance(balance: Long, completeListener: (Boolean) -> Unit) {
+        if (getCurrentUser() != null) {
+            val user = getCurrentUser()!!
+            val updates: MutableMap<String, Any> = hashMapOf(
+                "users/${user.uid}/balance" to ServerValue.increment(balance)
+            )
+            database.updateChildren(updates).addOnCompleteListener {
+                completeListener(it.isSuccessful)
+            }
+        }
+    }
+
+    fun withdrawBalance(balance: Long, completeListener: (Boolean) -> Unit) {
+        if (getCurrentUser() != null) {
+            val user = getCurrentUser()!!
+            val updates: MutableMap<String, Any> = hashMapOf(
+                "users/${user.uid}/balance" to ServerValue.increment(-balance)
+            )
+            database.updateChildren(updates).addOnCompleteListener {
+                completeListener(it.isSuccessful)
+            }
         }
     }
 

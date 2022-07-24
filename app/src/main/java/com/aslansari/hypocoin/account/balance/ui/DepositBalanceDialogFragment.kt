@@ -1,6 +1,8 @@
 package com.aslansari.hypocoin.account.balance.ui
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.account.data.UserResult
+import com.aslansari.hypocoin.account.data.getBalance
 import com.aslansari.hypocoin.databinding.DialogBalanceDepositBinding
 import com.aslansari.hypocoin.ui.BaseDialogFragment
 import com.aslansari.hypocoin.ui.ChipUtil.setChildrenEnabled
@@ -18,6 +21,7 @@ import com.aslansari.hypocoin.ui.DisplayTextUtil
 class DepositBalanceDialogFragment : BaseDialogFragment() {
 
     private lateinit var binding: DialogBalanceDepositBinding
+    private lateinit var currencyTextWatcher: CurrencyTextWatcher
     private val balanceActionViewModel: BalanceActionViewModel by viewModels {
         viewModelCompositionRoot.viewModelFactory
     }
@@ -44,8 +48,9 @@ class DepositBalanceDialogFragment : BaseDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val textWatcher = CurrencyTextWatcher(binding.textFieldDollarAmount.editText!!, "$")
-        binding.textFieldDollarAmount.editText?.addTextChangedListener(textWatcher)
+        currencyTextWatcher = CurrencyTextWatcher(binding.textFieldDollarAmount.editText!!, "$")
+        binding.textFieldDollarAmount.editText?.addTextChangedListener(currencyTextWatcher)
+        binding.textFieldDollarAmount.editText?.addTextChangedListener(afterBalanceTextWatcher)
         binding.chipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
             val checkedId = if (checkedIds.isNotEmpty()) {
                checkedIds.first()
@@ -99,8 +104,45 @@ class DepositBalanceDialogFragment : BaseDialogFragment() {
         }
 
         binding.buttonComplete.setOnClickListener {
-            balanceActionViewModel.depositBalance(textWatcher.getCurrencyAmount())
+            balanceActionViewModel.depositBalance(currencyTextWatcher.getCurrencyAmount())
         }
     }
 
+    /**
+     * text watcher to update after balance amount
+     */
+    private val afterBalanceTextWatcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        }
+
+        override fun afterTextChanged(editable: Editable?) {
+            val cleanString = editable.toString().replace("$", "").replace("[,]".toRegex(), "")
+            val amount = if (cleanString.isBlank()) {
+                0L
+            } else {
+                (cleanString.toDouble() * 100).toLong()
+            }
+            if (amount > 0) {
+                binding.balance.textFieldBalanceAfter.isVisible = true
+                val userBalance = balanceActionViewModel.accountState.value.getBalance()
+                val totalAmount = if (userBalance > 0) {
+                    userBalance + amount
+                } else {
+                    amount
+                }
+                binding.balance.textFieldBalanceAfter.text = DisplayTextUtil.Amount.getDollarAmount(totalAmount)
+            } else {
+                binding.balance.textFieldBalanceAfter.isVisible = false
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.textFieldDollarAmount.editText?.removeTextChangedListener(currencyTextWatcher)
+        binding.textFieldDollarAmount.editText?.removeTextChangedListener(afterBalanceTextWatcher)
+    }
 }
