@@ -21,3 +21,11 @@ sealed class UserResult {
         val phoneNumber: String = "",
     ): UserResult()
 }
+
+fun UserResult.getBalance(): Long {
+    return if (this is UserResult.User) {
+        balance
+    } else {
+        -1
+    }
+}

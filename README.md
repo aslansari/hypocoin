@@ -20,11 +20,11 @@ Application UI is designed in Figma. I have used [Material 3 Design Kit](https:/
 
 ## Roadmap
 
-- deposit/withdraw balance page
 - crypto coin detail page
 - pagination of currency list
 - exchange page
 - Firebase remote config for configuring feature switches
+- baseline profiles
 
 ## Release
 
@@ -44,7 +44,7 @@ You can also check out this timeline at [hypo.dev](https://hypo.dev)
 - [MVVM Architecture](https://developer.android.com/topic/architecture)
 - [Jetpack Navigation Component](https://developer.android.com/guide/navigation)
 - [View binding](https://developer.android.com/topic/libraries/view-binding)
-- [Firebase Authentication](https://firebase.google.com/docs/auth) for login and register
+- [Firebase Authentication](https://firebase.google.com/docs/auth)
 - [Firebase Realtime Database](https://firebase.google.com/docs/database) for storing account details
 - [Firebase App Distribution](https://firebase.google.com/docs/app-distribution) connected with continuous delivery - Github Actions
 
