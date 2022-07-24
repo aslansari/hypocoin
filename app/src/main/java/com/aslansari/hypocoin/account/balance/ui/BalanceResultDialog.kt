@@ -1,4 +1,4 @@
-package com.aslansari.hypocoin.ui
+package com.aslansari.hypocoin.account.balance.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,14 +8,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.aslansari.hypocoin.R
-import com.aslansari.hypocoin.databinding.DialogResultBinding
+import com.aslansari.hypocoin.databinding.DialogBalanceResultBinding
+import com.aslansari.hypocoin.ui.BaseDialogFragment
+import com.aslansari.hypocoin.ui.DarkModeUtil
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class ResultDialog: BaseDialogFragment() {
+class BalanceResultDialog: BaseDialogFragment() {
 
-    private lateinit var binding: DialogResultBinding
-    private val args: ResultDialogArgs by navArgs()
+    private lateinit var binding: DialogBalanceResultBinding
+    private val args: BalanceResultDialogArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,11 +28,19 @@ class ResultDialog: BaseDialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = DialogResultBinding.inflate(inflater, container, false)
+        binding = DialogBalanceResultBinding.inflate(inflater, container, false)
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
             message = args.message
-            resultMessage.visibility = View.GONE
+            altMessage = args.altMessage
+            isMessageVisible = false
+            val animRes = if (DarkModeUtil.isDarkMode(requireContext())) {
+                R.raw.add_funds_dark
+            } else {
+                R.raw.add_funds
+            }
+            lottieAnimation.setAnimation(animRes)
+            lottieAnimation.speed = 1.5f
         }
         return binding.root
     }
@@ -39,11 +49,12 @@ class ResultDialog: BaseDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.lottieAnimation.playAnimation()
         binding.lottieAnimation.addLottieOnCompositionLoadedListener {
-            binding.resultMessage.visibility = View.VISIBLE
+            binding.isMessageVisible = true
         }
+
         lifecycleScope.launch {
             delay(3000)
-            findNavController().navigate(R.id.action_register_result_finished)
+            findNavController().navigate(R.id.action_balance_complete)
         }
     }
 }

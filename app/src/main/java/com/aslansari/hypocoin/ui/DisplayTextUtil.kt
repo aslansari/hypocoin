@@ -29,6 +29,8 @@ object DisplayTextUtil {
         fun getCurrencyFormat(amount: Double): String = currencyFormat.format(amount)
 
         fun getRateFormat(amount: Double): String = rateFormat.format(amount)
+
+        fun decimalFormat(amount: Double): String = decimalFormat.format(amount)
     }
 
     object Date {
