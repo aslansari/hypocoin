@@ -1,15 +1,16 @@
 package com.aslansari.hypocoin.ui
 
 import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.*
 
 object DisplayTextUtil {
 
     object Amount {
-        private val decimalFormat = DecimalFormat("###,##0.00")
-        private val currencyFormat = DecimalFormat("###,##0.################")
-        private val rateFormat = DecimalFormat("#0.###")
+        private val decimalFormat = DecimalFormat("###,##0.00", DecimalFormatSymbols(Locale.US))
+        private val currencyFormat = DecimalFormat("###,##0.################", DecimalFormatSymbols(Locale.US))
+        private val rateFormat = DecimalFormat("#0.###", DecimalFormatSymbols(Locale.US))
 
         /**
          * Get dollar amount for display
