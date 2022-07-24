@@ -73,4 +73,12 @@
     <string name="feature_not_supported">This feature is currently not supported</string>
     <string name="positive_rate">+%%%s</string>
     <string name="negative_rate">-%%%s</string>
+    <string name="deposit_amount">Deposit Amount</string>
+    <string name="deposit_daily_limit">Daily Limit is $1000</string>
+    <string name="dollar_50">$50</string>
+    <string name="dollar_100">$100</string>
+    <string name="dollar_250">$250</string>
+    <string name="dollar_500">$500</string>
+    <string name="error_insufficient_funds">insufficient funds</string>
+    <string name="deposit_success">Deposit Successful</string>
 </resources>

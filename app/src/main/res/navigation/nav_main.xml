@@ -25,7 +25,33 @@
         <action
             android:id="@+id/open_account_details"
             app:destination="@id/account_details_dialog" />
+        <action
+            android:id="@+id/action_withdraw_dialog"
+            app:destination="@id/balance_withdraw_dialog" />
+        <action
+            android:id="@+id/action_deposit_balance"
+            app:destination="@id/balance_deposit_dialog" />
     </fragment>
+    <dialog
+        android:id="@+id/balance_deposit_dialog"
+        android:name="com.aslansari.hypocoin.account.balance.ui.DepositBalanceDialogFragment"
+        android:label="Balance"
+        tools:layout="@layout/dialog_balance_deposit">
+        <action
+            android:id="@+id/deposit_complete"
+            app:destination="@id/balance_result_dialog" />
+    </dialog>
+    <dialog
+        android:id="@+id/balance_withdraw_dialog"
+        android:name="com.aslansari.hypocoin.account.balance.ui.WithdrawBalanceDialogFragment"
+        android:label="Balance"
+        tools:layout="@layout/dialog_balance_withdraw">
+        <action
+            android:id="@+id/action_balance_complete"
+            app:destination="@id/account_fragment"
+            app:popUpTo="@id/account_fragment"
+            app:popUpToInclusive="true" />
+    </dialog>
     <dialog
         android:id="@+id/account_details_dialog"
         android:name="com.aslansari.hypocoin.account.ui.AccountDetailsDialogFragment"
@@ -49,6 +75,25 @@
             android:id="@+id/action_discard"
             app:destination="@id/account_details_dialog"
             app:popUpTo="@id/account_details_dialog"
+            app:popUpToInclusive="true" />
+    </dialog>
+    <dialog
+        android:id="@+id/balance_result_dialog"
+        android:name="com.aslansari.hypocoin.account.balance.ui.BalanceResultDialog"
+        android:label="Balance Result Dialog"
+        tools:layout="@layout/dialog_balance_result">
+        <argument
+            android:name="message"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="altMessage"
+            android:defaultValue=""
+            app:argType="string" />
+        <action
+            android:id="@+id/action_balance_complete"
+            app:destination="@id/account_fragment"
+            app:popUpTo="@id/account_fragment"
             app:popUpToInclusive="true" />
     </dialog>
     <dialog

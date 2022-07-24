@@ -2,6 +2,9 @@ package com.aslansari.hypocoin.app
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.aslansari.hypocoin.account.balance.domain.DepositBalanceUseCase
+import com.aslansari.hypocoin.account.balance.domain.WithdrawBalanceUseCase
+import com.aslansari.hypocoin.account.balance.ui.BalanceActionViewModel
 import com.aslansari.hypocoin.account.data.AccountRepository
 import com.aslansari.hypocoin.account.data.AssetRepository
 import com.aslansari.hypocoin.account.domain.NetWorthUseCase
@@ -47,6 +50,7 @@ class ViewModelFactory(
                 LoginUseCase(accountRepository),
                 analyticsReporter
             ) as T
+            BalanceActionViewModel::class.java -> BalanceActionViewModel(accountRepository, DepositBalanceUseCase(), WithdrawBalanceUseCase()) as T
             else -> throw IllegalArgumentException("Wrong class type $modelClass")
         }
     }

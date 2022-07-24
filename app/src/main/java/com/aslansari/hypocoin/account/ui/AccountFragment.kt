@@ -100,10 +100,10 @@ class AccountFragment : BaseFragment() {
             Toast.makeText(requireContext(), R.string.feature_not_supported, Toast.LENGTH_SHORT).show()
         }
         binding.buttonWithdrawal.setOnClickListener {
-            Toast.makeText(requireContext(), R.string.feature_not_supported, Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_withdraw_dialog)
         }
         binding.buttonDeposit.setOnClickListener {
-            Toast.makeText(requireContext(), R.string.feature_not_supported, Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_deposit_balance)
         }
     }
 
