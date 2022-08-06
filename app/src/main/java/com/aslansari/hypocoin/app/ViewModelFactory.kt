@@ -17,6 +17,7 @@ import com.aslansari.hypocoin.account.ui.UserProfileViewModel
 import com.aslansari.hypocoin.app.util.AnalyticsReporter
 import com.aslansari.hypocoin.currency.data.CurrencyRepository
 import com.aslansari.hypocoin.currency.domain.CurrencyPriceUseCase
+import com.aslansari.hypocoin.currency.ui.CurrencyDetailsViewModel
 import com.aslansari.hypocoin.repository.CoinRepository
 import com.aslansari.hypocoin.viewmodel.CoinViewModel
 
@@ -59,6 +60,8 @@ class ViewModelFactory(
                 accountRepository,
                 DepositBalanceUseCase(accountRepository),
                 WithdrawBalanceUseCase(accountRepository)
+            ) as T
+            CurrencyDetailsViewModel::class.java -> CurrencyDetailsViewModel(
             ) as T
             else -> throw IllegalArgumentException("Wrong class type $modelClass")
         }

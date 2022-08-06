@@ -10,6 +10,23 @@
         android:name="com.aslansari.hypocoin.ui.CurrencyFragment"
         android:label="Currencies"
         tools:layout="@layout/fragment_currency">
+        <action
+            android:id="@+id/go_to_currency_details"
+            app:destination="@id/currency_details_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/currency_details_fragment"
+        android:name="com.aslansari.hypocoin.currency.ui.CurrencyDetailsFragment"
+        android:label="Currencies"
+        tools:layout="@layout/fragment_currency_details">
+        <argument
+            android:name="name"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="id"
+            android:defaultValue=""
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/account_fragment"
@@ -136,11 +153,11 @@
         tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_login_to_register"
+            app:destination="@id/register_fragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_right"
             app:popEnterAnim="@anim/fadein"
-            app:popExitAnim="@anim/fadeout"
-            app:destination="@id/register_fragment" />
+            app:popExitAnim="@anim/fadeout" />
         <action
             android:id="@+id/action_login_completed"
             app:destination="@id/account_fragment"

@@ -84,4 +84,14 @@
     <string name="deposit_success">Deposit Successful</string>
     <string name="withdraw_amount">Withdraw Amount</string>
     <string name="dollar_all_in">All In</string>
+    <string name="favourite">Favourite</string>
+    <string name="sell">Sell</string>
+    <string name="buy">Buy</string>
+    <string name="title_percent_down">Percent Down</string>
+    <string name="title_days">Days</string>
+    <string name="title_date">Date</string>
+    <string name="title_price">Price</string>
+    <string name="title_all_time_high">All Time High</string>
+    <string name="title_wallet">Wallet</string>
+    <string name="title_current_value">Current Value</string>
 </resources>

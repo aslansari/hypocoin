@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.aslansari.hypocoin.R
@@ -41,9 +42,6 @@ class CurrencyFragment : BaseFragment() {
     private var binding: FragmentCurrencyBinding? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            // get params if exists
-        }
         disposables = CompositeDisposable()
     }
 
@@ -53,6 +51,15 @@ class CurrencyFragment : BaseFragment() {
     ): View? {
         binding = FragmentCurrencyBinding.inflate(inflater, container, false)
         currencyRecyclerAdapter = CurrencyRecyclerAdapter()
+        currencyRecyclerAdapter?.clickListener = {
+            it?.let { currency ->
+                val directions = CurrencyFragmentDirections.goToCurrencyDetails(
+                    id = currency.id,
+                    name = currency.name ?: ""
+                )
+                findNavController().navigate(directions)
+            }
+        }
         return binding?.root
     }
 
@@ -62,7 +69,8 @@ class CurrencyFragment : BaseFragment() {
             recyclerCoin.layoutManager =
                 LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
             val verticalMargin = resources.getDimensionPixelSize(R.dimen.currency_margin_vertical)
-            val horizontalMargin = resources.getDimensionPixelSize(R.dimen.currency_margin_horizontal)
+            val horizontalMargin =
+                resources.getDimensionPixelSize(R.dimen.currency_margin_horizontal)
             recyclerCoin.addItemDecoration(MarginItemDecorator(verticalMargin, horizontalMargin))
             recyclerCoin.adapter = currencyRecyclerAdapter
             vm = coinViewModel
@@ -76,15 +84,16 @@ class CurrencyFragment : BaseFragment() {
         serviceConnection = object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName, service: IBinder) {
                 coinService = (service as LocalBinder).service
-                disposables!!.add(coinService!!.asyncCurrencies
-                    .subscribeWith(object : DisposableSubscriber<List<Currency?>?>() {
-                        override fun onNext(currencyList: List<Currency?>?) {
-                            // currencyRecyclerAdapter?.updateList(currencyList as List<Currency>)
-                        }
+                disposables!!.add(
+                    coinService!!.asyncCurrencies
+                        .subscribeWith(object : DisposableSubscriber<List<Currency?>?>() {
+                            override fun onNext(currencyList: List<Currency?>?) {
+                                // currencyRecyclerAdapter?.updateList(currencyList as List<Currency>)
+                            }
 
-                        override fun onError(t: Throwable) {}
-                        override fun onComplete() {}
-                    })
+                            override fun onError(t: Throwable) {}
+                            override fun onComplete() {}
+                        })
                 )
                 coinService!!.start()
             }
@@ -93,9 +102,11 @@ class CurrencyFragment : BaseFragment() {
                 coinService = null
             }
         }
-        isBoundCoinService = requireActivity().bindService(Intent(activity, CoinService::class.java),
+        isBoundCoinService = requireActivity().bindService(
+            Intent(activity, CoinService::class.java),
             serviceConnection as ServiceConnection,
-            Context.BIND_AUTO_CREATE)
+            Context.BIND_AUTO_CREATE
+        )
     }
 
     override fun onStart() {

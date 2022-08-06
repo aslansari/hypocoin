@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.databinding.FragmentAccountBinding
 import com.aslansari.hypocoin.ui.BaseFragment
-import com.aslansari.hypocoin.ui.DisplayColorUtil
+import com.aslansari.hypocoin.ui.ChipUtil.updateForRoi
 import com.aslansari.hypocoin.ui.DisplayTextUtil
 import com.aslansari.hypocoin.ui.adapters.MarginItemDecorator
 import kotlinx.coroutines.flow.collectLatest
@@ -37,7 +37,8 @@ class AccountFragment : BaseFragment() {
             assetList.layoutManager =
                 LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
             val verticalMargin = resources.getDimensionPixelSize(R.dimen.currency_margin_vertical)
-            val horizontalMargin = resources.getDimensionPixelSize(R.dimen.currency_margin_horizontal)
+            val horizontalMargin =
+                resources.getDimensionPixelSize(R.dimen.currency_margin_horizontal)
             assetList.addItemDecoration(MarginItemDecorator(verticalMargin, horizontalMargin))
             binding.assetList.adapter = AssetsRecyclerAdapter()
         }
@@ -62,7 +63,7 @@ class AccountFragment : BaseFragment() {
         lifecycleScope.launchWhenStarted {
             userProfileViewModel.walletUIState.collectLatest {
                 binding.progressBar.isVisible = it is UserWalletUIModel.Loading
-                when(it) {
+                when (it) {
                     is UserWalletUIModel.Error -> {
                         Timber.d("user info error")
                     }
@@ -70,7 +71,8 @@ class AccountFragment : BaseFragment() {
                         binding.textFieldProfileEmail.text = it.user.email
                         binding.textFieldProfileDisplayName.text = it.user.displayName
                         bindNetWorth(it.netWorthUIModel)
-                        binding.textFieldBalance.text = DisplayTextUtil.Amount.getDollarAmount(it.user.balance)
+                        binding.textFieldBalance.text =
+                            DisplayTextUtil.Amount.getDollarAmount(it.user.balance)
                         binding.layoutNoAssets.root.isVisible = it.assets.isEmpty()
                         binding.assetList.isVisible = true
                         if (it.assets.isNotEmpty()) {
@@ -97,7 +99,8 @@ class AccountFragment : BaseFragment() {
             findNavController().navigate(R.id.action_invest_currency)
         }
         binding.buttonExchange.setOnClickListener {
-            Toast.makeText(requireContext(), R.string.feature_not_supported, Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), R.string.feature_not_supported, Toast.LENGTH_SHORT)
+                .show()
         }
         binding.buttonWithdrawal.setOnClickListener {
             findNavController().navigate(R.id.action_withdraw_dialog)
@@ -108,27 +111,14 @@ class AccountFragment : BaseFragment() {
     }
 
     private fun bindNetWorth(netWorthUIModel: NetWorthUIModel) {
-        binding.textFieldNetWorth.text = DisplayTextUtil.Amount.getAmountForNetWorth(netWorthUIModel.netWorth)
+        binding.textFieldNetWorth.text =
+            DisplayTextUtil.Amount.getAmountForNetWorth(netWorthUIModel.netWorth)
         if (netWorthUIModel.roiData.rate.isNaN().not()) {
             binding.roiChip.isVisible = true
-            when(netWorthUIModel.roiData.roiType) {
-                RoiType.GAIN -> {
-                    val chipBackgroundColor = DisplayColorUtil.getGainColor()
-                    val chipTextColor = DisplayColorUtil.getGainTextColor(resources)
-                    binding.roiChip.setChipBackgroundColorResource(chipBackgroundColor)
-                    binding.roiChip.setTextColor(chipTextColor)
-                    binding.roiChip.text = getString(R.string.positive_rate, DisplayTextUtil.Amount.getRateFormat(netWorthUIModel.roiData.rate))
-                }
-                RoiType.LOSS -> {
-                    val chipBackgroundColor = DisplayColorUtil.getLossColor(requireContext())
-                    val chipTextColor = DisplayColorUtil.getLossTextColor(requireContext(), resources)
-                    binding.roiChip.setChipBackgroundColorResource(chipBackgroundColor)
-                    binding.roiChip.setTextColor(chipTextColor)
-                    binding.roiChip.text = getString(R.string.negative_rate, DisplayTextUtil.Amount.getRateFormat(netWorthUIModel.roiData.rate))
-                }
-            }
+            binding.roiChip.updateForRoi(netWorthUIModel.roiData)
         }
     }
+
 
     override fun onDestroy() {
         super.onDestroy()

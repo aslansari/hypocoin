@@ -2,11 +2,13 @@ package com.aslansari.hypocoin.currency.data
 
 import android.os.SystemClock
 import com.aslansari.hypocoin.repository.model.Currency
+import com.aslansari.hypocoin.repository.model.CurrencyMarketData
 import com.aslansari.hypocoin.repository.restapi.CoinAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 const val ONE_MINUTE = 60 * 1000
+
 class CurrencyRepository(
     private val coinAPI: CoinAPI
 ) {
@@ -24,6 +26,16 @@ class CurrencyRepository(
             currencies
         }
     }
+
+    suspend fun getCurrencyMarketData(id: String): Result<CurrencyMarketData> =
+        withContext(Dispatchers.IO) {
+            try {
+                val currencyMarketData = coinAPI.getCurrencyMarketData(id).data
+                Result.success(currencyMarketData)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
 
     suspend fun getRoi(id: String): RoiData {
         return RoiData(coinAPI.getRoiByCurrencyId(id).data.roiData.percentChangeLast1Week)

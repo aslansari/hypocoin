@@ -1,9 +1,9 @@
 package com.aslansari.hypocoin.repository.restapi
 
 import com.aslansari.hypocoin.repository.model.Currency
+import com.aslansari.hypocoin.repository.model.CurrencyMarketData
 import io.reactivex.rxjava3.core.Observable
 import retrofit2.http.GET
-import retrofit2.http.Headers
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -23,7 +23,12 @@ interface CoinAPI {
     @GET("/api/v1/assets/{id}/metrics?fields=roi_data/percent_change_last_1_week")
     suspend fun getRoiByCurrencyId(
         @Path("id") id: String,
-    ): RoiDataResult
+    ): Data<RoiResult>
+
+    @GET("/api/v1/assets/{assetKey}/metrics/market-data")
+    suspend fun getCurrencyMarketData(
+        @Path("assetKey") id: String,
+    ): Data<CurrencyMarketData>
 
     companion object {
         const val BASE_URL = "https://data.messari.io/"

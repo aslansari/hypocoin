@@ -13,8 +13,12 @@ import java.text.DecimalFormatSymbols
 import java.util.*
 
 class CurrencyRecyclerAdapter : BaseAdapter<Currency?>() {
+
+    var clickListener: ((Currency?) -> Unit)? = null
+
     companion object {
-        private val AMOUNT_FORMAT: DecimalFormat = DecimalFormat("###,##0.00", DecimalFormatSymbols.getInstance(Locale.US))
+        private val AMOUNT_FORMAT: DecimalFormat =
+            DecimalFormat("###,##0.00", DecimalFormatSymbols.getInstance(Locale.US))
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -35,7 +39,9 @@ class CurrencyRecyclerAdapter : BaseAdapter<Currency?>() {
         holder.itemView.setOnClickListener { view: View? ->
             val adapterPos = holder.absoluteAdapterPosition
             if (adapterPos != RecyclerView.NO_POSITION) {
-                // TODO handle click
+                clickListener?.let {
+                    it(getItem(adapterPos))
+                }
             }
         }
         return holder
@@ -68,7 +74,8 @@ class CurrencyRecyclerAdapter : BaseAdapter<Currency?>() {
         fun bind(currency: Currency) {
             tvCurrencyName.text = currency.symbol
             tvCurrencyRatio.text = AMOUNT_FORMAT.format(
-                currency.metrics!!.marketData!!.priceUSD)
+                currency.metrics!!.marketData!!.priceUSD
+            )
         }
 
         init {
@@ -78,8 +85,12 @@ class CurrencyRecyclerAdapter : BaseAdapter<Currency?>() {
     }
 
     fun updateList(currencyList: List<Currency>) {
-        val diffResult = DiffUtil.calculateDiff(CurrencyDiffCallback(currencyList,
-            items.toList() as List<Currency>))
+        val diffResult = DiffUtil.calculateDiff(
+            CurrencyDiffCallback(
+                currencyList,
+                items.toList() as List<Currency>
+            )
+        )
         items = currencyList.toMutableList()
         diffResult.dispatchUpdatesTo(this)
     }
