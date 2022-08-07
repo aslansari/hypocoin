@@ -19,7 +19,7 @@ import kotlinx.coroutines.withContext
  * TODO refresh currency list
  */
 class CoinViewModel(private val coinRepository: CoinRepository) : ViewModel() {
-    private val id: String? = null
+
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> = _loading
 
