@@ -1,11 +1,12 @@
-package com.aslansari.hypocoin.viewmodel
+package com.aslansari.hypocoin.currency.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aslansari.hypocoin.currency.data.model.Currency
 import com.aslansari.hypocoin.repository.CoinRepository
-import com.aslansari.hypocoin.repository.model.Currency
+import com.aslansari.hypocoin.ui.DisplayTextUtil
 import io.reactivex.rxjava3.core.Observable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.toList
@@ -22,8 +23,8 @@ class CoinViewModel(private val coinRepository: CoinRepository) : ViewModel() {
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> = _loading
 
-    private val _currencyList = MutableLiveData<List<Currency>>()
-    val currencyList: LiveData<List<Currency>> = _currencyList
+    private val _currencyList = MutableLiveData<List<CurrencyListItem>>()
+    val currencyList: LiveData<List<CurrencyListItem>> = _currencyList
 
     val asyncCurrencyList: Observable<List<Currency>>
         get() = coinRepository.currencyList
@@ -32,8 +33,18 @@ class CoinViewModel(private val coinRepository: CoinRepository) : ViewModel() {
         viewModelScope.launch(Dispatchers.Main) {
             _loading.value = true
             val list = withContext(Dispatchers.IO) {
-                val currencyList: MutableList<Currency> = mutableListOf()
+                val currencyList: MutableList<CurrencyListItem> = mutableListOf()
                 coinRepository.getCurrency()
+                    .map {
+                        val priceDouble = it.metrics?.marketData?.priceUSD ?: 0.0
+                        val price = (priceDouble * 100).toLong()
+                        CurrencyListItem(
+                            it.id,
+                            it.name ?: "",
+                            it.symbol ?: "",
+                            DisplayTextUtil.Amount.getDollarAmountWithSign(price)
+                        )
+                    }
                     .asFlow()
                     .toList(currencyList)
                 currencyList

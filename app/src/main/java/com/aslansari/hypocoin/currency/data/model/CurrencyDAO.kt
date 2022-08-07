@@ -1,4 +1,4 @@
-package com.aslansari.hypocoin.repository.model
+package com.aslansari.hypocoin.currency.data.model
 
 import androidx.room.Dao
 

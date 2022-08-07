@@ -1,8 +1,8 @@
 package com.aslansari.hypocoin.currency.data
 
 import android.os.SystemClock
-import com.aslansari.hypocoin.repository.model.Currency
-import com.aslansari.hypocoin.repository.model.CurrencyMarketData
+import com.aslansari.hypocoin.currency.data.model.Currency
+import com.aslansari.hypocoin.currency.data.model.CurrencyMarketData
 import com.aslansari.hypocoin.repository.restapi.CoinAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

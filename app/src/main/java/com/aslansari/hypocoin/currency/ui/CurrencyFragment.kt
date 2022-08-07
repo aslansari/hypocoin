@@ -1,4 +1,4 @@
-package com.aslansari.hypocoin.ui
+package com.aslansari.hypocoin.currency.ui
 
 import android.content.ComponentName
 import android.content.Context
@@ -15,13 +15,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.aslansari.hypocoin.R
+import com.aslansari.hypocoin.currency.data.model.Currency
 import com.aslansari.hypocoin.databinding.FragmentCurrencyBinding
 import com.aslansari.hypocoin.repository.CoinService
 import com.aslansari.hypocoin.repository.CoinService.LocalBinder
-import com.aslansari.hypocoin.repository.model.Currency
-import com.aslansari.hypocoin.ui.adapters.CurrencyRecyclerAdapter
-import com.aslansari.hypocoin.ui.adapters.MarginItemDecorator
-import com.aslansari.hypocoin.viewmodel.CoinViewModel
+import com.aslansari.hypocoin.ui.BaseFragment
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.subscribers.DisposableSubscriber
 
@@ -52,10 +50,10 @@ class CurrencyFragment : BaseFragment() {
         binding = FragmentCurrencyBinding.inflate(inflater, container, false)
         currencyRecyclerAdapter = CurrencyRecyclerAdapter()
         currencyRecyclerAdapter?.clickListener = {
-            it?.let { currency ->
+            it.let { item ->
                 val directions = CurrencyFragmentDirections.goToCurrencyDetails(
-                    id = currency.id,
-                    name = currency.name ?: ""
+                    id = item.id,
+                    name = item.name
                 )
                 findNavController().navigate(directions)
             }
@@ -77,7 +75,7 @@ class CurrencyFragment : BaseFragment() {
             lifecycleOwner = viewLifecycleOwner
         }
         coinViewModel.currencyList.observe(viewLifecycleOwner) { currencyList ->
-            currencyRecyclerAdapter?.updateList(currencyList)
+            currencyRecyclerAdapter?.submitList(currencyList)
         }
         coinViewModel.getCurrencyList()
         // TODO: update ui with flowable instead of service 

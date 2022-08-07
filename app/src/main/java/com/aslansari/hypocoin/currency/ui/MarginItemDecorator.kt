@@ -1,9 +1,9 @@
-package com.aslansari.hypocoin.ui.adapters
+package com.aslansari.hypocoin.currency.ui
 
 import android.graphics.Rect
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 
 class MarginItemDecorator(private val marginVertical: Int, private val marginHorizontal: Int) :
     ItemDecoration() {

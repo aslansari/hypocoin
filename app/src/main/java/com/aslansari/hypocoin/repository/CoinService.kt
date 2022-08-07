@@ -3,8 +3,8 @@ package com.aslansari.hypocoin.repository
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
-import com.aslansari.hypocoin.repository.model.Currency
-import com.aslansari.hypocoin.viewmodel.CoinViewModel
+import com.aslansari.hypocoin.currency.data.model.Currency
+import com.aslansari.hypocoin.currency.ui.CoinViewModel
 import io.reactivex.rxjava3.core.BackpressureStrategy
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.disposables.CompositeDisposable

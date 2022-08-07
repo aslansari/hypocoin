@@ -1,45 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tool="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="80dp"
-    app:strokeWidth="0dp"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="3dp">
+<layout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <data>
+        <variable
+            name="item"
+            type="com.aslansari.hypocoin.currency.ui.CurrencyListItem" />
+    </data>
+    <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tool="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:minHeight="80dp">
+        android:layout_height="wrap_content"
+        android:minHeight="80dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="3dp"
+        app:strokeWidth="0dp">
 
-        <TextView
-            android:id="@+id/tvCurrencyName"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_margin="10dp"
-            android:gravity="center"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.Headline6"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tool:text="BTC" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:minHeight="80dp">
 
-        <TextView
-            android:id="@+id/tvCurrencyRatio"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_margin="10dp"
-            android:gravity="center"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.Headline6"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tool:text="0.0000023" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_margin="10dp"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                >
+                <TextView
+                    android:id="@+id/tvCurrencyName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@{item.symbol}"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+                    tool:text="BTC" />
+                <TextView
+                    android:id="@+id/tvCurrencySymbol"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.7"
+                    android:gravity="center"
+                    android:text="@{item.name}"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                    tool:text="Bitcoin" />
+            </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/tvCurrencyRatio"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:text="@{item.price}"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.Headline6"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tool:text="$13,542.87 USD" />
 
-</com.google.android.material.card.MaterialCardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</layout>

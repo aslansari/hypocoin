@@ -6,8 +6,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.aslansari.hypocoin.account.data.Account
 import com.aslansari.hypocoin.account.data.AccountDAO
-import com.aslansari.hypocoin.repository.model.Currency
-import com.aslansari.hypocoin.repository.model.CurrencyDAO
+import com.aslansari.hypocoin.currency.data.model.Currency
+import com.aslansari.hypocoin.currency.data.model.CurrencyDAO
 
 @Database(entities = [Currency::class, Account::class], version = 1)
 abstract class CoinDatabase : RoomDatabase() {

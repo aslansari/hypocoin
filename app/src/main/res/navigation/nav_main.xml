@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/currency_fragment"
-        android:name="com.aslansari.hypocoin.ui.CurrencyFragment"
+        android:name="com.aslansari.hypocoin.currency.ui.CurrencyFragment"
         android:label="Currencies"
         tools:layout="@layout/fragment_currency">
         <action

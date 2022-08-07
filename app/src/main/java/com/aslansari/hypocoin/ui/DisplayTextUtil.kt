@@ -22,6 +22,11 @@ object DisplayTextUtil {
             return "$${dollarAmount} USD"
         }
 
+        fun getDollarAmountWithSign(amount: Long): String {
+            val dollarAmount = decimalFormat.format(amount.toDouble()/100)
+            return "$${dollarAmount}"
+        }
+
         fun getAmountForNetWorth(amount: Long): String = when (amount) {
             0L -> "$ --"
             else -> getDollarAmount(amount)

@@ -1,6 +1,6 @@
 package com.aslansari.hypocoin.repository
 
-import com.aslansari.hypocoin.repository.model.Currency
+import com.aslansari.hypocoin.currency.data.model.Currency
 import com.aslansari.hypocoin.repository.restapi.Asset
 import com.aslansari.hypocoin.repository.restapi.CoinAPI
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers

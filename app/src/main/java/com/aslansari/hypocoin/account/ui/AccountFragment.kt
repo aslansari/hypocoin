@@ -12,11 +12,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.aslansari.hypocoin.R
+import com.aslansari.hypocoin.currency.ui.MarginItemDecorator
 import com.aslansari.hypocoin.databinding.FragmentAccountBinding
 import com.aslansari.hypocoin.ui.BaseFragment
 import com.aslansari.hypocoin.ui.ChipUtil.updateForRoi
 import com.aslansari.hypocoin.ui.DisplayTextUtil
-import com.aslansari.hypocoin.ui.adapters.MarginItemDecorator
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
