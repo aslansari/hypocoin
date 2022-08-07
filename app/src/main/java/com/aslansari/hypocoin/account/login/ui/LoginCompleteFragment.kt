@@ -16,9 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 
 class LoginCompleteFragment : BaseDialogFragment() {
 
-    private val loginViewModel: LoginViewModel by viewModels {
-        viewModelCompositionRoot.viewModelFactory
-    }
+    private val loginViewModel: LoginViewModel by viewModels()
     private lateinit var binding: FragmentLoginCompleteBinding
     private val args: LoginCompleteFragmentArgs by navArgs()
 
@@ -48,8 +46,9 @@ class LoginCompleteFragment : BaseDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.isDark = DarkModeUtil.isDarkMode(requireContext())
         loginViewModel.loginUIState.observe(viewLifecycleOwner) { state ->
-            binding.progressLogin.visibility = if (state is LoginUIModel.Loading) View.VISIBLE else View.GONE
-            when(state) {
+            binding.progressLogin.visibility =
+                if (state is LoginUIModel.Loading) View.VISIBLE else View.GONE
+            when (state) {
                 is LoginUIModel.Result -> {
                     if (state.loginResult == LoginResult.LOGIN_SUCCESS) {
                     }
@@ -58,14 +57,22 @@ class LoginCompleteFragment : BaseDialogFragment() {
                             findNavController().navigate(R.id.action_login_completed)
                         }
                         LoginResult.PASSWORD_RESET_EMAIL_SENT -> {
-                            Snackbar.make(binding.root, "Password reset email sent", Snackbar.LENGTH_INDEFINITE).show()
+                            Snackbar.make(
+                                binding.root,
+                                "Password reset email sent",
+                                Snackbar.LENGTH_INDEFINITE
+                            ).show()
                         }
                         else -> {}
                     }
                 }
                 is LoginUIModel.Error -> {
                     if (state.loginError == LoginError.PASSWORD_RESET_EMAIL_NOT_SENT) {
-                        Snackbar.make(binding.root, "Couldn't sent password reset email", Snackbar.LENGTH_LONG).show()
+                        Snackbar.make(
+                            binding.root,
+                            "Couldn't sent password reset email",
+                            Snackbar.LENGTH_LONG
+                        ).show()
                     } else {
                         val errorString = when (state.loginError) {
                             LoginError.PASSWORD_INCORRECT -> getString(R.string.error_password_incorrect)

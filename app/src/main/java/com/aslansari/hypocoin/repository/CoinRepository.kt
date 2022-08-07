@@ -9,6 +9,7 @@ import io.reactivex.rxjava3.core.BackpressureStrategy
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import javax.inject.Inject
 
 /**
  * - TODO implement caching
@@ -16,7 +17,10 @@ import io.reactivex.rxjava3.schedulers.Schedulers
  * - TODO single source of truth, fetch data from api, record to db and fetch from db
  * DB will be the single source of truth
  */
-class CoinRepository(private val coinDatabase: CoinDatabase, private val coinAPI: CoinAPI) {
+class CoinRepository @Inject constructor(
+    private val coinDatabase: CoinDatabase,
+    private val coinAPI: CoinAPI
+) {
     private var currency: List<Currency> = listOf()
     val currencyList: @NonNull Observable<List<Currency>>
         get() = coinAPI.getCurrencyAssets(30, "id,slug,symbol,name,metrics")

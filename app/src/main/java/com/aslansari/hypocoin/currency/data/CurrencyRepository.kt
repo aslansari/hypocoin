@@ -6,10 +6,11 @@ import com.aslansari.hypocoin.currency.data.model.CurrencyMarketData
 import com.aslansari.hypocoin.repository.restapi.CoinAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 const val ONE_MINUTE = 60 * 1000
 
-class CurrencyRepository(
+class CurrencyRepository @Inject constructor(
     private val coinAPI: CoinAPI
 ) {
 

@@ -15,9 +15,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 class EditAccountDetailsDialogFragment : BaseDialogFragment() {
 
-    private val userProfileViewModel: UserProfileViewModel by activityViewModels(factoryProducer = {
-        viewModelCompositionRoot.viewModelFactory
-    })
+    private val userProfileViewModel: UserProfileViewModel by activityViewModels()
 
     private lateinit var binding: DialogEditAccountDetailsBinding
     private var changeCount = 0
@@ -54,7 +52,7 @@ class EditAccountDetailsDialogFragment : BaseDialogFragment() {
                 }
             }
         }
-        binding.buttonSaveChanges.setOnClickListener {_->
+        binding.buttonSaveChanges.setOnClickListener { _ ->
             binding.buttonSaveChanges.isEnabled = false
             changeCount = 0
             user?.let { it ->
@@ -65,7 +63,11 @@ class EditAccountDetailsDialogFragment : BaseDialogFragment() {
                     userProfileViewModel.updateDisplayNumber(textDisplayName) { success ->
                         changeCount--
                         if (success.not()) {
-                            Toast.makeText(requireContext(), getString(R.string.error_updating_display_name), Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.error_updating_display_name),
+                                Toast.LENGTH_LONG
+                            ).show()
                             binding.textFieldProfileDisplayName.editText?.setText(it.user.displayName)
                             tryReleaseSaveButton()
                         } else {
@@ -78,7 +80,11 @@ class EditAccountDetailsDialogFragment : BaseDialogFragment() {
                     userProfileViewModel.updateEmail(textEmail) { success ->
                         changeCount--
                         if (success.not()) {
-                            Toast.makeText(requireContext(), getString(R.string.error_updating_email), Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.error_updating_email),
+                                Toast.LENGTH_LONG
+                            ).show()
                             binding.textFieldProfileEmail.editText?.setText(it.user.email)
                             tryReleaseSaveButton()
                         } else {
@@ -92,6 +98,7 @@ class EditAccountDetailsDialogFragment : BaseDialogFragment() {
             findNavController().navigate(R.id.action_discard)
         }
     }
+
     private fun tryReleaseSaveButton() {
         if (changeCount == 0) {
             binding.buttonSaveChanges.isEnabled = true

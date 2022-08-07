@@ -1,14 +1,8 @@
 package com.aslansari.hypocoin.ui
 
 import androidx.fragment.app.DialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 
-open class BaseDialogFragment: DialogFragment() {
-
-    protected val viewModelCompositionRoot by lazy {
-        (activity as BaseActivity).viewModelCompositionRoot
-    }
-
-    protected val analyticsReporter by lazy {
-        (activity as BaseActivity).viewModelCompositionRoot.analyticsReporter
-    }
+@AndroidEntryPoint
+abstract class BaseDialogFragment: DialogFragment() {
 }

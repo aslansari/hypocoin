@@ -19,9 +19,7 @@ import com.aslansari.hypocoin.ui.DisplayTextUtil
 class CurrencyDetailsFragment : BaseFragment() {
 
     private lateinit var binding: FragmentCurrencyDetailsBinding
-    private val currencyDetailsViewModel: CurrencyDetailsViewModel by viewModels {
-        viewModelCompositionRoot.viewModelFactory
-    }
+    private val currencyDetailsViewModel: CurrencyDetailsViewModel by viewModels()
     private val args: CurrencyDetailsFragmentArgs by navArgs()
 
     override fun onCreateView(

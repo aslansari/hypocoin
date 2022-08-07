@@ -21,9 +21,7 @@ import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
 class AccountFragment : BaseFragment() {
-    private val userProfileViewModel: UserProfileViewModel by activityViewModels(factoryProducer = {
-        viewModelCompositionRoot.viewModelFactory
-    })
+    private val userProfileViewModel: UserProfileViewModel by activityViewModels()
 
     private lateinit var binding: FragmentAccountBinding
 

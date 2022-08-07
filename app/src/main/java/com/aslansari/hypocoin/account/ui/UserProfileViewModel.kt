@@ -9,12 +9,15 @@ import com.aslansari.hypocoin.account.domain.WalletInfoUseCase
 import com.aslansari.hypocoin.app.util.AnalyticsReporter
 import com.aslansari.hypocoin.currency.domain.CurrencyPriceUseCase
 import com.aslansari.hypocoin.ui.DisplayTextUtil
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 import kotlin.math.absoluteValue
 
-class UserProfileViewModel(
+@HiltViewModel
+class UserProfileViewModel @Inject constructor(
     private val walletInfoUseCase: WalletInfoUseCase,
     private val currencyPriceUseCase: CurrencyPriceUseCase,
     private val netWorthUseCase: NetWorthUseCase,

@@ -13,8 +13,9 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
+import javax.inject.Inject
 
-class AssetRepository(
+class AssetRepository @Inject constructor(
     private val accountRepository: AccountRepository,
     private val currencyRepository: CurrencyRepository,
     private val database: DatabaseReference,

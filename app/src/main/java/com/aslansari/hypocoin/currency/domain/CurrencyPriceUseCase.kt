@@ -3,8 +3,9 @@ package com.aslansari.hypocoin.currency.domain
 import com.aslansari.hypocoin.currency.data.CurrencyRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class CurrencyPriceUseCase(
+class CurrencyPriceUseCase @Inject constructor(
     private val currencyRepository: CurrencyRepository,
 ) {
 

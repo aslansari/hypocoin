@@ -5,8 +5,9 @@ import com.aslansari.hypocoin.account.data.AccountRepository
 import com.aslansari.hypocoin.account.data.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.firebase.auth.GoogleAuthProvider
+import javax.inject.Inject
 
-class LoginUseCase(
+class LoginUseCase @Inject constructor(
     private val accountRepository: AccountRepository
 ) {
 

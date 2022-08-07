@@ -4,7 +4,10 @@ import android.content.Intent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.account.login.data.LoginError
 import com.aslansari.hypocoin.account.login.domain.LoginUseCase
@@ -15,14 +18,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.tasks.Task
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
+import javax.inject.Inject
 
-class LoginViewModel(
+@HiltViewModel
+class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val analyticsReporter: AnalyticsReporter,
-): ViewModel() {
+) : ViewModel() {
 
     private var _loginUIState = MutableLiveData<LoginUIModel>()
     val loginUIState: LiveData<LoginUIModel> = _loginUIState
@@ -75,7 +80,8 @@ class LoginViewModel(
                 if (it) {
                     _loginUIState.value = LoginUIModel.Result(LoginResult.PASSWORD_RESET_EMAIL_SENT)
                 } else {
-                    _loginUIState.value = LoginUIModel.Error(LoginError.PASSWORD_RESET_EMAIL_NOT_SENT)
+                    _loginUIState.value =
+                        LoginUIModel.Error(LoginError.PASSWORD_RESET_EMAIL_NOT_SENT)
                 }
             }
         }
@@ -89,7 +95,8 @@ class LoginViewModel(
     fun onGoogleSignInResult(activityResult: ActivityResult) {
         _loginUIState.value = LoginUIModel.Loading
         viewModelScope.launch {
-            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(activityResult.data)
+            val task: Task<GoogleSignInAccount> =
+                GoogleSignIn.getSignedInAccountFromIntent(activityResult.data)
             try {
                 val account: GoogleSignInAccount = task.getResult(ApiException::class.java)
                 if (!account.email.isNullOrBlank()) {

@@ -14,7 +14,7 @@ import com.aslansari.hypocoin.ui.DarkModeUtil
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class BalanceResultDialog: BaseDialogFragment() {
+class BalanceResultDialog : BaseDialogFragment() {
 
     private lateinit var binding: DialogBalanceResultBinding
     private val args: BalanceResultDialogArgs by navArgs()

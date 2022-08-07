@@ -18,9 +18,7 @@ import com.aslansari.hypocoin.ui.DisplayTextUtil
 class WithdrawBalanceDialogFragment : BaseDialogFragment() {
 
     private lateinit var binding: DialogBalanceWithdrawBinding
-    private val balanceActionViewModel: BalanceActionViewModel by viewModels {
-        viewModelCompositionRoot.viewModelFactory
-    }
+    private val balanceActionViewModel: BalanceActionViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,27 +48,34 @@ class WithdrawBalanceDialogFragment : BaseDialogFragment() {
             val checkedId = if (checkedIds.isNotEmpty()) {
                 checkedIds.first()
             } else null
-            val amount = when(checkedId) {
+            val amount = when (checkedId) {
                 binding.chip50dollar.id -> 50.00
                 binding.chip100dollar.id -> 100.00
                 binding.chip250dollar.id -> 250.00
                 binding.chipAllIn.id -> {
-                    when(val result = balanceActionViewModel.accountState.value) {
+                    when (val result = balanceActionViewModel.accountState.value) {
                         is UserResult.User -> result.balance.toDouble() / 100
                         else -> 0.0
                     }
                 }
                 else -> null
             }
-            amount?.let { binding.textFieldDollarAmount.editText?.setText(DisplayTextUtil.Amount.decimalFormat(amount)) }
+            amount?.let {
+                binding.textFieldDollarAmount.editText?.setText(
+                    DisplayTextUtil.Amount.decimalFormat(
+                        amount
+                    )
+                )
+            }
         }
 
         lifecycleScope.launchWhenStarted {
             balanceActionViewModel.accountState.collect {
-                when(it) {
+                when (it) {
                     is UserResult.User -> {
                         binding.toolbar.title = it.displayName
-                        binding.balance.textFieldBalance.text = DisplayTextUtil.Amount.getDollarAmount(it.balance)
+                        binding.balance.textFieldBalance.text =
+                            DisplayTextUtil.Amount.getDollarAmount(it.balance)
                     }
                     else -> {}
                 }
@@ -87,13 +92,14 @@ class WithdrawBalanceDialogFragment : BaseDialogFragment() {
                 binding.textFieldDollarAmount.error = null
                 binding.chipGroup.clearCheck()
             }
-            when(it) {
+            when (it) {
                 is WithdrawUIModel.Error -> {
-                    val errorText = if (it.errorType == WithdrawUIModel.ErrorType.INSUFFICIENT_FUNDS) {
-                        getString(R.string.error_insufficient_funds)
-                    } else {
-                        it.errorType.name
-                    }
+                    val errorText =
+                        if (it.errorType == WithdrawUIModel.ErrorType.INSUFFICIENT_FUNDS) {
+                            getString(R.string.error_insufficient_funds)
+                        } else {
+                            it.errorType.name
+                        }
                     binding.textFieldDollarAmount.error = errorText
                 }
                 is WithdrawUIModel.Result -> {
