@@ -24,9 +24,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
  */
 class RegisterFragment : BaseDialogFragment() {
 
-    private val registerViewModel: RegisterViewModel by activityViewModels(factoryProducer = {
-        viewModelCompositionRoot.viewModelFactory
-    })
+    private val registerViewModel: RegisterViewModel by activityViewModels()
 
     private lateinit var binding: FragmentRegisterBinding
     private var disposables: CompositeDisposable? = null
@@ -39,9 +37,10 @@ class RegisterFragment : BaseDialogFragment() {
         if (arguments != null) {
         }
         disposables = CompositeDisposable()
-        getSignInResult =  registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            registerViewModel.onGoogleSignInResult(it)
-        }
+        getSignInResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                registerViewModel.onGoogleSignInResult(it)
+            }
     }
 
     override fun onCreateView(
@@ -84,8 +83,10 @@ class RegisterFragment : BaseDialogFragment() {
                 registerViewModel.setEmail(state.onSubmit.email)
                 val data = Bundle()
                 data.putString("email", state.onSubmit.email)
-                findNavController().navigate(R.id.action_register_fragment_to_register_fragment_result,
-                    data)
+                findNavController().navigate(
+                    R.id.action_register_fragment_to_register_fragment_result,
+                    data
+                )
             }
         }
     }

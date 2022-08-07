@@ -22,9 +22,7 @@ class DepositBalanceDialogFragment : BaseDialogFragment() {
 
     private lateinit var binding: DialogBalanceDepositBinding
     private lateinit var currencyTextWatcher: CurrencyTextWatcher
-    private val balanceActionViewModel: BalanceActionViewModel by viewModels {
-        viewModelCompositionRoot.viewModelFactory
-    }
+    private val balanceActionViewModel: BalanceActionViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,24 +51,31 @@ class DepositBalanceDialogFragment : BaseDialogFragment() {
         binding.textFieldDollarAmount.editText?.addTextChangedListener(afterBalanceTextWatcher)
         binding.chipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
             val checkedId = if (checkedIds.isNotEmpty()) {
-               checkedIds.first()
+                checkedIds.first()
             } else null
-            val amount = when(checkedId) {
+            val amount = when (checkedId) {
                 binding.chip50dollar.id -> 50.00
                 binding.chip100dollar.id -> 100.00
                 binding.chip250dollar.id -> 250.00
                 binding.chip500dollar.id -> 500.00
                 else -> null
             }
-            amount?.let { binding.textFieldDollarAmount.editText?.setText(DisplayTextUtil.Amount.decimalFormat(amount)) }
+            amount?.let {
+                binding.textFieldDollarAmount.editText?.setText(
+                    DisplayTextUtil.Amount.decimalFormat(
+                        amount
+                    )
+                )
+            }
         }
 
         lifecycleScope.launchWhenStarted {
             balanceActionViewModel.accountState.collect {
-                when(it) {
+                when (it) {
                     is UserResult.User -> {
                         binding.toolbar.title = it.displayName
-                        binding.balance.textFieldBalance.text = DisplayTextUtil.Amount.getDollarAmount(it.balance)
+                        binding.balance.textFieldBalance.text =
+                            DisplayTextUtil.Amount.getDollarAmount(it.balance)
                     }
                     else -> {}
                 }
@@ -85,7 +90,7 @@ class DepositBalanceDialogFragment : BaseDialogFragment() {
             if (it !is DepositUIModel.Error) {
                 binding.textFieldDollarAmount.error = null
             }
-            when(it) {
+            when (it) {
                 is DepositUIModel.Error -> {
                     val errorText = it.errorType.name
                     binding.textFieldDollarAmount.error = errorText
@@ -133,7 +138,8 @@ class DepositBalanceDialogFragment : BaseDialogFragment() {
                 } else {
                     amount
                 }
-                binding.balance.textFieldBalanceAfter.text = DisplayTextUtil.Amount.getDollarAmount(totalAmount)
+                binding.balance.textFieldBalanceAfter.text =
+                    DisplayTextUtil.Amount.getDollarAmount(totalAmount)
             } else {
                 binding.balance.textFieldBalanceAfter.isVisible = false
             }

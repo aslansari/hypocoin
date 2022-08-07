@@ -42,15 +42,12 @@ You can also check out this timeline at [hypo.dev](https://hypo.dev)
 
 - [Kotlin](https://kotlinlang.org/), [Coroutines](https://kotlinlang.org/docs/coroutines-overview.html)
 - [MVVM Architecture](https://developer.android.com/topic/architecture)
+- [Dependency Injection with Hilt](https://developer.android.com/training/dependency-injection/hilt-android)
 - [Jetpack Navigation Component](https://developer.android.com/guide/navigation)
 - [View binding](https://developer.android.com/topic/libraries/view-binding)
 - [Firebase Authentication](https://firebase.google.com/docs/auth)
 - [Firebase Realtime Database](https://firebase.google.com/docs/database) for storing account details
 - [Firebase App Distribution](https://firebase.google.com/docs/app-distribution) connected with continuous delivery - Github Actions
-
-## Planned Improvements on Tech Stack
-
-- Hilt/Dagger for dependency injection
 
 ## Contribution
 

@@ -15,25 +15,28 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.aslansari.hypocoin.R
 import com.aslansari.hypocoin.account.login.data.LoginError
+import com.aslansari.hypocoin.app.util.AnalyticsReporter
 import com.aslansari.hypocoin.databinding.FragmentLoginBinding
 import com.aslansari.hypocoin.ui.BaseDialogFragment
 import com.aslansari.hypocoin.ui.DarkModeUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import javax.inject.Inject
 
 class LoginFragment : BaseDialogFragment() {
 
-    private val loginViewModel: LoginViewModel by viewModels {
-        viewModelCompositionRoot.viewModelFactory
-    }
+    @Inject
+    lateinit var analyticsReporter: AnalyticsReporter
+    private val loginViewModel: LoginViewModel by viewModels()
     private lateinit var binding: FragmentLoginBinding
     private var getSignInResult: ActivityResultLauncher<Intent>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.DefaultDialog)
-        getSignInResult =  registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            loginViewModel.onGoogleSignInResult(it)
-        }
+        getSignInResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                loginViewModel.onGoogleSignInResult(it)
+            }
     }
 
     override fun onCreateView(
@@ -80,11 +83,14 @@ class LoginFragment : BaseDialogFragment() {
                 is LoginUIModel.RegisterWithGoogle -> {
                     MaterialAlertDialogBuilder(requireContext()).apply {
                         setTitle(getString(R.string.title_dialog_register_with_google))
-                        val message = getString(R.string.message_dialog_register_with_google, model.account.email) +
+                        val message = getString(
+                            R.string.message_dialog_register_with_google,
+                            model.account.email
+                        ) +
                                 "\n\n" +
                                 getString(R.string.hyperlink)
                         setMessage(message)
-                        setPositiveButton(getString(R.string.continue_str)) { _,_ ->
+                        setPositiveButton(getString(R.string.continue_str)) { _, _ ->
                             loginViewModel.continueRegisterWithGoogle(model.account)
                         }
                         setNegativeButton(getString(R.string.cancel)) { _, _ ->
@@ -93,7 +99,7 @@ class LoginFragment : BaseDialogFragment() {
                     }.show()
                 }
                 is LoginUIModel.Error -> {
-                    val errorString = when(model.loginError) {
+                    val errorString = when (model.loginError) {
                         LoginError.EMAIL_INVALID -> getString(R.string.error_invalid_email)
                         LoginError.EMAIL_DOES_NOT_EXISTS -> getString(R.string.error_email_does_not_exists)
                         else -> getString(R.string.error_login_failed)

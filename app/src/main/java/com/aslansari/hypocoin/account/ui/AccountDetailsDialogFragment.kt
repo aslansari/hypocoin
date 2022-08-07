@@ -18,9 +18,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 class AccountDetailsDialogFragment : BaseDialogFragment() {
 
-    private val userProfileViewModel: UserProfileViewModel by activityViewModels(factoryProducer = {
-        viewModelCompositionRoot.viewModelFactory
-    })
+    private val userProfileViewModel: UserProfileViewModel by activityViewModels()
 
     private lateinit var binding: DialogAccountDetailsBinding
 
@@ -54,8 +52,10 @@ class AccountDetailsDialogFragment : BaseDialogFragment() {
                         "--"
                     }
                     binding.textFieldProfileEmail.text = it.user.email
-                    binding.textFieldCreatedAt.text = DisplayTextUtil.Date.getFormattedDate(it.user.createdAt)
-                    binding.textFieldLastLogin.text = DisplayTextUtil.Date.getFormattedTime(it.user.lastLogin)
+                    binding.textFieldCreatedAt.text =
+                        DisplayTextUtil.Date.getFormattedDate(it.user.createdAt)
+                    binding.textFieldLastLogin.text =
+                        DisplayTextUtil.Date.getFormattedTime(it.user.lastLogin)
                     binding.buttonSendVerificationEmail.isVisible = it.user.isEmailVerified.not()
                     if (it.user.multiFactorMethods.isEmpty()) {
                         binding.textFieldMultiFactorMethods.text =
@@ -72,7 +72,9 @@ class AccountDetailsDialogFragment : BaseDialogFragment() {
                         binding.textFieldPhoneNumber.text = it.user.phoneNumber
                     }
                     binding.textFieldEmail.text =
-                        if (it.user.isEmailVerified) getString(R.string.email_verified) else getString(R.string.email_not_verified)
+                        if (it.user.isEmailVerified) getString(R.string.email_verified) else getString(
+                            R.string.email_not_verified
+                        )
                     if (it.user.isEmailVerified.not()) {
                         binding.textFieldEmail.setTextColor(getErrorColor())
                     }
@@ -98,7 +100,7 @@ class AccountDetailsDialogFragment : BaseDialogFragment() {
                 } else {
                     getString(R.string.verification_email_fail)
                 }
-                Toast.makeText(requireContext(), toastText, Toast.LENGTH_LONG ).show()
+                Toast.makeText(requireContext(), toastText, Toast.LENGTH_LONG).show()
             }
         }
     }

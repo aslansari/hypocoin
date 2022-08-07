@@ -9,8 +9,9 @@ import com.aslansari.hypocoin.currency.domain.CurrencyPriceUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class NetWorthUseCase(
+class NetWorthUseCase @Inject constructor(
     private val assetRepository: AssetRepository,
     private val currencyRepository: CurrencyRepository,
     private val accountRepository: AccountRepository,

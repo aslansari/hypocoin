@@ -16,8 +16,9 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.shareIn
 import timber.log.Timber
+import javax.inject.Inject
 
-class AccountRepository(
+class AccountRepository @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val accountDAO: AccountDAO,
     private val auth: FirebaseAuth,

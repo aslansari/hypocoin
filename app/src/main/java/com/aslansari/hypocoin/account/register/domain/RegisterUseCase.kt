@@ -7,8 +7,9 @@ import com.aslansari.hypocoin.account.register.data.RegisterResult
 import com.aslansari.hypocoin.account.register.exception.PasswordMismatchException
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.firebase.auth.GoogleAuthProvider
+import javax.inject.Inject
 
-class RegisterUseCase(
+class RegisterUseCase @Inject constructor(
     private val accountRepository: AccountRepository,
 ) {
 

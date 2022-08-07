@@ -16,17 +16,20 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.tasks.Task
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
+import javax.inject.Inject
 
 /**
  *
  */
-class RegisterViewModel(
+@HiltViewModel
+class RegisterViewModel @Inject constructor(
     private val registerUseCase: RegisterUseCase,
     private val analyticsReporter: AnalyticsReporter,
 ) : ViewModel() {

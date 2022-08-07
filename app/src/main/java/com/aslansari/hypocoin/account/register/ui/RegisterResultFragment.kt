@@ -21,9 +21,7 @@ import kotlinx.coroutines.launch
  */
 class RegisterResultFragment : BaseDialogFragment() {
 
-    private val registerViewModel: RegisterViewModel by activityViewModels(factoryProducer = {
-        viewModelCompositionRoot.viewModelFactory
-    })
+    private val registerViewModel: RegisterViewModel by activityViewModels()
 
     private lateinit var binding: FragmentRegisterResultBinding
     private lateinit var email: String
@@ -65,13 +63,16 @@ class RegisterResultFragment : BaseDialogFragment() {
                         binding.textFieldPasswordConfirm.error = null
                     }
                     RegisterResultStatus.DOES_NOT_MATCH -> {
-                        binding.textFieldPassword.error = getString(R.string.error_passwords_does_not_match)
+                        binding.textFieldPassword.error =
+                            getString(R.string.error_passwords_does_not_match)
                     }
                     RegisterResultStatus.CONFIRM_YOUR_PASSWORD -> {
-                        binding.textFieldPasswordConfirm.error = getString(R.string.confirm_password)
+                        binding.textFieldPasswordConfirm.error =
+                            getString(R.string.confirm_password)
                     }
                     RegisterResultStatus.SHOULD_NOT_BE_EMPTY -> {
-                        binding.textFieldPassword.error = getString(R.string.error_password_cannot_be_empty)
+                        binding.textFieldPassword.error =
+                            getString(R.string.error_password_cannot_be_empty)
                     }
                     RegisterResultStatus.NOT_VALID -> {
                         binding.textFieldPassword.error = getString(R.string.error_invalid_password)

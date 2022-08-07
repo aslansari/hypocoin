@@ -4,8 +4,9 @@ import android.os.Bundle
 import com.aslansari.hypocoin.app.util.log.LoginMethod
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent
+import javax.inject.Inject
 
-class AnalyticsReporter(
+class AnalyticsReporter @Inject constructor(
     private val firebaseAnalytics: FirebaseAnalytics
 ) {
 

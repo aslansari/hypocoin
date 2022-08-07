@@ -29,9 +29,7 @@ import io.reactivex.rxjava3.subscribers.DisposableSubscriber
  * create an instance of this fragment.
  */
 class CurrencyFragment : BaseFragment() {
-    private val coinViewModel: CoinViewModel by viewModels(factoryProducer = {
-        viewModelCompositionRoot.viewModelFactory
-    })
+    private val coinViewModel: CoinViewModel by viewModels()
     private var currencyRecyclerAdapter: CurrencyRecyclerAdapter? = null
     private var disposables: CompositeDisposable? = null
     private var coinService: CoinService? = null

@@ -6,11 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aslansari.hypocoin.account.ui.RoiChip
 import com.aslansari.hypocoin.account.ui.RoiType
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CurrencyDetailsViewModel(
-
+@HiltViewModel
+class CurrencyDetailsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _currencyDetailsState = MutableLiveData<CurrencyDetailsState>()

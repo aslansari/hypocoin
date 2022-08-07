@@ -12,7 +12,7 @@ import com.aslansari.hypocoin.databinding.DialogResultBinding
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class ResultDialog: BaseDialogFragment() {
+class ResultDialog : BaseDialogFragment() {
 
     private lateinit var binding: DialogResultBinding
     private val args: ResultDialogArgs by navArgs()

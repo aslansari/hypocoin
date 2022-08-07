@@ -8,11 +8,14 @@ import com.aslansari.hypocoin.account.balance.domain.DepositBalanceUseCase
 import com.aslansari.hypocoin.account.balance.domain.WithdrawBalanceUseCase
 import com.aslansari.hypocoin.account.data.AccountRepository
 import com.aslansari.hypocoin.account.data.UserResult
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class BalanceActionViewModel(
+@HiltViewModel
+class BalanceActionViewModel @Inject constructor(
     accountRepository: AccountRepository,
     private val depositBalanceUseCase: DepositBalanceUseCase,
     private val withdrawBalanceUseCase: WithdrawBalanceUseCase,

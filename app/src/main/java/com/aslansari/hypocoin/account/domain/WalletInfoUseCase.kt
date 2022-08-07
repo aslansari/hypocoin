@@ -10,8 +10,9 @@ import com.aslansari.hypocoin.currency.data.CurrencyRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 
-class WalletInfoUseCase (
+class WalletInfoUseCase @Inject constructor(
     private val accountRepository: AccountRepository,
     private val assetRepository: AssetRepository,
     private val currencyRepository: CurrencyRepository,

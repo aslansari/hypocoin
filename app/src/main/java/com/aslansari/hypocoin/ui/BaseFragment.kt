@@ -1,14 +1,9 @@
 package com.aslansari.hypocoin.ui
 
 import androidx.fragment.app.Fragment
+import dagger.hilt.android.AndroidEntryPoint
 
-open class BaseFragment: Fragment() {
+@AndroidEntryPoint
+abstract class BaseFragment: Fragment() {
 
-    protected val viewModelCompositionRoot by lazy {
-        (activity as BaseActivity).viewModelCompositionRoot
-    }
-
-    protected val analyticsReporter by lazy {
-        (activity as BaseActivity).viewModelCompositionRoot.analyticsReporter
-    }
 }
