@@ -1,6 +1,8 @@
 
 ![Tests and Lint](https://github.com/aslansari/hypocoin/actions/workflows/testandlint.yml/badge.svg) 
 
+🚧 This repository is under construction and by no means ready for production 🚧
+
 # HypoCoin
 
 HypoCoin is a crypto coin investment sandbox application. You can invest with hypothetical funds and track your assets.
@@ -25,18 +27,6 @@ Application UI is designed in Figma. I have used [Material 3 Design Kit](https:/
 - exchange page
 - Firebase remote config for configuring feature switches
 - baseline profiles
-
-## Release
-
-Like any other personal project, this one is also doomed to be left unfinished. To avoid that I planned a release schedule for each deliverable.
-You can also check out this timeline at [hypo.dev](https://hypo.dev)
-
-- Release v0.2.0 - Login and Register - July 4th 2022
-- Release v0.3.0 - Wallet & Account - July 16th 2022
-- Release v0.4.0 - Balance Actions - July 24th 2022
-- Release v0.5.0 - Coin Details - August 7th 2022
-- Release v0.6.0 - Exchange - August 28th 2022
-- Release v1.0.0 - MVP with all core functions - September 11th 2022
 
 ## Technology Stack & Details
 
